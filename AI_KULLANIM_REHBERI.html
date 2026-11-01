@@ -1,0 +1,1339 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Kullanım Rehberi</title>
+<meta name="description" content="Yazılım geliştirmede AI asistanlarını etkili ve güvenli kullanma pratikleri: prompt kalitesi, system prompt / agent / skill kavramları, bağlam yönetimi, doğrulama, güvenlik ve hazır şablonlar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>window.Prism = window.Prism || {}; window.Prism.manual = true;</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<style>
+:root{
+  --bg:#f7f8fa; --surface:#ffffff; --surface-2:#f1f3f6; --border:#e3e6eb;
+  --text:#1b1f24; --muted:#5d6672; --faint:#8a929c;
+  --brand:#6b4fd5; --brand-soft:#efebfc; --brand-strong:#5236b8;
+  --accent:#0e8f8a; --accent-soft:#e2f5f4;
+  --info:#2f6fd6; --info-soft:#e7f0fd;
+  --warn:#b46d00; --warn-soft:#fdf3e1;
+  --danger:#c4352b; --danger-soft:#fdeceb;
+  --good:#2f8a3e; --good-soft:#e6f4e8;
+  --p1:#dbe7fd; --p2:#e2f5f4; --p3:#efebfc; --p4:#fdf3e1; --p5:#fde7ee; --p6:#e6f4e8;
+  --code-bg:#fbfbfc; --code-border:#e6e8ec;
+  --tk-comment:#8a929c; --tk-keyword:#a626a4; --tk-string:#2f8a3e; --tk-number:#b4630a;
+  --tk-func:#2f6fd6; --tk-annot:#c4352b; --tk-class:#9a6700; --tk-punct:#5d6672; --tk-tag:#c4352b; --tk-attr:#9a6700;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 16px rgba(16,24,40,.06);
+  --radius:14px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1115; --surface:#16181f; --surface-2:#1d2029; --border:#2a2e39;
+    --text:#e6e8ee; --muted:#a2a8b5; --faint:#727987;
+    --brand:#a594f5; --brand-soft:#231d3d; --brand-strong:#c2b6fb;
+    --accent:#4fd1c5; --accent-soft:#12302e;
+    --info:#6ea3f2; --info-soft:#15233a;
+    --warn:#e6a23c; --warn-soft:#2c2214;
+    --danger:#f07167; --danger-soft:#331a19;
+    --good:#6fcf7f; --good-soft:#16291a;
+    --p1:#1a2840; --p2:#12302e; --p3:#251f40; --p4:#2e2415; --p5:#351a24; --p6:#16291a;
+    --code-bg:#12141a; --code-border:#262a34;
+    --tk-comment:#6b7280; --tk-keyword:#d88ee0; --tk-string:#8fd69a; --tk-number:#f0a24a;
+    --tk-func:#7fb0f5; --tk-annot:#f07c72; --tk-class:#e6c06b; --tk-punct:#a2a8b5; --tk-tag:#f07c72; --tk-attr:#e6c06b;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1115; --surface:#16181f; --surface-2:#1d2029; --border:#2a2e39;
+  --text:#e6e8ee; --muted:#a2a8b5; --faint:#727987;
+  --brand:#a594f5; --brand-soft:#231d3d; --brand-strong:#c2b6fb;
+  --accent:#4fd1c5; --accent-soft:#12302e;
+  --info:#6ea3f2; --info-soft:#15233a;
+  --warn:#e6a23c; --warn-soft:#2c2214;
+  --danger:#f07167; --danger-soft:#331a19;
+  --good:#6fcf7f; --good-soft:#16291a;
+  --p1:#1a2840; --p2:#12302e; --p3:#251f40; --p4:#2e2415; --p5:#351a24; --p6:#16291a;
+  --code-bg:#12141a; --code-border:#262a34;
+  --tk-comment:#6b7280; --tk-keyword:#d88ee0; --tk-string:#8fd69a; --tk-number:#f0a24a;
+  --tk-func:#7fb0f5; --tk-annot:#f07c72; --tk-class:#e6c06b; --tk-punct:#a2a8b5; --tk-tag:#f07c72; --tk-attr:#e6c06b;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font:15.5px/1.65 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre,textarea.mono{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+:not(pre)>code{font-size:.86em;background:var(--surface-2);border:1px solid var(--border);padding:.08em .38em;border-radius:6px}
+h1,h2,h3,h4{line-height:1.25;letter-spacing:-.015em;margin:0}
+p{margin:.6em 0}
+ul,ol{padding-left:1.2em}
+li{margin:3px 0}
+
+.topbar{position:sticky;top:0;z-index:40;height:60px;display:flex;align-items:center;gap:12px;padding:0 16px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--brand),var(--accent));width:0}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--text)}
+.logo-mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;font-size:14px;font-weight:800}
+.spacer{flex:1}
+.icon-btn{height:36px;min-width:36px;padding:0 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font:500 13px Inter,sans-serif}
+.icon-btn:hover{border-color:var(--brand)}
+.menu-btn{display:none}
+
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);max-width:1360px;margin:0 auto}
+.sidebar{position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;padding:20px 14px 40px;border-right:1px solid var(--border)}
+.nav-group{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:18px 10px 6px}
+.nav-group:first-child{margin-top:0}
+.nav a{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;color:var(--muted);font-size:14px;text-decoration:none}
+.nav a .num{font:600 11px "JetBrains Mono",monospace;color:var(--faint);min-width:18px}
+.nav a:hover{background:var(--surface-2);color:var(--text)}
+.nav a.active{background:var(--brand-soft);color:var(--brand-strong);font-weight:600}
+.nav a.active .num{color:var(--brand)}
+.side-check{margin:22px 6px 0;padding:14px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--muted)}
+.side-check b{color:var(--text);display:block;margin-bottom:4px}
+
+main{padding:0 40px 120px;min-width:0}
+section.doc{padding-top:56px;max-width:920px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font:600 12px "JetBrains Mono",monospace;color:var(--brand);letter-spacing:.04em;text-transform:uppercase}
+section.doc>h2{font-size:30px;font-weight:800;margin:8px 0 6px}
+section.doc>.lead{color:var(--muted);font-size:16.5px;margin:0 0 22px}
+h3{font-size:19px;font-weight:700;margin:34px 0 10px}
+h4{font-size:15.5px;font-weight:700;margin:20px 0 6px}
+
+.hero{margin-top:36px;padding:44px 40px;border-radius:22px;background:radial-gradient(1100px 400px at 0% 0%,var(--brand-soft),transparent 60%),radial-gradient(900px 400px at 100% 100%,var(--accent-soft),transparent 60%),var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);max-width:1040px}
+.hero h1{font-size:44px;font-weight:800;letter-spacing:-.03em;margin:12px 0 10px}
+.hero h1 span{background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:17px;max-width:660px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.principles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+.principle{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.principle b{display:block;font-size:15px}
+.principle span{color:var(--muted);font-size:13px}
+
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font:600 12px Inter,sans-serif;background:var(--surface-2);border:1px solid var(--border);color:var(--muted)}
+.pill.brand{background:var(--brand-soft);color:var(--brand-strong);border-color:transparent}
+.pill.accent{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.pill.good{background:var(--good-soft);color:var(--good);border-color:transparent}
+.pill.danger{background:var(--danger-soft);color:var(--danger);border-color:transparent}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4:first-child{margin-top:0}
+.card p:last-child{margin-bottom:0}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+.callout{display:flex;gap:12px;padding:14px 16px;border-radius:12px;margin:16px 0;border:1px solid transparent;font-size:14.5px}
+.callout .ci{flex:none;font-size:17px;line-height:1.4}
+.callout p{margin:.2em 0}
+.callout ul{margin:.3em 0}
+.callout.info{background:var(--info-soft);border-color:color-mix(in srgb,var(--info) 25%,transparent)}
+.callout.tip{background:var(--good-soft);border-color:color-mix(in srgb,var(--good) 25%,transparent)}
+.callout.warn{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 25%,transparent)}
+.callout.danger{background:var(--danger-soft);border-color:color-mix(in srgb,var(--danger) 25%,transparent)}
+.callout b.t{display:block;margin-bottom:2px}
+
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:14px 0;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--surface-2);font-weight:600;color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+tr:last-child td{border-bottom:none}
+
+/* code */
+.code{margin:14px 0;border:1px solid var(--code-border);border-radius:12px;background:var(--code-bg);overflow:hidden}
+.code-head{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-bottom:1px solid var(--code-border);background:color-mix(in srgb,var(--surface-2) 70%,var(--code-bg))}
+.code-title{font:500 12.5px "JetBrains Mono",monospace;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.code-lang{font:600 10.5px Inter,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+.copy{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:7px;font:500 12px Inter,sans-serif;padding:3px 9px;cursor:pointer}
+.copy:hover{color:var(--text);border-color:var(--brand)}
+.copy.ok{color:var(--good);border-color:var(--good)}
+.code pre{margin:0;padding:14px 16px;overflow-x:auto;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.code pre.nowrap{white-space:pre;word-break:normal}
+.code pre code{font-family:inherit;color:var(--text);background:none;border:0;padding:0}
+.token.comment{color:var(--tk-comment);font-style:italic}
+.token.keyword,.token.boolean{color:var(--tk-keyword)}
+.token.string{color:var(--tk-string)}
+.token.number{color:var(--tk-number)}
+.token.function{color:var(--tk-func)}
+.token.annotation{color:var(--tk-annot)}
+.token.class-name{color:var(--tk-class)}
+.token.punctuation,.token.operator{color:var(--tk-punct)}
+
+/* tabs */
+.tabs{margin:14px 0}
+.tab-list{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:4px}
+.tab-list button{border:none;background:none;color:var(--muted);font:500 13.5px Inter,sans-serif;padding:9px 12px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:8px 8px 0 0}
+.tab-list button:hover{color:var(--text);background:var(--surface-2)}
+.tab-list button[aria-selected="true"]{color:var(--brand-strong);border-bottom-color:var(--brand);font-weight:600}
+.tab-panel{display:none;animation:fade .25s ease}
+.tab-panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* anatomy */
+.anatomy{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+.anat-prompt{font:13.5px/1.9 "JetBrains Mono",monospace;background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;padding:16px 18px;white-space:pre-wrap;word-break:break-word}
+.seg{border-radius:5px;padding:1px 2px;cursor:pointer;transition:outline-color .15s,filter .15s;outline:2px solid transparent;outline-offset:1px}
+.seg[data-p="1"]{background:var(--p1)} .seg[data-p="2"]{background:var(--p2)} .seg[data-p="3"]{background:var(--p3)}
+.seg[data-p="4"]{background:var(--p4)} .seg[data-p="5"]{background:var(--p5)} .seg[data-p="6"]{background:var(--p6)}
+.seg.on{outline-color:var(--brand)}
+.anat-list{display:flex;flex-direction:column;gap:8px}
+.anat-item{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:12px;padding:10px 12px;font:inherit;cursor:pointer;transition:all .15s}
+.anat-item .sw{flex:none;width:14px;height:14px;border-radius:4px;margin-top:4px}
+.anat-item b{display:block;font-size:14px}
+.anat-item small{display:none;color:var(--muted);font-size:13px;line-height:1.5;margin-top:3px}
+.anat-item.on{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 14%,transparent)}
+.anat-item.on small{display:block}
+
+/* before / after */
+.ba{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);margin:16px 0;overflow:hidden}
+.ba-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.ba-head h4{margin:0;flex:1;min-width:200px}
+.seg-toggle{display:inline-flex;border:1px solid var(--border);border-radius:10px;padding:3px;background:var(--surface-2)}
+.seg-toggle button{border:0;background:none;color:var(--muted);font:600 12.5px Inter,sans-serif;padding:5px 12px;border-radius:7px;cursor:pointer}
+.seg-toggle button.on.bad{background:var(--danger-soft);color:var(--danger)}
+.seg-toggle button.on.good{background:var(--good-soft);color:var(--good)}
+.ba-body{padding:4px 16px 16px}
+.ba-pane{display:none}
+.ba-pane.on{display:block;animation:fade .2s}
+.why-list{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.why-list li{font-size:14px;color:var(--muted);display:flex;gap:8px}
+.why-list li::before{flex:none}
+.ba-pane.bad .why-list li::before{content:"✕";color:var(--danger);font-weight:700}
+.ba-pane.good .why-list li::before{content:"✓";color:var(--good);font-weight:700}
+
+/* techniques */
+.tech{border:1px solid var(--border);border-radius:12px;background:var(--surface);overflow:hidden;margin-bottom:10px}
+.tech summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px 16px}
+.tech summary::-webkit-details-marker{display:none}
+.tech summary .ic{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--brand-soft);font-size:17px}
+.tech summary b{display:block;font-size:15px}
+.tech summary small{color:var(--muted);font-size:13px}
+.tech summary .chev{margin-left:auto;color:var(--faint);transition:transform .2s}
+.tech[open] summary .chev{transform:rotate(90deg)}
+.tech[open] summary{border-bottom:1px solid var(--border)}
+.tech .body{padding:6px 16px 16px;font-size:14.5px}
+
+/* builder */
+.builder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.field{margin-bottom:12px}
+.field label{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:13.5px;margin-bottom:5px}
+.field label span{font-weight:500;color:var(--faint);font-size:12px}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:9px 11px;font:14px Inter,sans-serif;outline:none;resize:vertical}
+.field textarea{min-height:64px}
+.field textarea.mono{font-size:12.5px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:9px;border:1px solid var(--brand);background:var(--brand);color:#fff;font:600 13px Inter,sans-serif;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--brand-strong)}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.score-box{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.ring{--v:0;width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;background:conic-gradient(var(--ring-c,var(--brand)) calc(var(--v)*1%),var(--surface-2) 0);transition:--v .4s}
+.ring::before{content:attr(data-v);width:50px;height:50px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font:700 15px Inter,sans-serif}
+.score-box b{display:block}
+.score-box small{color:var(--muted)}
+.hints{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}
+.hints li{font-size:13.5px;display:flex;gap:8px;color:var(--muted)}
+.hints li.ok::before{content:"✓";color:var(--good);font-weight:700}
+.hints li.miss::before{content:"○";color:var(--warn);font-weight:700}
+.sticky{position:sticky;top:76px}
+
+/* checklist */
+.check{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);margin-bottom:6px;cursor:pointer;font-size:14.5px}
+.check input{margin-top:4px;accent-color:var(--brand);width:16px;height:16px;flex:none}
+.check.done span{color:var(--faint);text-decoration:line-through}
+.bar{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden;margin:6px 0 14px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--accent));transition:width .3s}
+
+/* use-cases */
+.uc{display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:12px;background:var(--surface);border:1px solid var(--border)}
+.uc h4{margin:0;font-size:15px}
+.uc p{margin:0;color:var(--muted);font-size:13.5px}
+.meter{display:flex;gap:3px;margin-top:4px}
+.meter i{width:18px;height:6px;border-radius:3px;background:var(--surface-2)}
+.meter i.on{background:var(--accent)}
+.meter-label{font-size:11.5px;color:var(--faint)}
+
+/* concepts */
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:16px 0}
+.flow .step{flex:1 1 130px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.flow .step b{display:block;font-size:14px}
+.flow .step span{color:var(--muted);font-size:13px}
+.flow .arr{align-self:center;color:var(--faint);font-size:18px}
+.flow .step.loop{background:var(--brand-soft);border-color:transparent}
+.stack{border:2px solid var(--brand);border-radius:16px;padding:16px;margin:16px 0;background:var(--surface)}
+.stack-title{font:700 12px "JetBrains Mono",monospace;color:var(--brand);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.stack .grid{gap:10px}
+.part{border-radius:12px;padding:12px 14px;font-size:13.5px}
+.part b{display:block;font-size:14px;margin-bottom:2px}
+.part span{color:var(--muted)}
+.part.p-sys{background:var(--p1)} .part.p-model{background:var(--p3)} .part.p-tool{background:var(--p2)} .part.p-skill{background:var(--p4)}
+.vs{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:14px;align-items:stretch;margin:16px 0}
+.vs .vs-mid{align-self:center;font:800 15px Inter,sans-serif;color:var(--faint)}
+.vs .card h4{font-size:17px}
+.vs .card .tag{display:inline-block;margin-bottom:6px}
+@media (max-width:760px){ .vs{grid-template-columns:minmax(0,1fr)} .vs .vs-mid{justify-self:center} .flow .arr{transform:rotate(90deg);flex-basis:100%;text-align:center} }
+
+/* quiz */
+.quiz-q{margin-bottom:16px}
+.quiz-q h4{margin:0 0 10px;font-size:15px}
+.opts{display:grid;gap:6px}
+.opt{text-align:left;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:9px 12px;font:14px Inter,sans-serif;cursor:pointer}
+.opt:hover:not([disabled]){border-color:var(--brand)}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--danger);background:var(--danger-soft)}
+.opt[disabled]{cursor:default}
+.why{display:none;margin-top:8px;font-size:13.5px;color:var(--muted)}
+.quiz-q.answered .why{display:block}
+
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);color:var(--faint);font-size:13px;max-width:920px}
+.backtop{position:fixed;right:18px;bottom:18px;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+.backtop.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+.reveal.in{opacity:1;transform:none}
+.scrim{display:none}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+@media (max-width:1024px){
+  .layout{grid-template-columns:1fr}
+  .menu-btn{display:inline-flex}
+  .sidebar{position:fixed;left:0;top:60px;bottom:0;width:280px;height:auto;background:var(--bg);z-index:35;transform:translateX(-100%);transition:transform .25s ease;box-shadow:var(--shadow)}
+  body.nav-open .sidebar{transform:none}
+  body.nav-open .scrim{display:block;position:fixed;inset:60px 0 0 0;background:rgba(0,0,0,.35);z-index:34}
+  main{padding:0 24px 100px}
+}
+@media (max-width:760px){
+  body{font-size:15px}
+  main{padding:0 16px 90px}
+  .hero{padding:28px 20px;margin-top:20px}
+  .hero h1{font-size:31px}
+  .principles{grid-template-columns:repeat(2,1fr)}
+  .g2,.g3,.anatomy,.builder{grid-template-columns:minmax(0,1fr)}
+  .sticky{position:static}
+  section.doc>h2{font-size:25px}
+  .logo .sub,.theme-label{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menüyü aç">☰</button>
+  <a class="logo" href="#top" style="text-decoration:none">
+    <span class="logo-mark">AI</span>
+    <span>AI Kullanım Rehberi <small class="sub" style="color:var(--faint);font-weight:500">· DFX Developer School</small></span>
+  </a>
+  <span class="spacer"></span>
+  <button class="icon-btn" id="themeBtn" aria-label="Temayı değiştir"><span id="themeIcon">◐</span><span class="theme-label">Tema</span></button>
+  <div class="progress" id="progress"></div>
+</header>
+<div class="scrim" id="scrim"></div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <nav class="nav" id="nav">
+      <div class="nav-group">Temel</div>
+      <a href="#neden"><span class="num">01</span>Neden önemli?</a>
+      <a href="#zihin"><span class="num">02</span>Doğru zihin modeli</a>
+      <a href="#anatomi"><span class="num">03</span>İyi prompt'un anatomisi</a>
+      <div class="nav-group">Kavramlar</div>
+      <a href="#sistem"><span class="num">04</span>System prompt nedir?</a>
+      <a href="#agent"><span class="num">05</span>Agent nedir?</a>
+      <a href="#skill"><span class="num">06</span>Skill nedir?</a>
+      <a href="#fark"><span class="num">07</span>Skill ve agent farkı</a>
+      <div class="nav-group">Prompt Kalitesi</div>
+      <a href="#oncesonra"><span class="num">08</span>Önce / Sonra</a>
+      <a href="#teknik"><span class="num">09</span>12 teknik</a>
+      <a href="#baglam"><span class="num">10</span>Bağlam yönetimi</a>
+      <a href="#iterasyon"><span class="num">11</span>İterasyon</a>
+      <div class="nav-group">Uygulama</div>
+      <a href="#senaryo"><span class="num">12</span>Geliştirme senaryoları</a>
+      <a href="#ajan"><span class="num">13</span>AI kodlama ajanları</a>
+      <a href="#dogrulama"><span class="num">14</span>Doğrulama</a>
+      <a href="#guvenlik"><span class="num">15</span>Güvenlik ve gizlilik</a>
+      <div class="nav-group">Araçlar</div>
+      <a href="#builder"><span class="num">16</span>Prompt oluşturucu</a>
+      <a href="#sablon"><span class="num">17</span>Şablon kütüphanesi</a>
+      <a href="#anti"><span class="num">18</span>Anti-pattern'ler</a>
+      <a href="#kontrol"><span class="num">19</span>Kontrol listesi ve quiz</a>
+    </nav>
+    <div class="side-check"><b>Altın kural</b>AI'ın ürettiği her satırın sorumlusu sizsiniz. Anlamadığınız kodu commit etmeyin.</div>
+  </aside>
+
+  <main id="top">
+    <!-- HERO -->
+    <div class="hero reveal">
+      <span class="eyebrow">● DFX Developer School</span>
+      <h1>AI ile <span>daha iyi</span> yazılım geliştirmek</h1>
+      <p>AI asistanları doğru kullanıldığında güçlü bir ekip arkadaşıdır; yanlış kullanıldığında ise kendinden emin bir şekilde hatalı kod üretir. Bu rehber, prompt kalitesini artıran somut teknikleri, doğrulama alışkanlıklarını ve güvenlik kurallarını DFX Survey projesinden örneklerle anlatır.</p>
+      <div class="hero-meta">
+        <span class="pill brand">Prompt mühendisliği</span>
+        <span class="pill accent">Bağlam yönetimi</span>
+        <span class="pill brand">System prompt · Agent · Skill</span>
+        <span class="pill">Doğrulama</span>
+        <span class="pill">Güvenlik</span>
+        <span class="pill good">Hazır şablonlar</span>
+      </div>
+      <div class="principles">
+        <div class="principle"><b>🎯 Net ol</b><span>Ne istediğini ve "bitti"nin tanımını yaz</span></div>
+        <div class="principle"><b>📎 Bağlam ver</b><span>Kod, hata, sürüm, kısıt</span></div>
+        <div class="principle"><b>🔁 Yinele</b><span>İlk cevap taslaktır</span></div>
+        <div class="principle"><b>🔍 Doğrula</b><span>Derle, test et, oku</span></div>
+      </div>
+    </div>
+
+    <!-- 01 -->
+    <section class="doc reveal" id="neden">
+      <span class="eyebrow">01 · Giriş</span>
+      <h2>Neden önemli?</h2>
+      <p class="lead">Aynı model, aynı soruya prompt'un kalitesine göre çok farklı cevaplar verir. Çıktının kalitesi büyük ölçüde girdinin kalitesine bağlıdır.</p>
+      <div class="grid g2">
+        <div class="card"><h4>✅ AI'ın güçlü olduğu yerler</h4>
+          <ul class="small muted" style="margin:0">
+            <li>Boilerplate kod, DTO, mapper, test iskeleti</li>
+            <li>Var olan kodu açıklama ve özetleme</li>
+            <li>Hata mesajı / stack trace yorumlama</li>
+            <li>Refactor önerileri, isimlendirme</li>
+            <li>Doküman, commit mesajı, PR açıklaması</li>
+            <li>Bir konuyu farklı seviyelerde anlatma</li>
+          </ul></div>
+        <div class="card"><h4>⚠️ Dikkat gerektiren yerler</h4>
+          <ul class="small muted" style="margin:0">
+            <li>Güncel sürüm bilgisi (ör. Spring Boot 4 paket değişiklikleri)</li>
+            <li>Var olmayan API/metot uydurma (<i>hallucination</i>)</li>
+            <li>Projenizin görmediği kısımları hakkında varsayım</li>
+            <li>Güvenlik açısından kritik kod (auth, kripto)</li>
+            <li>İş kuralları: modelin bilmediği alan bilgisi</li>
+            <li>Uzun ve çok adımlı görevlerde tutarlılık</li>
+          </ul></div>
+      </div>
+      <div class="callout info"><span class="ci">💡</span><div><p>AI'ı <b>çok hızlı, çok okumuş ama projenizi ilk kez gören</b> bir geliştirici gibi düşünün. Ona yeni katılan bir ekip arkadaşına anlatacağınız kadar bağlam verin.</p></div></div>
+    </section>
+
+    <!-- 02 -->
+    <section class="doc reveal" id="zihin">
+      <span class="eyebrow">02 · Zihin Modeli</span>
+      <h2>Doğru zihin modeli</h2>
+      <p class="lead">Model ne yaptığını "biliyormuş" gibi davranır; ama yalnızca prompt'ta ve bağlamda gördüklerine dayanır.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Yanlış varsayım</th><th>Gerçek</th><th>Pratik sonuç</th></tr></thead>
+        <tbody>
+          <tr><td>"Projemi biliyor"</td><td>Sadece gösterdiğiniz dosyaları bilir</td><td>İlgili dosyaları, sınıf isimlerini, yapıyı paylaşın</td></tr>
+          <tr><td>"Ne demek istediğimi anlar"</td><td>Belirsizliği en olası yorumla doldurur</td><td>Beklenen davranışı açıkça yazın</td></tr>
+          <tr><td>"Emin konuşuyorsa doğrudur"</td><td>Ton ile doğruluk ilişkili değildir</td><td>Her çıktıyı derleyin ve test edin</td></tr>
+          <tr><td>"En güncel sürümü bilir"</td><td>Eğitim verisinin bir kesim tarihi vardır</td><td>Sürüm numarasını prompt'a yazın, gerekirse doküman ekleyin</td></tr>
+          <tr><td>"Önceki sohbeti hatırlar"</td><td>Yalnızca mevcut oturumun bağlamını görür</td><td>Yeni oturumda özet ve kararları tekrar verin</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 03 -->
+    <section class="doc reveal" id="anatomi">
+      <span class="eyebrow">03 · Yapı</span>
+      <h2>İyi bir prompt'un anatomisi</h2>
+      <p class="lead">Aşağıdaki prompt altı parçadan oluşuyor. Bir parçaya veya renkli metne tıklayarak ne işe yaradığını görün.</p>
+      <div class="anatomy">
+        <div class="anat-prompt" id="anatPrompt"><span class="seg" data-p="1">Spring Boot 4.0.0 / Java 21 ile yazılmış bir anket uygulaması üzerinde çalışıyorum. Katmanlı mimari kullanıyoruz (controller → service → repository), entity'ler dao/entity altında.</span>
+
+<span class="seg" data-p="2">VoteServiceImpl.submitVote() metodunda kaydedilen AnswerEntity kayıtlarının response_id kolonu NULL kalıyor. Cevapların CompletedSurveyEntity'ye bağlanmasını istiyorum.</span>
+
+<span class="seg" data-p="3">İlgili kod:
+&lt;kod&gt;
+[VoteServiceImpl.java ve CompletedSurveyEntity.java içeriği]
+&lt;/kod&gt;</span>
+
+<span class="seg" data-p="4">Kısıtlar:
+- Entity alanlarını ve tablo şemasını değiştirme.
+- Mevcut @Transactional sınırı korunsun.
+- Yeni bağımlılık ekleme.</span>
+
+<span class="seg" data-p="5">Çıktı: önce sorunun nedenini 2-3 cümleyle açıkla, sonra sadece değişen metodu ver.</span>
+
+<span class="seg" data-p="6">Emin olmadığın bir varsayım yapman gerekirse bunu açıkça belirt.</span></div>
+        <div class="anat-list" id="anatList">
+          <button class="anat-item" data-p="1"><span class="sw" style="background:var(--p1)"></span><span><b>1 · Bağlam</b><small>Teknoloji, sürüm ve mimari. Model doğru API'yi ve proje kurallarını buna göre seçer. Sürüm numarası, eski/yeni API karışıklığını büyük ölçüde önler.</small></span></button>
+          <button class="anat-item" data-p="2"><span class="sw" style="background:var(--p2)"></span><span><b>2 · Görev ve hedef</b><small>Mevcut durum + istenen durum. "Düzelt" yerine "şu oluyor, şu olsun" demek, modelin neyi optimize edeceğini netleştirir.</small></span></button>
+          <button class="anat-item" data-p="3"><span class="sw" style="background:var(--p3)"></span><span><b>3 · Girdi / malzeme</b><small>Kod, hata mesajı, log. Etiketlerle (&lt;kod&gt;, &lt;hata&gt;) ayırmak, talimat ile veriyi karıştırmayı önler.</small></span></button>
+          <button class="anat-item" data-p="4"><span class="sw" style="background:var(--p4)"></span><span><b>4 · Kısıtlar</b><small>Neye dokunulmayacağı. Kısıt yoksa model "daha iyi" sandığı büyük bir yeniden yazımı önerebilir.</small></span></button>
+          <button class="anat-item" data-p="5"><span class="sw" style="background:var(--p5)"></span><span><b>5 · Çıktı formatı</b><small>Ne kadar uzun, hangi sırayla, hangi biçimde. Tüm dosya mı, yalnızca diff mi, açıklama ne kadar?</small></span></button>
+          <button class="anat-item" data-p="6"><span class="sw" style="background:var(--p6)"></span><span><b>6 · Belirsizlik kuralı</b><small>Modele "bilmiyorum" deme izni vermek uydurma riskini azaltır ve varsayımları görünür kılar.</small></span></button>
+        </div>
+      </div>
+      <div class="callout tip"><span class="ci">✍️</span><div><p>Her prompt'ta altı parçanın hepsi gerekmez. Basit bir soru için 1-2 cümle yeterlidir. Ama sonuç beklediğiniz gibi değilse, eksik olan parçayı bu listeden bulun.</p></div></div>
+    </section>
+
+    <!-- 04 -->
+    <section class="doc reveal" id="sistem">
+      <span class="eyebrow">04 · Kavramlar</span>
+      <h2>System prompt nedir?</h2>
+      <p class="lead">System prompt, modelin <b>sizin mesajınızdan önce</b> aldığı ve tüm oturum boyunca geçerli olan talimat metnidir. Modelin rolünü, kurallarını, tonunu ve sınırlarını belirler. Kullanıcı çoğu zaman onu görmez.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Mesaj türü</th><th>Kim yazar?</th><th>Ne zaman geçerli?</th><th>Örnek</th></tr></thead>
+        <tbody>
+          <tr><td><b>System prompt</b></td><td>Uygulamayı / aracı yapan geliştirici veya ekip</td><td>Oturumun tamamında, her mesajda</td><td>"Sen DFX Survey ekibinin kod inceleme asistanısın. Türkçe cevap ver. Kod değiştirme, sadece öner."</td></tr>
+          <tr><td><b>User prompt</b></td><td>Siz</td><td>Yalnızca o mesaj için</td><td>"VoteServiceImpl'i incele."</td></tr>
+          <tr><td><b>Assistant cevabı</b></td><td>Model</td><td>Bağlamda kalır, sonraki cevapları etkiler</td><td>İnceleme sonucu</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Nerelerde karşınıza çıkar?</h3>
+      <div class="grid g3">
+        <div class="card"><h4>🔌 API ile</h4><p class="small muted">Model API'lerinde ayrı bir <code>system</code> alanı vardır. Kendi uygulamanızda AI kullanırken davranışı burada tanımlarsınız.</p></div>
+        <div class="card"><h4>💬 Sohbet araçlarında</h4><p class="small muted">"Özel talimatlar" veya proje talimatları, aracın kendi system prompt'una eklenir. Her sohbette tekrar yazmanız gerekmez.</p></div>
+        <div class="card"><h4>🤖 Kodlama ajanlarında</h4><p class="small muted"><code>CLAUDE.md</code> / <code>AGENTS.md</code> gibi proje dosyaları her oturumun başında bağlama eklenir; system prompt'u projenize göre genişletir.</p></div>
+      </div>
+<script type="text/plain" class="src" data-lang="none" data-title="Örnek system prompt (ekip içi kod inceleme asistanı)">
+Sen DFX Survey projesinin kod inceleme asistanısın.
+
+Proje: Java 21, Spring Boot 4.0.0, PostgreSQL. Katmanlı mimari
+(controller → service → repository).
+
+Kurallar:
+- Türkçe ve kısa cevap ver.
+- Kodu kendin değiştirme; bulguları ve önerilen düzeltmeyi yaz.
+- Her bulgu için: önem derecesi, dosya:satır, açıklama.
+- Emin olmadığın konularda tahmin yürütme, bunu belirt.
+</script>
+      <div class="grid g2">
+        <div class="callout tip" style="margin:0"><span class="ci">📌</span><div><b class="t">System prompt'a ne yazılır?</b><p>Her görevde geçerli olan kalıcı kurallar: rol, dil, üslup, çıktı biçimi, yasaklar. Göreve özel ayrıntılar (hangi dosya, hangi hata) user prompt'a yazılır.</p></div></div>
+        <div class="callout danger" style="margin:0"><span class="ci">🔐</span><div><b class="t">Güvenlik sınırı değildir</b><p>System prompt'a şifre, anahtar veya gizli iş bilgisi koymayın. Prompt injection ile dışarı sızdırılabilir veya kuralları aşılabilir. Gerçek yetki kontrolü kodda olmalıdır.</p></div></div>
+      </div>
+    </section>
+
+    <!-- 05 -->
+    <section class="doc reveal" id="agent">
+      <span class="eyebrow">05 · Kavramlar</span>
+      <h2>Agent nedir?</h2>
+      <p class="lead">Agent (ajan), bir hedefe ulaşmak için <b>döngü içinde kendi kararlarını veren ve araç kullanan</b> bir AI sistemidir. Sohbet botu tek bir cevap üretir; agent ise dosya okur, komut çalıştırır, sonucu görür ve iş bitene kadar bir sonraki adıma kendisi karar verir.</p>
+      <h3>Agent döngüsü</h3>
+      <div class="flow">
+        <div class="step"><b>1 · Hedef</b><span>"Mükerrer oyu engelle, testleri geçir"</span></div>
+        <div class="arr">→</div>
+        <div class="step loop"><b>2 · Düşün</b><span>Sıradaki adım ne olmalı?</span></div>
+        <div class="arr">→</div>
+        <div class="step loop"><b>3 · Araç kullan</b><span>Dosya oku, kodu değiştir, <code>./mvnw test</code></span></div>
+        <div class="arr">→</div>
+        <div class="step loop"><b>4 · Gözlemle</b><span>Test sonucu ne? Hata var mı?</span></div>
+        <div class="arr">→</div>
+        <div class="step"><b>5 · Bitti mi?</b><span>Hayır → 2'ye dön. Evet → rapor ver.</span></div>
+      </div>
+      <h3>Bir agent nelerden oluşur?</h3>
+      <div class="stack">
+        <div class="stack-title">Agent</div>
+        <div class="grid g2">
+          <div class="part p-model"><b>🧠 Model</b><span>Düşünen ve karar veren dil modeli</span></div>
+          <div class="part p-sys"><b>📜 System prompt</b><span>Rolü, kuralları ve sınırları</span></div>
+          <div class="part p-tool"><b>🛠️ Araçlar (tools)</b><span>Dosya okuma/yazma, terminal, web arama, MCP sunucuları</span></div>
+          <div class="part p-skill"><b>📚 Skill'ler</b><span>Gerektiğinde yüklenen iş tarifleri (sonraki bölüm)</span></div>
+        </div>
+        <p class="small muted" style="margin:12px 0 0">Bunları çalıştıran bir <b>döngü</b> ve <b>izinler</b> (hangi komutu onaysız çalıştırabilir?) agent'ı tamamlar.</p>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th></th><th>Sohbet botu</th><th>Agent</th></tr></thead>
+        <tbody>
+          <tr><td><b>Çıktı</b></td><td>Metin / kod önerisi</td><td>Yapılmış iş: değişmiş dosyalar, çalıştırılmış testler</td></tr>
+          <tr><td><b>Adım sayısı</b></td><td>Bir soru → bir cevap</td><td>Hedefe ulaşana kadar çok adım</td></tr>
+          <tr><td><b>Kodu kim çalıştırır?</b></td><td>Siz</td><td>Agent (sizin verdiğiniz izinlerle)</td></tr>
+          <tr><td><b>Hata durumunda</b></td><td>Siz hatayı geri yapıştırırsınız</td><td>Hatayı kendisi görür ve yeniden dener</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout info"><span class="ci">🧩</span><div><b class="t">Subagent (alt ajan)</b><p>Ana agent, bir alt görevi (ör. "tüm repoda <code>ResponseEntity</code> kullanımlarını bul") <b>kendi ayrı bağlamında</b> çalışan başka bir agent'a devredebilir. Subagent işi yapar ve yalnızca özet sonucu döndürür; böylece ana agent'ın bağlamı gereksiz dosya içerikleriyle dolmaz.</p></div></div>
+      <p class="small muted">Agent'larla çalışırken dikkat edilecek pratikler için bkz. <a href="#ajan">13 · AI kodlama ajanlarıyla çalışmak</a>.</p>
+    </section>
+
+    <!-- 06 -->
+    <section class="doc reveal" id="skill">
+      <span class="eyebrow">06 · Kavramlar</span>
+      <h2>Skill nedir?</h2>
+      <p class="lead">Skill (yetenek), bir agent'a <b>belirli bir işi nasıl yapacağını öğreten</b>, paketlenmiş ve yeniden kullanılabilir bir talimat setidir. Genellikle bir klasördür: içinde bir <code>SKILL.md</code> dosyası ve isteğe bağlı script, şablon veya referans dokümanları bulunur. Agent, eldeki görev skill'in açıklamasıyla eşleştiğinde onu yükler ve tarifine göre çalışır.</p>
+<script type="text/plain" class="src" data-lang="none" data-title="Skill klasör yapısı">
+.claude/skills/
+└── yeni-endpoint/
+    ├── SKILL.md              ← ad, açıklama ve adım adım talimatlar
+    ├── templates/
+    │   └── ControllerTest.java   ← agent'ın örnek alacağı şablon
+    └── scripts/
+        └── check.sh          ← agent'ın çalıştırabileceği kontrol script'i
+</script>
+<script type="text/plain" class="src" data-lang="markdown" data-title="SKILL.md">
+---
+name: yeni-endpoint
+description: DFX Survey projesine yeni bir REST endpoint eklerken kullan.
+  Controller, DTO, validator, servis ve test adımlarını ekip standardına göre yapar.
+---
+
+# Yeni endpoint ekleme
+
+1. DTO'yu controllers/dto altına record olarak ekle.
+2. Girdi doğrulaması için validators/impl altında Validator<T> yaz;
+   hata durumunda ValidationException fırlat.
+3. Servis: önce services/ altında interface, sonra services/impl altında implementasyon.
+4. Entity → DTO dönüşümünü ServiceMapper (MapStruct) ile yap; elle mapping yazma.
+5. Constructor injection kullan (@RequiredArgsConstructor + final alanlar).
+6. templates/ControllerTest.java'yı örnek alarak controller testi yaz.
+7. Bitirmeden önce ./mvnw test çalıştır; geçmeyen test varsa düzelt.
+</script>
+      <h3>Nasıl çalışır? Kademeli yükleme</h3>
+      <div class="flow">
+        <div class="step"><b>1 · Her zaman</b><span>Bağlamda yalnızca skill'in <b>adı ve açıklaması</b> bulunur (birkaç satır)</span></div>
+        <div class="arr">→</div>
+        <div class="step"><b>2 · Görev eşleşince</b><span>Agent ilgili <code>SKILL.md</code>'nin tamamını okur</span></div>
+        <div class="arr">→</div>
+        <div class="step"><b>3 · Gerekirse</b><span>Şablon, referans dosyası veya script'i açar / çalıştırır</span></div>
+      </div>
+      <p class="small muted">Bu sayede bir agent'a onlarca skill tanımlanabilir; sadece o anki işe lazım olanlar bağlama girer.</p>
+      <div class="grid g2">
+        <div class="card"><h4>✅ Ne zaman skill yazmalı?</h4><ul class="small muted" style="margin:0">
+          <li>Aynı açıklamayı AI'a üçüncü kez yazıyorsanız</li>
+          <li>Ekibin standart bir prosedürü varsa (endpoint ekleme, migration, release notu)</li>
+          <li>İş birden çok adımlı ve her seferinde aynı sırayla yapılıyorsa</li>
+          <li>Agent'ın kullanacağı hazır bir script veya şablon varsa</li>
+        </ul></div>
+        <div class="card"><h4>🆚 Skill mi, proje bağlam dosyası mı?</h4><p class="small muted"><code>CLAUDE.md</code> / <code>AGENTS.md</code> <b>her oturumda her zaman</b> yüklenir: genel proje kuralları içindir. Skill ise <b>yalnızca ilgili iş geldiğinde</b> yüklenir: belirli bir göreve ait ayrıntılı prosedür içindir. "Her zaman geçerli" ise bağlam dosyasına, "sadece şu işi yaparken" ise skill'e yazın.</p></div>
+      </div>
+    </section>
+
+    <!-- 07 -->
+    <section class="doc reveal" id="fark">
+      <span class="eyebrow">07 · Kavramlar</span>
+      <h2>Skill ve agent arasındaki fark</h2>
+      <p class="lead">Kısaca: <b>agent işi yapan, skill ise işin nasıl yapılacağını anlatan</b>dır. Agent aktif bir yürütücüdür; skill ise pasif bir bilgidir ve tek başına hiçbir şey yapmaz. Skill'i her zaman bir agent kullanır.</p>
+      <div class="vs">
+        <div class="card"><span class="pill brand tag">Agent = işi yapan</span><h4>👩‍🍳 Aşçı</h4><p class="small muted">Siparişi alır, hangi adımı ne zaman yapacağına karar verir, ocağı ve bıçağı (araçları) kullanır, tadına bakıp düzeltir, yemek hazır olunca servis eder.</p></div>
+        <div class="vs-mid">vs</div>
+        <div class="card"><span class="pill warn tag">Skill = nasıl yapılacağı</span><h4>📖 Tarif kartı</h4><p class="small muted">"Mantı böyle yapılır" der. Kendisi yemek pişirmez. Aşçı mantı siparişi gelince kartı raftan alır, bitince yerine koyar.</p></div>
+      </div>
+      <p class="small muted">Bu benzetmede <b>system prompt</b> aşçının iş tanımı ve mutfak kurallarıdır ("hijyen kurallarına uy, menü dışı yemek yapma"); <b>araçlar</b> ise mutfak gereçleridir.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Kriter</th><th>Agent</th><th>Skill</th></tr></thead>
+        <tbody>
+          <tr><td><b>Nedir?</b></td><td>Hedefe ulaşmak için döngüde çalışan AI sistemi</td><td>Belirli bir iş için paketlenmiş talimat + kaynak dosyalar</td></tr>
+          <tr><td><b>Doğası</b></td><td>Aktif: karar verir, eylem yapar</td><td>Pasif: bilgi ve prosedür içerir</td></tr>
+          <tr><td><b>Tek başına çalışır mı?</b></td><td>Evet, skill olmadan da çalışır</td><td>Hayır, onu okuyup uygulayan bir agent gerekir</td></tr>
+          <tr><td><b>Araç kullanır mı?</b></td><td>Evet: dosya, terminal, web, MCP</td><td>Hayır; ancak agent'ın kullanacağı script/şablon içerebilir</td></tr>
+          <tr><td><b>Bağlam</b></td><td>Kendi bağlam penceresi vardır (subagent'larda ayrı bir bağlam)</td><td>Yüklendiği agent'ın bağlamına eklenir</td></tr>
+          <tr><td><b>Ne zaman devreye girer?</b></td><td>Bir görev verildiğinde</td><td>Agent, görevin skill açıklamasıyla eşleştiğine karar verdiğinde</td></tr>
+          <tr><td><b>Biçimi</b></td><td>Model + system prompt + araçlar + izinler (yapılandırma)</td><td>Klasör: <code>SKILL.md</code> + isteğe bağlı dosyalar</td></tr>
+          <tr><td><b>Kazandırdığı</b></td><td>İşi otomatik ve uçtan uca yapma</td><td>İşi tutarlı, ekip standardına uygun ve tekrar edilebilir yapma</td></tr>
+          <tr><td><b>DFX örneği</b></td><td>"Mükerrer oy hatasını düzelt" görevini alıp kodu değiştiren, testleri çalıştıran kodlama ajanı</td><td>"Yeni endpoint ekleme" prosedürünü tarif eden <code>yeni-endpoint</code> skill'i</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Hangisine ihtiyacım var?</h3>
+      <div class="grid g2">
+        <div class="card"><h4>📚 Skill yazın, eğer…</h4><p class="small muted">Agent işi zaten yapabiliyor ama <b>sizin istediğiniz şekilde</b> yapmıyorsa. Ona bir iş türü için bilgi, kural ve şablon kazandırmak istiyorsanız. <i>"Agent'a bir şey öğretmek"</i></p></div>
+        <div class="card"><h4>🤖 (Sub)agent kullanın, eğer…</h4><p class="small muted">Bir işi <b>ayrı bir yürütücüye devretmek</b> istiyorsanız: ana bağlamı kirletmeden geniş bir arama, paralel çalışma veya farklı izin/araç setiyle bir görev. <i>"Bir işi başkasına yaptırmak"</i></p></div>
+      </div>
+      <div class="callout tip"><span class="ci">🔗</span><div><b class="t">Birlikte kullanılırlar</b><p>Bir agent birden çok skill kullanabilir; bir subagent de kendi işinde skill yükleyebilir. Örnek: kodlama ajanı "yeni anket raporu endpoint'i ekle" görevini alır → <code>yeni-endpoint</code> skill'ini yükler → adımları uygular → testleri çalıştırır. Agent <b>yapar</b>, skill <b>yol gösterir</b>.</p></div></div>
+    </section>
+
+    <!-- 08 -->
+    <section class="doc reveal" id="oncesonra">
+      <span class="eyebrow">08 · Karşılaştırma</span>
+      <h2>Önce / Sonra</h2>
+      <p class="lead">Gerçek senaryolarda zayıf ve güçlü prompt'lar. Geçiş düğmesiyle karşılaştırın.</p>
+      <div id="baList"></div>
+    </section>
+
+    <!-- 09 -->
+    <section class="doc reveal" id="teknik">
+      <span class="eyebrow">09 · Teknikler</span>
+      <h2>Prompt kalitesini artıran 12 teknik</h2>
+      <p class="lead">Her tekniği açıp kısa açıklamasını ve örneğini görün.</p>
+      <div id="techList"></div>
+    </section>
+
+    <!-- 10 -->
+    <section class="doc reveal" id="baglam">
+      <span class="eyebrow">10 · Bağlam</span>
+      <h2>Bağlam yönetimi</h2>
+      <p class="lead">Az bağlam varsayıma, fazla ve alakasız bağlam dikkatin dağılmasına yol açar. Hedef: <b>ilgili olan her şey, ilgisiz olan hiçbir şey</b>.</p>
+      <div class="grid g3">
+        <div class="card"><h4>📦 Mutlaka verin</h4><ul class="small muted" style="margin:0"><li>Dil, framework ve <b>sürüm</b></li><li>İlgili sınıfın tamamı (sadece metot değil)</li><li>Tam hata mesajı + stack trace'in ilgili kısmı</li><li>Beklenen ve gerçekleşen davranış</li></ul></div>
+        <div class="card"><h4>➕ Yardımcı olur</h4><ul class="small muted" style="margin:0"><li>İlgili entity / DTO tanımları</li><li>Projedeki benzer bir örnek ("SurveyValidator gibi")</li><li>Denediğiniz ve işe yaramayan çözümler</li><li>Ekip kodlama kuralları</li></ul></div>
+        <div class="card"><h4>🚫 Vermeyin</h4><ul class="small muted" style="margin:0"><li>Şifre, API anahtarı, token</li><li>Müşteri / kişisel veri</li><li>Alakasız binlerce satır log</li><li>Şirket politikasının izin vermediği kod</li></ul></div>
+      </div>
+      <h3>Uzun sohbetlerde</h3>
+      <div class="grid g2">
+        <div class="card"><h4>Konu değiştiyse yeni oturum açın</h4><p class="small muted">Eski konunun ayrıntıları yeni göreve karışabilir. Yeni oturuma kısa bir özetle başlayın: "Şu kararları aldık, şu dosyaları değiştirdik, şimdi X yapacağız."</p></div>
+        <div class="card"><h4>Kalıcı bağlamı dosyada tutun</h4><p class="small muted">Proje kuralları, mimari kararlar ve komutlar için bir bağlam dosyası (ör. AI kodlama araçlarındaki proje talimat dosyaları) her oturumda tekrar anlatmayı gereksiz kılar.</p></div>
+      </div>
+<script type="text/plain" class="src" data-lang="markdown" data-title="Örnek proje bağlam dosyası (ör. CLAUDE.md / AGENTS.md)">
+# DFX Survey
+
+- Java 21, Spring Boot 4.0.0, PostgreSQL, Maven
+- Paketler: controllers → services (interface + impl/) → dao/repository → dao/entity
+- DTO'lar controllers/dto altında; Entity → DTO dönüşümü MapStruct (ServiceMapper) ile
+- Constructor injection: @RequiredArgsConstructor + final alanlar
+- Validasyon: validators/impl altında Validator<T>, hata için ValidationException
+- Derleme: ./mvnw compile    Test: ./mvnw test
+- application.properties'e gizli bilgi YAZMA; ${ENV_VAR} kullan
+</script>
+    </section>
+
+    <!-- 11 -->
+    <section class="doc reveal" id="iterasyon">
+      <span class="eyebrow">11 · Döngü</span>
+      <h2>İterasyon: ilk cevap bir taslaktır</h2>
+      <p class="lead">En iyi sonuçlar tek seferde değil, kısa geri bildirim döngüleriyle gelir.</p>
+      <div class="grid g3">
+        <div class="card"><span class="pill brand">1</span><h4>Plan iste</h4><p class="small muted">Büyük işlerde önce "kod yazma, yaklaşımını ve değişecek dosyaları listele" deyin. Planı onaylamak, yanlış kodu düzeltmekten ucuzdur.</p></div>
+        <div class="card"><span class="pill brand">2</span><h4>Küçük adımla uygula</h4><p class="small muted">Her adımdan sonra derleyin ve test edin. Hata çıkarsa tam mesajı geri verin.</p></div>
+        <div class="card"><span class="pill brand">3</span><h4>Somut geri bildirim ver</h4><p class="small muted">"Olmadı" yerine "Derleniyor ama <code>/user/login</code> 401 dönüyor, beklenen 200."</p></div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Belirsiz geri bildirim</th><th>Etkili geri bildirim</th></tr></thead>
+        <tbody>
+          <tr><td>"Çalışmıyor."</td><td>"<code>./mvnw test</code> çalıştırınca şu hatayı aldım: [hata]. <code>VoteServiceImplTest</code> satır 42."</td></tr>
+          <tr><td>"Daha iyi yap."</td><td>"Metot 60 satır; doğrulama ve kaydetmeyi iki private metoda ayır, davranış aynı kalsın."</td></tr>
+          <tr><td>"Bu yanlış."</td><td>"<code>findBySurveyIdAndUserId</code> kullanıcı adıyla arıyor ama parametre adı userId; tutarlı hale getir."</td></tr>
+          <tr><td>"Kısalt."</td><td>"Açıklamayı 3 maddeye indir, kodu değiştirme."</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout warn"><span class="ci">🔄</span><div><p>Model aynı hatada üç kez döngüye girdiyse prompt'u düzeltmeye devam etmek yerine <b>yeni bir oturumda</b>, şimdiye kadar öğrendiklerinizin özetiyle yeniden başlayın. Hatalı denemelerle dolu bir bağlam, yeni denemeleri de etkiler.</p></div></div>
+    </section>
+
+    <!-- 12 -->
+    <section class="doc reveal" id="senaryo">
+      <span class="eyebrow">12 · Kullanım</span>
+      <h2>Geliştirme senaryoları</h2>
+      <p class="lead">Hangi işte AI ne kadar yardımcı ve ne kadar doğrulama gerektirir?</p>
+      <div class="grid g3" id="ucGrid"></div>
+    </section>
+
+    <!-- 13 -->
+    <section class="doc reveal" id="ajan">
+      <span class="eyebrow">13 · Ajanlar</span>
+      <h2>AI kodlama ajanlarıyla çalışmak</h2>
+      <p class="lead">Dosya okuyan, komut çalıştıran ve kodu kendisi değiştiren araçlar (IDE eklentileri, terminal ajanları) sohbet tabanlı kullanımdan farklı alışkanlıklar ister.</p>
+      <div class="grid g2">
+        <div class="card"><h4>🗺️ Önce keşif ve plan</h4><p class="small muted">"Önce <code>services/impl</code> altını oku, oy verme akışını özetle, değişiklik önermeden önce bana planı göster."</p></div>
+        <div class="card"><h4>✅ Doğrulama komutunu söyleyin</h4><p class="small muted">"Değişiklikten sonra <code>./mvnw compile</code> ve <code>./mvnw test</code> çalıştır, geçmeyen testi düzelt." Ajan kendi işini kontrol edebildiğinde kalite belirgin şekilde artar.</p></div>
+        <div class="card"><h4>📏 Kapsamı sınırlayın</h4><p class="small muted">"Sadece <code>VoteServiceImpl</code> ve testini değiştir." Kapsam belirtilmezse ajan ilgisiz dosyalarda "iyileştirme" yapabilir.</p></div>
+        <div class="card"><h4>👀 Diff'i satır satır okuyun</h4><p class="small muted">Commit'ten önce tüm değişiklikleri inceleyin. Özellikle silinen kodlara, değişen testlere ve yapılandırma dosyalarına bakın.</p></div>
+        <div class="card"><h4>🌿 Ayrı branch kullanın</h4><p class="small muted">Ajan çalışmalarını ayrı bir branch'te yapın; beğenmezseniz kolayca geri dönersiniz.</p></div>
+        <div class="card"><h4>🔐 İzinleri bilinçli verin</h4><p class="small muted">Dosya silme, <code>git push</code>, veritabanı komutları gibi geri alınması zor işlemler için onay isteyen modda çalışın.</p></div>
+      </div>
+      <div class="callout danger"><span class="ci">🛑</span><div><b class="t">Testleri "geçirmek" için değiştirmek</b><p>Ajan bir testi geçiremediğinde testi silebilir veya beklenen değeri değiştirebilir. Prompt'a "testlerin beklentilerini değiştirme; test yanlışsa bana nedenini söyle" kuralını ekleyin ve test dosyalarındaki değişiklikleri özellikle inceleyin.</p></div></div>
+    </section>
+
+    <!-- 14 -->
+    <section class="doc reveal" id="dogrulama">
+      <span class="eyebrow">14 · Kalite</span>
+      <h2>Doğrulama: güven ama kontrol et</h2>
+      <p class="lead">AI çıktısı bir pull request gibi ele alınmalıdır: okunur, çalıştırılır, test edilir.</p>
+      <div class="tabs">
+        <div class="tab-list"><button data-tab="v1">Uydurma API</button><button data-tab="v2">Sürüm uyumsuzluğu</button><button data-tab="v3">Sessiz mantık hatası</button></div>
+        <div class="tab-panel" data-panel="v1">
+          <p>Model, var olmayan ama "olması mantıklı" görünen bir metot önerebilir.</p>
+<script type="text/plain" class="src" data-lang="java" data-title="Şüpheli öneri">
+// JpaRepository'de böyle bir hazır metot yok; derleme veya başlangıçta hata verir
+List<SurveyEntity> surveys = surveyRepository.findAllActive();
+</script>
+          <p class="small muted"><b>Kontrol:</b> IDE'de metoda Ctrl+tık; derleyin. Spring Data'da metot isminden sorgu türetilir ama yalnızca geçerli alan adları ve anahtar kelimelerle (<code>findByExpiresAtAfter(LocalDateTime now)</code>).</p>
+        </div>
+        <div class="tab-panel" data-panel="v2">
+          <p>Spring Boot 4'te bazı sınıfların paketleri değişti. Eski sürümlerle eğitilmiş öneriler derlenmeyebilir.</p>
+<script type="text/plain" class="src" data-lang="java" data-title="Boot 3 alışkanlığı vs Boot 4 projesi">
+// Boot 3'te geçerli, DFX Survey'de (Boot 4) derlenmez:
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+
+// Projede kullanılan Boot 4 paketi:
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
+</script>
+          <p class="small muted"><b>Önlem:</b> Prompt'a sürümü yazın ("Spring Boot 4.0.0, jjwt 0.12.5"). Şüphelendiğinizde resmi dokümantasyonu veya release notes'u kontrol edin.</p>
+        </div>
+        <div class="tab-panel" data-panel="v3">
+          <p>Derlenen ve "çalışan" kod yine de yanlış olabilir. Bu en tehlikeli türdür.</p>
+<script type="text/plain" class="src" data-lang="java" data-title="Derlenir ama yanlış">
+// Constructor sırası: (freeTextAnswer, freeTextQuestion)
+new FreeTextAnswerDto(questionEntity.getQuestionText(), answ.getFreetextAnswer());
+// → raporda soru ve cevap yer değiştirir; hiçbir hata mesajı çıkmaz
+</script>
+          <p class="small muted"><b>Önlem:</b> Davranışı doğrulayan test yazın veya isteyin; sonucu gerçek veriyle elle de kontrol edin.</p>
+        </div>
+      </div>
+      <h3>Doğrulama merdiveni</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Seviye</th><th>Ne yapılır?</th><th>Ne yakalar?</th></tr></thead>
+        <tbody>
+          <tr><td>1 · Oku</td><td>Kodu satır satır anlayın; anlamadığınız yeri sorun</td><td>Mantık hataları, gereksiz karmaşıklık</td></tr>
+          <tr><td>2 · Derle</td><td><code>./mvnw compile</code></td><td>Uydurma API, yanlış import, tip hataları</td></tr>
+          <tr><td>3 · Test</td><td>Birim + entegrasyon testleri</td><td>Davranış hataları, regresyon</td></tr>
+          <tr><td>4 · Çalıştır</td><td>Endpoint'i Swagger / Postman ile deneyin</td><td>Yapılandırma, güvenlik, serileştirme sorunları</td></tr>
+          <tr><td>5 · Gözden geçir</td><td>Bir ekip arkadaşının PR incelemesi</td><td>Tasarım ve okunabilirlik sorunları</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 15 -->
+    <section class="doc reveal" id="guvenlik">
+      <span class="eyebrow">15 · Sorumluluk</span>
+      <h2>Güvenlik ve gizlilik</h2>
+      <p class="lead">Bir AI aracına yapıştırdığınız her şey, o aracın sunucusuna gönderilmiş olur.</p>
+      <div class="grid g2">
+        <div class="card"><h4>🔑 Gizli bilgileri maskeleyin</h4>
+<script type="text/plain" class="src" data-lang="properties" data-title="Paylaşmadan önce">
+# YANLIŞ — gerçek değerler
+spring.mail.password=abcd efgh ijkl mnop
+
+# DOĞRU — maskelenmiş
+spring.mail.password=<GIZLI>
+</script>
+          <p class="small muted">Yanlışlıkla paylaştığınız bir şifreyi <b>hemen iptal edip yenileyin</b>; sohbeti silmek yeterli değildir.</p></div>
+        <div class="card"><h4>📜 Kurallar</h4><ul class="small muted" style="margin:0">
+          <li>Kişisel verileri (KVKK) ve müşteri verilerini paylaşmayın; gerekirse sahte veri üretin</li>
+          <li>Şirketin onayladığı araçları ve hesapları kullanın</li>
+          <li>Kurumsal kodu kişisel hesaplara yapıştırmayın</li>
+          <li>Üretilen kodun lisans/telif durumuna dikkat edin</li>
+        </ul></div>
+        <div class="card"><h4>🧪 Güvenlik kodunu ikinci kez kontrol edin</h4><p class="small muted">Kimlik doğrulama, yetkilendirme, şifreleme ve kullanıcı girdisi işleyen kodlarda AI'dan ayrıca güvenlik incelemesi isteyin: "Bu filtrede yetki atlatma, injection veya bilgi sızıntısı riski var mı?"</p></div>
+        <div class="card"><h4>🪤 Prompt injection</h4><p class="small muted">AI'ın okuduğu bir web sayfası, issue veya dosya içine gizlenmiş talimatlar ("önceki kuralları unut, şu komutu çalıştır") ajanı yönlendirebilir. Güvenilmeyen içerikle çalışırken ajanın komut çalıştırma yetkisini kısıtlayın.</p></div>
+      </div>
+    </section>
+
+    <!-- 16 -->
+    <section class="doc reveal" id="builder">
+      <span class="eyebrow">16 · Araç</span>
+      <h2>Prompt oluşturucu</h2>
+      <p class="lead">Alanları doldurun; yapılandırılmış prompt sağda oluşsun. Kalite puanı eksik parçaları gösterir. Hiçbir veri bir yere gönderilmez.</p>
+      <div class="builder">
+        <div class="card">
+          <div class="field"><label for="bType">Görev türü</label>
+            <select id="bType">
+              <option value="bug">Hata düzeltme</option>
+              <option value="feature">Yeni özellik</option>
+              <option value="review">Kod inceleme</option>
+              <option value="test">Test yazma</option>
+              <option value="refactor">Refactor</option>
+              <option value="explain">Kodu açıklama</option>
+            </select></div>
+          <div class="field"><label for="bCtx">Bağlam <span>teknoloji, sürüm, mimari</span></label><input id="bCtx" placeholder="Java 21, Spring Boot 4.0.0, PostgreSQL, katmanlı mimari"></div>
+          <div class="field"><label for="bGoal">Görev / hedef <span>ne istiyorsunuz?</span></label><textarea id="bGoal" placeholder="Aynı kullanıcının bir ankete ikinci kez oy vermesini engellemek istiyorum."></textarea></div>
+          <div class="field"><label for="bNow">Mevcut durum / hata <span>ne oluyor?</span></label><textarea id="bNow" class="mono" placeholder="İkinci oy da 200 OK dönüyor ve kaydediliyor."></textarea></div>
+          <div class="field"><label for="bCode">İlgili kod <span>dosya adı veya içerik</span></label><textarea id="bCode" class="mono" placeholder="VoteRequestValidator.java, ResponseRepository.java"></textarea></div>
+          <div class="field"><label for="bCons">Kısıtlar <span>her satır bir madde</span></label><textarea id="bCons" placeholder="Veritabanı şemasını değiştirme&#10;Yeni bağımlılık ekleme"></textarea></div>
+          <div class="field"><label for="bOut">Çıktı formatı</label>
+            <select id="bOut">
+              <option value="">(belirtilmedi)</option>
+              <option>Önce kısa açıklama, sonra sadece değişen kod</option>
+              <option>Önce plan; onayımdan önce kod yazma</option>
+              <option>Madde madde bulgular: önem derecesi, satır, öneri</option>
+              <option>Tam dosya içeriği</option>
+              <option>Yeni başlayan birine anlatır gibi, örnekle</option>
+            </select></div>
+          <label class="check" style="margin-top:4px"><input type="checkbox" id="bUnc" checked><span>Varsayımlarını belirtsin, emin değilse söylesin</span></label>
+          <label class="check"><input type="checkbox" id="bVerify"><span>Doğrulama adımı istesin (nasıl test ederim?)</span></label>
+          <div class="btn-row" style="margin-top:10px"><button class="btn ghost" id="bSample" type="button">Örnekle doldur</button><button class="btn ghost" id="bClear" type="button">Temizle</button></div>
+        </div>
+        <div class="sticky">
+          <div class="card">
+            <div class="score-box"><div class="ring" id="bRing" data-v="0"></div><div><b id="bScoreTitle">Başlayın</b><small id="bScoreSub">Alanları doldurdukça puan artar</small></div></div>
+            <ul class="hints" id="bHints"></ul>
+          </div>
+          <figure class="code" style="margin-top:14px">
+            <div class="code-head"><span class="code-title">Oluşan prompt</span><button class="copy" id="bCopy" type="button">Kopyala</button></div>
+            <pre><code id="bOutText"></code></pre>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17 -->
+    <section class="doc reveal" id="sablon">
+      <span class="eyebrow">17 · Kütüphane</span>
+      <h2>Şablon kütüphanesi</h2>
+      <p class="lead">Köşeli parantezli yerleri doldurup kullanın.</p>
+      <div class="tabs">
+        <div class="tab-list">
+          <button data-tab="t-bug">Hata ayıklama</button>
+          <button data-tab="t-review">Kod inceleme</button>
+          <button data-tab="t-test">Test yazma</button>
+          <button data-tab="t-feature">Yeni özellik</button>
+          <button data-tab="t-explain">Öğrenme</button>
+          <button data-tab="t-commit">Commit / PR</button>
+        </div>
+        <div class="tab-panel" data-panel="t-bug">
+<script type="text/plain" class="src" data-lang="none" data-title="Hata ayıklama">
+Bağlam: [Java 21, Spring Boot 4.0.0, PostgreSQL] kullanan bir REST API.
+
+Sorun: [POST /user/api/v1/surveys/complete-survey] çağrıldığında [beklenen davranış] yerine [gerçekleşen davranış] oluyor.
+
+Hata mesajı:
+<hata>
+[tam hata mesajı ve stack trace'in ilgili kısmı]
+</hata>
+
+İlgili kod:
+<kod>
+[ilgili sınıf(lar)ın tamamı]
+</kod>
+
+Denediklerim: [denenen çözümler ve sonuçları]
+
+Önce olası nedenleri olasılık sırasına göre listele ve her biri için nasıl doğrulayacağımı söyle. Kodu değiştirmeden önce en olası nedeni açıkla.
+</script>
+        </div>
+        <div class="tab-panel" data-panel="t-review">
+<script type="text/plain" class="src" data-lang="none" data-title="Kod inceleme">
+Aşağıdaki [Spring Boot 4] kodunu kıdemli bir geliştirici gibi incele.
+
+Öncelikle şunlara odaklan:
+1. Doğruluk hataları (yanlış mantık, null durumları, transaction sınırları)
+2. Güvenlik (yetkilendirme, veri sızıntısı, injection)
+3. Performans (N+1 sorgu, gereksiz yükleme)
+Stil ve isimlendirme önerilerini en sona bırak.
+
+Her bulgu için: önem derecesi (kritik/yüksek/orta/düşük), satır, sorunun somut etkisi, önerilen düzeltme.
+Emin olmadığın bulguları "şüpheli" olarak işaretle. Sorun bulamazsan bunu söyle; bulgu uydurma.
+
+<kod>
+[kod]
+</kod>
+</script>
+        </div>
+        <div class="tab-panel" data-panel="t-test">
+<script type="text/plain" class="src" data-lang="none" data-title="Test yazma">
+[SurveyValidator] sınıfı için JUnit 5 + Mockito birim testleri yaz.
+
+Kapsanacak durumlar:
+- Mutlu yol: [geçerli, süresi dolmamış anket]
+- Kenar durumları: [null anket, expiresAt şu an, expiresAt geçmişte, expiresAt null]
+
+Kurallar:
+- Test isimleri davranışı anlatsın: should_throw_when_survey_is_expired
+- Given / When / Then yapısı kullan
+- Sınıfın davranışını değiştirme; test edilemeyen bir yer varsa bana söyle
+- Projedeki mevcut test stiline uy: [örnek test dosyası]
+
+<kod>
+[test edilecek sınıf]
+</kod>
+</script>
+        </div>
+        <div class="tab-panel" data-panel="t-feature">
+<script type="text/plain" class="src" data-lang="none" data-title="Yeni özellik">
+Proje: [DFX Survey — Spring Boot 4, katmanlı mimari, MapStruct, Validator<T> deseni].
+
+Özellik: Admin'in bir anketi süresi dolmadan kapatabilmesi.
+Kabul kriterleri:
+- [PATCH /admin/api/v1/surveys/{id}/close] endpoint'i
+- Kapatılan ankete oy verilemez; mevcut SurveyValidator bu durumu kontrol etsin
+- Var olmayan anket için 404
+
+Kurallar:
+- Mevcut yapıya uy (interface + impl, DTO, ValidationException)
+- Kod yazmadan önce değişecek dosyaları ve yaklaşımını listele, onayımı bekle
+
+İlgili mevcut kod:
+<kod>
+[SurveyController, ISurveyService, SurveyServiceImpl, SurveyValidator, SurveyEntity]
+</kod>
+</script>
+        </div>
+        <div class="tab-panel" data-panel="t-explain">
+<script type="text/plain" class="src" data-lang="none" data-title="Öğrenme / açıklama">
+Spring Boot'a yeni başlayan bir Java geliştiricisiyim. Aşağıdaki kodu anlamama yardım et.
+
+1. Kodun ne yaptığını 3-4 cümleyle özetle.
+2. Kullanılan her annotation'ın ne işe yaradığını tek cümleyle açıkla.
+3. "Bu satırı silseydim ne olurdu?" sorusunu en kritik 2 satır için yanıtla.
+4. Kavramı pekiştirmem için bana 2 küçük soru sor; cevaplarımı sonra değerlendir.
+
+<kod>
+[kod]
+</kod>
+</script>
+        </div>
+        <div class="tab-panel" data-panel="t-commit">
+<script type="text/plain" class="src" data-lang="none" data-title="Commit mesajı / PR açıklaması">
+Aşağıdaki diff için bir commit mesajı yaz.
+
+Format:
+- İlk satır: en fazla 72 karakter, emir kipinde ("Fix …", "Add …")
+- Boş satır
+- Gövde: NEDEN değiştirildi (ne değiştiğini diff zaten gösteriyor), en fazla 4 satır
+
+Diff'te olmayan bir şeyi iddia etme.
+
+<diff>
+[git diff çıktısı]
+</diff>
+</script>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18 -->
+    <section class="doc reveal" id="anti">
+      <span class="eyebrow">18 · Kaçınılacaklar</span>
+      <h2>Anti-pattern'ler</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Anti-pattern</th><th>Neden zararlı?</th><th>Yerine</th></tr></thead>
+        <tbody>
+          <tr><td><b>Kopyala-yapıştır-commit</b></td><td>Anlaşılmayan kod ekibin bakım yüküne dönüşür</td><td>Satır satır okuyun, açıklayamadığınız kodu kullanmayın</td></tr>
+          <tr><td><b>Tek dev prompt</b></td><td>Çok adımlı işlerde tutarlılık düşer, hata yeri bulunamaz</td><td>Görevi parçalara bölün, her adımı doğrulayın</td></tr>
+          <tr><td><b>Hata mesajını özetlemek</b></td><td>"Bir NPE alıyorum" kritik ayrıntıyı kaybettirir</td><td>Tam mesajı ve ilgili stack trace'i verin</td></tr>
+          <tr><td><b>Sadece metodu paylaşmak</b></td><td>Alanlar, annotation'lar, bağımlılıklar görünmez</td><td>Sınıfın tamamını ve ilgili entity'leri verin</td></tr>
+          <tr><td><b>Onay avcılığı</b></td><td>"Bu kod doğru, değil mi?" sorusu modeli onaylamaya iter</td><td>"Bu kodda hangi hatalar olabilir?" diye sorun</td></tr>
+          <tr><td><b>Öğrenmeyi atlamak</b></td><td>Eğitim döneminde AI'a her şeyi yazdırmak temel becerileri köreltir</td><td>Önce kendiniz deneyin, sonra AI ile karşılaştırın ve farkı sorun</td></tr>
+          <tr><td><b>Belirsiz "en iyi" talebi</b></td><td>"En iyi yöntemi yaz": kriter yoksa model rastgele optimize eder</td><td>Kriteri yazın: okunabilirlik mi, performans mı, az bağımlılık mı?</td></tr>
+          <tr><td><b>Sürümsüz soru</b></td><td>Eski API'ler önerilir (ör. jjwt'de deprecated <code>setSigningKey</code>)</td><td>Kütüphane sürümlerini prompt'a ekleyin</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 19 -->
+    <section class="doc reveal" id="kontrol">
+      <span class="eyebrow">19 · Tekrar</span>
+      <h2>Kontrol listesi ve quiz</h2>
+      <h3>Prompt göndermeden önce</h3>
+      <div class="bar"><i id="ckBar"></i></div>
+      <div id="checklist"></div>
+      <h3>Kendinizi test edin</h3>
+      <div class="card" id="quiz"></div>
+      <footer><b>Hazırlayan:</b> DFX Developer School · Bu rehber, aynı dizindeki <a href="EGITIM_DOKUMANI.html">Spring Boot Eğitim Dokümanı</a> ile birlikte kullanılmak üzere hazırlanmıştır. · Ekim 2026</footer>
+    </section>
+  </main>
+</div>
+
+<button class="icon-btn backtop" id="backtop" aria-label="Başa dön">↑</button>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function store(k, v){ try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch(e) { return null; } }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+  /* theme */
+  var root = document.documentElement;
+  var saved = store("dfx-theme");
+  if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+  function isDark(){ var t = root.getAttribute("data-theme"); return t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches); }
+  function syncIcon(){ $("#themeIcon").textContent = isDark() ? "☀" : "☾"; }
+  $("#themeBtn").addEventListener("click", function(){ var n = isDark() ? "light" : "dark"; root.setAttribute("data-theme", n); store("dfx-theme", n); syncIcon(); });
+  syncIcon();
+
+  /* copy */
+  function copyText(text, btn){
+    function done(){ btn.textContent = "Kopyalandı ✓"; btn.classList.add("ok"); setTimeout(function(){ btn.textContent = "Kopyala"; btn.classList.remove("ok"); }, 1600); }
+    function fallback(){ var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch(e) {} document.body.removeChild(ta); done(); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  }
+
+  /* data: before/after */
+  var ba = [
+    { t:"Hata düzeltme",
+      bad:"Oy verme çalışmıyor, düzelt.",
+      badWhy:["Hangi endpoint, hangi hata? Belirsiz", "Kod yok: model tahmin yürütmek zorunda", "\"Çalışmıyor\"un tanımı yok"],
+      good:"Spring Boot 4.0.0 / Java 21 projesinde POST /user/api/v1/surveys/complete-survey çağrısı 200 dönüyor ama aynı kullanıcı aynı ankete ikinci kez oy verebiliyor. VoteRequestValidator bunu engellemeli.\n\nKod:\n<kod>\n[VoteRequestValidator.java, ResponseRepository.java, VoteServiceImpl.java]\n</kod>\n\nNeden kontrolün hiç eşleşmediğini açıkla, sonra en küçük düzeltmeyi öner. Tablo şemasını değiştirme.",
+      goodWhy:["Sürüm, endpoint ve gözlenen davranış net", "Beklenen davranış tanımlı", "İlgili üç dosya verilmiş", "Önce açıklama, sonra küçük değişiklik isteniyor", "Kısıt belirtilmiş"] },
+    { t:"Yeni kod yazma",
+      bad:"Spring'de JWT login yaz.",
+      badWhy:["Sürüm yok: eski API'ler gelebilir", "Projenin mevcut yapısı bilinmiyor", "Ne kadarının yazılacağı belirsiz (filtre? config? kullanıcı tablosu?)"],
+      good:"Spring Boot 4.0.0 ve jjwt 0.12.5 kullanıyorum. Projede zaten JwtUtil ve JwtAuthFilter var (aşağıda). /user/** için ayrı bir login ve filtre eklemek istiyorum; kullanıcıya ROLE_USER verilsin, ROLE_ADMIN değil.\n\n<kod>\n[JwtUtil.java, JwtAuthFilter.java, SecurityConfigurations.java]\n</kod>\n\njjwt 0.12'nin deprecated olmayan API'sini kullan. Önce hangi dosyaları değiştireceğini listele.",
+      goodWhy:["Kütüphane sürümleri verilmiş", "Var olan kod gösterilmiş: tekrar yazılmaz", "Rol gereksinimi açık", "Önce plan istenmiş"] },
+    { t:"Kod inceleme",
+      bad:"Bu kod iyi mi?",
+      badWhy:["Evet/hayır sorusu modeli onaylamaya iter", "Neye bakılacağı belirsiz", "Çıktı formatı yok"],
+      good:"Aşağıdaki SurveyActionController'ı güvenlik ve doğruluk açısından incele. Özellikle: yanıtta hassas veri sızıyor mu, exception'lar doğru HTTP koduna dönüşüyor mu?\n\nHer bulgu için önem derecesi, satır ve önerilen düzeltmeyi ver. Bulgu yoksa uydurma.\n\n<kod>\n[SurveyActionController.java]\n</kod>",
+      goodWhy:["Açık uçlu \"ne sorun var\" yaklaşımı", "Odak alanları belirtilmiş", "Yapılandırılmış çıktı formatı", "Uydurma bulguya karşı kural"] },
+    { t:"Öğrenme",
+      bad:"Cascade nedir?",
+      badWhy:["Seviye belli değil: genel ve uzun bir cevap gelir", "Kendi kodunuzla bağlantı yok"],
+      good:"JPA'ya yeni başlıyorum. Aşağıdaki SurveyEntity ve QuestionEntity'de CascadeType.ALL ve orphanRemoval'ın ne yaptığını bu kod üzerinden anlat. surveyRepository.save(survey) çağrıldığında hangi SQL'lerin çalışacağını sırayla göster. Son olarak anlayıp anlamadığımı ölçmek için bana bir soru sor.\n\n<kod>\n[SurveyEntity.java, QuestionEntity.java]\n</kod>",
+      goodWhy:["Seviye belirtilmiş", "Soyut kavram somut koda bağlanmış", "Ne tür açıklama istendiği net", "Aktif öğrenme: soru isteniyor"] }
+  ];
+  var baList = $("#baList");
+  ba.forEach(function(b, i){
+    var d = document.createElement("div");
+    d.className = "ba";
+    d.innerHTML =
+      "<div class='ba-head'><h4></h4><div class='seg-toggle' role='group'><button type='button' class='bad'>Zayıf</button><button type='button' class='good on'>Güçlü</button></div></div>" +
+      "<div class='ba-body'>" +
+        "<div class='ba-pane bad'><figure class='code'><div class='code-head'><span class='code-title'>❌ Zayıf prompt</span></div><pre><code></code></pre></figure><ul class='why-list'></ul></div>" +
+        "<div class='ba-pane good on'><figure class='code'><div class='code-head'><span class='code-title'>✅ Güçlü prompt</span><button class='copy' type='button'>Kopyala</button></div><pre><code></code></pre></figure><ul class='why-list'></ul></div>" +
+      "</div>";
+    d.querySelector("h4").textContent = (i + 1) + ". " + b.t;
+    var bad = d.querySelector(".ba-pane.bad"), good = d.querySelector(".ba-pane.good");
+    bad.querySelector("code").textContent = b.bad;
+    good.querySelector("code").textContent = b.good;
+    b.badWhy.forEach(function(w){ var li = document.createElement("li"); li.textContent = w; bad.querySelector("ul").appendChild(li); });
+    b.goodWhy.forEach(function(w){ var li = document.createElement("li"); li.textContent = w; good.querySelector("ul").appendChild(li); });
+    var bb = d.querySelector(".seg-toggle .bad"), gb = d.querySelector(".seg-toggle .good");
+    function show(isGood){ bb.classList.toggle("on", !isGood); gb.classList.toggle("on", isGood); bad.classList.toggle("on", !isGood); good.classList.toggle("on", isGood); }
+    bb.addEventListener("click", function(){ show(false); });
+    gb.addEventListener("click", function(){ show(true); });
+    var cp = good.querySelector(".copy");
+    cp.addEventListener("click", function(){ copyText(b.good, cp); });
+    baList.appendChild(d);
+  });
+
+  /* data: techniques */
+  var techs = [
+    { ic:"🎯", t:"Spesifik olun", s:"Belirsizlik = varsayım", b:"Model boşlukları en olası yorumla doldurur. Ne istediğinizi, kimin için olduğunu ve \"bitti\"nin ne demek olduğunu yazın.", ex:"✕ \"Login'i güvenli yap.\"\n✓ \"Login endpoint'ini kimlik bilgilerini query string yerine JSON gövdesinden alacak şekilde değiştir; başarısız denemede 401 dön.\"" },
+    { ic:"📌", t:"Sürüm ve ortamı belirtin", s:"Eski API'lerin önüne geçer", b:"Framework ve kütüphane sürümleri, önerilen API'yi doğrudan belirler. Özellikle büyük sürüm geçişlerinde (Boot 3 → 4) kritik.", ex:"\"Java 21, Spring Boot 4.0.0, jjwt 0.12.5, PostgreSQL 16.\"" },
+    { ic:"🧩", t:"Talimat ve veriyi ayırın", s:"Etiketler ve ayraçlar", b:"Kodu, logu veya dokümanı etiketlerle (<kod>, <hata>, <diff>) ya da ``` bloklarıyla sarın. Model neyin talimat, neyin malzeme olduğunu karıştırmaz.", ex:"Aşağıdaki hatayı yorumla:\n<hata>\njava.lang.IllegalStateException: Using named parameters for method ...\n</hata>" },
+    { ic:"🧪", t:"Örnek verin (few-shot)", s:"Göstermek anlatmaktan güçlüdür", b:"İstediğiniz stilde bir veya iki örnek vermek, uzun format açıklamalarından daha etkilidir. Projedeki mevcut bir sınıfı örnek göstermek tutarlılık sağlar.", ex:"\"SurveyValidator'ı örnek alarak aynı yapıda bir ExpiredTokenValidator yaz.\"" },
+    { ic:"🚧", t:"Kısıtları yazın", s:"Neye dokunulmayacak?", b:"Değiştirilmemesi gerekenleri (şema, public API, bağımlılıklar) belirtmezseniz model kapsamı genişletebilir.", ex:"\"Sadece VoteServiceImpl'i değiştir. Entity'lere ve testlere dokunma. Yeni kütüphane ekleme.\"" },
+    { ic:"📐", t:"Çıktı formatını tanımlayın", s:"Uzunluk, yapı, sıra", b:"Tam dosya mı, diff mi, madde listesi mi, tablo mu? Açıklama ne kadar olsun? Format belirtmek hem kaliteyi hem okunabilirliği artırır.", ex:"\"Önce 2 cümlelik özet, sonra değişen metot, en sonda test etmek için curl komutu.\"" },
+    { ic:"🗺️", t:"Önce plan isteyin", s:"Büyük işlerde", b:"Çok dosyalı değişikliklerde koddan önce yaklaşımı ve dosya listesini isteyin. Yanlış yönü erken yakalarsınız.", ex:"\"Kod yazma. Önce hangi dosyaları neden değiştireceğini listele, onayımı bekle.\"" },
+    { ic:"🪜", t:"Görevi parçalayın", s:"Bir prompt, bir hedef", b:"\"Endpoint ekle, test yaz, dokümanı güncelle, refactor et\" yerine her birini ayrı adımda yapın ve her adımı doğrulayın.", ex:"1) Repository metodu  2) Servis  3) Controller  4) Testler" },
+    { ic:"🤔", t:"Gerekçe isteyin", s:"Neden bu çözüm?", b:"Karmaşık kararlarda modelden alternatifleri ve seçim gerekçesini istemek hem daha iyi cevap üretir hem de sizin öğrenmenizi sağlar.", ex:"\"İki alternatif öner, artı/eksilerini karşılaştır, hangisini neden seçtiğini söyle.\"" },
+    { ic:"🙋", t:"Belirsizliğe izin verin", s:"\"Bilmiyorum\" demesine izin", b:"\"Emin değilsen söyle\" veya \"varsayımlarını listele\" demek, uydurma cevapları azaltır ve kör noktaları görünür kılar.", ex:"\"Bir bilgiden emin değilsen tahmin etme; bunu belirt ve nasıl doğrulayacağımı söyle.\"" },
+    { ic:"❓", t:"Soru sormasını isteyin", s:"Eksik bilgiyi o bulsun", b:"Gereksinimler net değilse modelden önce netleştirici sorular sormasını isteyin.", ex:"\"Başlamadan önce gereksinimleri netleştirmek için en fazla 3 soru sor.\"" },
+    { ic:"🎭", t:"Rol yerine ölçüt verin", s:"\"Uzmansın\" tek başına yetmez", b:"\"Sen kıdemli bir Java geliştiricisisin\" demek bakış açısını biraz yönlendirir; ama asıl farkı neye dikkat edeceğini söylemek yaratır.", ex:"✕ \"Sen bir güvenlik uzmanısın, kontrol et.\"\n✓ \"Bu filtreyi yetki atlatma, token doğrulama ve hata durumunda bilgi sızıntısı açısından incele.\"" }
+  ];
+  var tl = $("#techList");
+  techs.forEach(function(t, i){
+    var d = document.createElement("details");
+    d.className = "tech";
+    if (i === 0) d.open = true;
+    d.innerHTML = "<summary><span class='ic'></span><span><b></b><small></small></span><span class='chev'>▸</span></summary><div class='body'><p></p><figure class='code'><div class='code-head'><span class='code-title'>Örnek</span></div><pre><code></code></pre></figure></div>";
+    d.querySelector(".ic").textContent = t.ic;
+    d.querySelector("b").textContent = (i + 1) + ". " + t.t;
+    d.querySelector("small").textContent = t.s;
+    d.querySelector(".body p").textContent = t.b;
+    d.querySelector("code").textContent = t.ex;
+    tl.appendChild(d);
+  });
+
+  /* data: use cases */
+  var ucs = [
+    { t:"Boilerplate / DTO", d:"DTO, mapper, getter-setter, basit CRUD", h:5, v:2 },
+    { t:"Kodu açıklama", d:"Yabancı bir kod tabanını hızlı anlamak", h:5, v:2 },
+    { t:"Test yazma", d:"Test iskeleti ve kenar durumları listesi", h:4, v:3 },
+    { t:"Hata ayıklama", d:"Stack trace yorumlama, olası neden listesi", h:4, v:3 },
+    { t:"Refactor", d:"Okunabilirlik, metot ayırma, isimlendirme", h:4, v:4 },
+    { t:"Kod inceleme", d:"İkinci göz; insan incelemesinin yerine geçmez", h:4, v:3 },
+    { t:"SQL / JPQL", d:"Sorgu yazma ve optimize etme", h:4, v:4 },
+    { t:"Mimari kararlar", d:"Alternatifleri tartışmak için iyi bir sparring partner", h:3, v:5 },
+    { t:"Güvenlik kodu", d:"Auth, kripto, yetkilendirme", h:3, v:5 }
+  ];
+  function meter(n){ var s = "<div class='meter'>"; for (var i = 1; i <= 5; i++) s += "<i class='" + (i <= n ? "on" : "") + "'></i>"; return s + "</div>"; }
+  var ug = $("#ucGrid");
+  ucs.forEach(function(u){
+    var d = document.createElement("div");
+    d.className = "uc";
+    d.innerHTML = "<h4></h4><p></p><span class='meter-label'>Fayda</span>" + meter(u.h) + "<span class='meter-label'>Gereken doğrulama</span>" + meter(u.v).replace(/class='on'/g, "class='on' style='background:var(--warn)'");
+    d.querySelector("h4").textContent = u.t;
+    d.querySelector("p").textContent = u.d;
+    ug.appendChild(d);
+  });
+
+  /* code blocks from script.src */
+  $$("script.src").forEach(function(s){
+    var lang = s.getAttribute("data-lang") || "none";
+    var lines = s.textContent.split("\n");
+    while (lines.length && !lines[0].trim()) lines.shift();
+    while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+    var min = Infinity; lines.forEach(function(l){ if (l.trim()) min = Math.min(min, l.match(/^ */)[0].length); });
+    var text = lines.map(function(l){ return l.slice(isFinite(min) ? min : 0); }).join("\n");
+    var fig = document.createElement("figure");
+    fig.className = "code";
+    fig.innerHTML = "<div class='code-head'><span class='code-title'></span><span class='code-lang'></span><button class='copy' type='button'>Kopyala</button></div><pre><code></code></pre>";
+    fig.querySelector(".code-title").textContent = s.getAttribute("data-title") || "";
+    fig.querySelector(".code-lang").textContent = lang === "none" ? "prompt" : lang;
+    var code = fig.querySelector("code");
+    code.className = "language-" + lang;
+    code.textContent = text;
+    if (lang === "java" || lang === "properties") fig.querySelector("pre").classList.add("nowrap");
+    var btn = fig.querySelector(".copy");
+    btn.addEventListener("click", function(){ copyText(text, btn); });
+    s.parentNode.replaceChild(fig, s);
+  });
+  if (window.Prism && Prism.highlightAllUnder) { try { Prism.highlightAllUnder(document); } catch(e) {} }
+
+  /* tabs */
+  $$(".tabs").forEach(function(t){
+    var btns = $$(":scope > .tab-list > button", t), panels = $$(":scope > .tab-panel", t);
+    function act(k){ btns.forEach(function(b){ b.setAttribute("aria-selected", String(b.dataset.tab === k)); }); panels.forEach(function(p){ p.classList.toggle("active", p.dataset.panel === k); }); }
+    btns.forEach(function(b){ b.setAttribute("role", "tab"); b.addEventListener("click", function(){ act(b.dataset.tab); }); });
+    if (btns[0]) act(btns[0].dataset.tab);
+  });
+
+  /* anatomy */
+  function anat(p){
+    $$("#anatPrompt .seg").forEach(function(s){ s.classList.toggle("on", s.dataset.p === p); });
+    $$("#anatList .anat-item").forEach(function(a){ a.classList.toggle("on", a.dataset.p === p); });
+  }
+  $$("#anatPrompt .seg, #anatList .anat-item").forEach(function(x){ x.addEventListener("click", function(){ anat(x.dataset.p); }); });
+  anat("1");
+
+  /* builder */
+  var F = { type:$("#bType"), ctx:$("#bCtx"), goal:$("#bGoal"), now:$("#bNow"), code:$("#bCode"), cons:$("#bCons"), out:$("#bOut"), unc:$("#bUnc"), ver:$("#bVerify") };
+  var typeIntro = {
+    bug:"Bir hatayı düzeltmem gerekiyor.", feature:"Yeni bir özellik eklemek istiyorum.", review:"Aşağıdaki kodu incelemeni istiyorum.",
+    test:"Aşağıdaki kod için birim testleri yazmanı istiyorum.", refactor:"Aşağıdaki kodu davranışını değiştirmeden yeniden düzenlemek istiyorum.", explain:"Aşağıdaki kodu anlamama yardım etmeni istiyorum."
+  };
+  var nowLabel = { bug:"Mevcut durum / hata", feature:"Mevcut durum", review:"Özellikle dikkat edilecekler", test:"Kapsanacak durumlar", refactor:"Sorunlu bulduğum noktalar", explain:"Anlamadığım kısım" };
+  function v(el){ return el.value.trim(); }
+  function build(){
+    var t = F.type.value, out = [];
+    if (v(F.ctx)) out.push("Bağlam: " + v(F.ctx));
+    out.push(typeIntro[t]);
+    if (v(F.goal)) out.push("Hedef: " + v(F.goal));
+    if (v(F.now)) out.push(nowLabel[t] + ":\n<durum>\n" + v(F.now) + "\n</durum>");
+    if (v(F.code)) out.push("İlgili kod:\n<kod>\n" + v(F.code) + "\n</kod>");
+    if (v(F.cons)) out.push("Kısıtlar:\n" + v(F.cons).split("\n").filter(function(l){ return l.trim(); }).map(function(l){ return "- " + l.replace(/^[-•*]\s*/, "").trim(); }).join("\n"));
+    if (F.out.value) out.push("Çıktı formatı: " + F.out.value + ".");
+    if (F.unc.checked) out.push("Emin olmadığın bir varsayım yapman gerekirse bunu açıkça belirt; bilmediğin bir şeyi uydurma.");
+    if (F.ver.checked) out.push("Son olarak değişikliğin doğru çalıştığını nasıl doğrulayacağımı (komut veya test) yaz.");
+    $("#bOutText").textContent = out.join("\n\n");
+
+    var checks = [
+      [!!v(F.ctx), 15, "Bağlam (teknoloji/mimari) verildi", "Teknoloji ve mimariyi ekleyin"],
+      [/\d+(\.\d+)/.test(v(F.ctx)), 10, "Sürüm numarası var", "Sürüm numarası ekleyin (ör. Spring Boot 4.0.0)"],
+      [v(F.goal).length >= 20, 20, "Hedef açık", "Ne istediğinizi en az bir cümleyle yazın"],
+      [!!v(F.now), 15, "Mevcut durum / hata anlatıldı", "Ne olduğunu veya hata mesajını ekleyin"],
+      [!!v(F.code), 15, "İlgili kod / dosya belirtildi", "İlgili kodu veya dosya adlarını ekleyin"],
+      [!!v(F.cons), 10, "Kısıtlar yazıldı", "Neye dokunulmayacağını belirtin"],
+      [!!F.out.value, 10, "Çıktı formatı belirlendi", "Çıktının biçimini seçin"],
+      [F.unc.checked, 5, "Belirsizlik kuralı eklendi", "Varsayımlarını belirtmesini isteyin"]
+    ];
+    var score = 0, hints = $("#bHints");
+    hints.innerHTML = "";
+    checks.forEach(function(c){
+      if (c[0]) score += c[1];
+      var li = document.createElement("li");
+      li.className = c[0] ? "ok" : "miss";
+      li.textContent = c[0] ? c[2] : c[3];
+      hints.appendChild(li);
+    });
+    if (t === "bug" && v(F.now) && !/exception|error|hata|\d{3}|at\s+[\w.]+\(/i.test(v(F.now))) {
+      var li = document.createElement("li"); li.className = "miss"; li.textContent = "İpucu: tam hata mesajını veya HTTP durum kodunu eklemek tanıyı hızlandırır"; hints.appendChild(li);
+    }
+    var ring = $("#bRing");
+    ring.style.setProperty("--v", score);
+    ring.setAttribute("data-v", score);
+    var c = score >= 80 ? "var(--good)" : score >= 50 ? "var(--warn)" : "var(--danger)";
+    ring.style.setProperty("--ring-c", score === 0 ? "var(--brand)" : c);
+    $("#bScoreTitle").textContent = score >= 80 ? "Güçlü prompt" : score >= 50 ? "İyi, biraz daha bağlam" : score > 0 ? "Zayıf: eksikler var" : "Başlayın";
+    $("#bScoreSub").textContent = "Kalite puanı: " + score + " / 100";
+  }
+  Object.keys(F).forEach(function(k){ F[k].addEventListener("input", build); F[k].addEventListener("change", build); });
+  $("#bSample").addEventListener("click", function(){
+    F.type.value = "bug";
+    F.ctx.value = "Java 21, Spring Boot 4.0.0, Spring Data JPA, PostgreSQL 16; katmanlı mimari (controller → service → repository)";
+    F.goal.value = "Aynı kullanıcının bir ankete ikinci kez oy vermesini engellemek istiyorum. VoteRequestValidator bunu yapmalı.";
+    F.now.value = "İkinci oy isteği de 200 OK dönüyor ve kaydediliyor. responses.user_id kolonu her kayıtta NULL.";
+    F.code.value = "[VoteRequestValidator.java]\n[ResponseRepository.java]\n[VoteServiceImpl.java]";
+    F.cons.value = "Tablo şemasını değiştirme\nYeni bağımlılık ekleme\nMevcut @Transactional sınırını koru";
+    F.out.value = "Önce kısa açıklama, sonra sadece değişen kod";
+    F.unc.checked = true; F.ver.checked = true;
+    build();
+  });
+  $("#bClear").addEventListener("click", function(){
+    ["ctx","goal","now","code","cons"].forEach(function(k){ F[k].value = ""; });
+    F.out.value = ""; F.type.value = "bug"; F.unc.checked = true; F.ver.checked = false;
+    build();
+  });
+  $("#bCopy").addEventListener("click", function(){ copyText($("#bOutText").textContent, $("#bCopy")); });
+  build();
+
+  /* checklist */
+  var ck = [
+    "Ne istediğimi ve \"bitti\"nin tanımını yazdım",
+    "Dil, framework ve kütüphane sürümlerini belirttim",
+    "İlgili kodu (sınıfın tamamını) ekledim",
+    "Hata varsa tam mesajını ve stack trace'i ekledim",
+    "Kısıtları (dokunulmayacak yerleri) belirttim",
+    "Çıktı formatını tanımladım",
+    "Gizli bilgi ve kişisel veri içermediğini kontrol ettim",
+    "Büyük bir işse önce plan istedim",
+    "Cevabı nasıl doğrulayacağımı biliyorum (derleme, test, çalıştırma)"
+  ];
+  var ckState = {};
+  try { ckState = JSON.parse(store("ai-checklist") || "{}") || {}; } catch(e) { ckState = {}; }
+  var ckWrap = $("#checklist");
+  function ckBar(){ var n = $$("#checklist input:checked").length; $("#ckBar").style.width = (n / ck.length * 100) + "%"; }
+  ck.forEach(function(c, i){
+    var l = document.createElement("label");
+    l.className = "check";
+    l.innerHTML = "<input type='checkbox'><span></span>";
+    l.querySelector("span").textContent = c;
+    var inp = l.querySelector("input");
+    inp.checked = !!ckState[i];
+    l.classList.toggle("done", inp.checked);
+    inp.addEventListener("change", function(){ ckState[i] = inp.checked; l.classList.toggle("done", inp.checked); store("ai-checklist", JSON.stringify(ckState)); ckBar(); });
+    ckWrap.appendChild(l);
+  });
+  ckBar();
+
+  /* quiz */
+  var quiz = [
+    { q:"AI bir hatayı üç denemede de düzeltemedi ve aynı öneriye dönüyor. En iyi adım hangisi?", o:["Aynı sohbette \"tekrar dene\" demek", "Yeni oturumda, öğrenilenlerin özeti ve tam hata mesajıyla yeniden başlamak", "Prompt'u büyük harflerle yazmak", "Hatalı kodu olduğu gibi kabul etmek"], a:1, w:"Hatalı denemelerle dolu bağlam yeni cevapları da etkiler. Temiz bir başlangıç ve iyi bir özet çoğu zaman döngüyü kırar." },
+    { q:"\"Bu kod doğru, değil mi?\" sorusunun temel sorunu nedir?", o:["Çok kısa olması", "Modeli onaylamaya yönlendirmesi", "Türkçe olması", "Kod içermemesi"], a:1, w:"Evet/hayır ve onay bekleyen sorular yerine \"Bu kodda hangi hatalar olabilir?\" gibi açık uçlu sorular daha dürüst sonuç verir." },
+    { q:"Spring Boot 4 projesinde AI'ın önerdiği import derlenmiyor. En olası neden?", o:["IDE bozuk", "Model eski sürüm paket yapısını önerdi", "Java 21 desteklenmiyor", "Maven çevrimdışı"], a:1, w:"Büyük sürüm geçişlerinde paketler değişebilir (ör. @EntityScan). Prompt'a sürüm yazmak ve resmi dokümanı kontrol etmek çözümdür." },
+    { q:"application.properties dosyasını yardım için paylaşmadan önce ne yapmalısınız?", o:["Hiçbir şey, AI gizli tutar", "Şifre ve anahtarları maskelemek", "Dosyayı sıkıştırmak", "Yorum satırlarını silmek"], a:1, w:"Paylaşılan içerik aracın sunucusuna gider. Gizli bilgiler <GIZLI> gibi yer tutucularla maskelenmeli; sızdıysa hemen yenilenmeli." },
+    { q:"Çok dosyalı yeni bir özellik için en verimli ilk prompt hangisi?", o:["\"Özelliği yaz\"", "\"Kod yazmadan önce yaklaşımını ve değişecek dosyaları listele\"", "\"En iyi şekilde yap\"", "\"Tüm projeyi yeniden yaz\""], a:1, w:"Planı onaylamak, yanlış yönde yazılmış kodu düzeltmekten çok daha ucuzdur." },
+    { q:"AI kodlama ajanı geçmeyen bir testi geçirmek için testin beklenen değerini değiştirdi. Ne yapmalısınız?", o:["Kabul etmek; testler geçiyor", "Değişikliği reddedip asıl hatayı bulmasını, test yanlışsa gerekçe sunmasını istemek", "Testi silmek", "Ajanı kapatmak"], a:1, w:"Testler davranışın sözleşmesidir. Prompt'a \"test beklentilerini değiştirme\" kuralını ekleyin ve test dosyası değişikliklerini dikkatle inceleyin." },
+    { q:"Skill ile agent arasındaki temel fark nedir?", o:["İkisi aynı şeydir, sadece isimleri farklı", "Agent işi yapan yürütücüdür; skill ise belirli bir işin nasıl yapılacağını anlatan, agent'ın yüklediği talimat setidir", "Skill daha güçlü bir agent türüdür", "Agent bir dosyadır, skill ise bir modeldir"], a:1, w:"Agent karar verir, araç kullanır ve döngüde çalışır. Skill tek başına bir şey yapmaz; agent onu gerektiğinde okur ve tarifine göre çalışır." },
+    { q:"Ekipte her yeni endpoint aynı 7 adımla ekleniyor ve bunu AI'a her seferinde tekrar anlatıyorsunuz. En uygun çözüm hangisi?", o:["Adımları bir skill olarak (SKILL.md) paketlemek", "Her seferinde daha uzun bir prompt yazmak", "Adımları system prompt'a şifre gibi gizlemek", "AI kullanmayı bırakmak"], a:0, w:"Tekrar eden, göreve özel bir prosedür skill için ideal adaydır: yalnızca o iş geldiğinde yüklenir ve her seferinde aynı standardı sağlar." },
+    { q:"System prompt'a hangisi yazılmamalıdır?", o:["Cevap dili ve üslup", "Rol ve çıktı formatı", "Veritabanı şifresi ve API anahtarları", "\"Emin değilsen belirt\" kuralı"], a:2, w:"System prompt bir güvenlik sınırı değildir; prompt injection ile sızdırılabilir. Gizli bilgiler asla prompt'a konmamalıdır." }
+  ];
+  var qEl = $("#quiz"), correct = 0, answered = 0, scoreEl = document.createElement("b");
+  quiz.forEach(function(item, qi){
+    var box = document.createElement("div");
+    box.className = "quiz-q";
+    box.innerHTML = "<h4></h4><div class='opts'></div><div class='why'></div>";
+    box.querySelector("h4").textContent = (qi + 1) + ". " + item.q;
+    box.querySelector(".why").textContent = "💡 " + item.w;
+    item.o.forEach(function(o, oi){
+      var b = document.createElement("button");
+      b.className = "opt"; b.type = "button"; b.textContent = o;
+      b.addEventListener("click", function(){
+        if (box.classList.contains("answered")) return;
+        box.classList.add("answered"); answered++; if (oi === item.a) correct++;
+        $$(".opt", box).forEach(function(x, xi){ x.disabled = true; if (xi === item.a) x.classList.add("right"); else if (xi === oi) x.classList.add("wrong"); });
+        renderScore();
+      });
+      box.querySelector(".opts").appendChild(b);
+    });
+    qEl.appendChild(box);
+  });
+  var reset = document.createElement("button");
+  reset.className = "btn ghost"; reset.type = "button"; reset.textContent = "↺ Sıfırla";
+  reset.addEventListener("click", function(){ correct = 0; answered = 0; $$(".quiz-q", qEl).forEach(function(b){ b.classList.remove("answered"); }); $$(".opt", qEl).forEach(function(o){ o.disabled = false; o.classList.remove("right", "wrong"); }); renderScore(); });
+  var foot = document.createElement("div");
+  foot.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap";
+  foot.appendChild(scoreEl); foot.appendChild(reset); qEl.appendChild(foot);
+  function renderScore(){ scoreEl.textContent = answered === quiz.length ? "Sonuç: " + correct + " / " + quiz.length + (correct === quiz.length ? " 🎉" : "") : "Cevaplanan: " + answered + " / " + quiz.length; }
+  renderScore();
+
+  /* nav */
+  var links = $$("#nav a"), sections = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var progress = $("#progress"), backtop = $("#backtop");
+  function onScroll(){
+    var y = window.scrollY, h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? y / h * 100 : 0) + "%";
+    backtop.classList.toggle("show", y > 800);
+    var cur = 0; sections.forEach(function(s, i){ if (s && s.getBoundingClientRect().top < 140) cur = i; });
+    links.forEach(function(a, i){ a.classList.toggle("active", i === cur); });
+  }
+  window.addEventListener("scroll", onScroll, { passive:true }); onScroll();
+  backtop.addEventListener("click", function(){ window.scrollTo({ top:0, behavior: reduceMotion ? "auto" : "smooth" }); });
+  function closeNav(){ document.body.classList.remove("nav-open"); }
+  $("#menuBtn").addEventListener("click", function(){ document.body.classList.toggle("nav-open"); });
+  $("#scrim").addEventListener("click", closeNav);
+  links.forEach(function(a){ a.addEventListener("click", closeNav); });
+
+  /* reveal */
+  if ("IntersectionObserver" in window && !reduceMotion) {
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin:"0px 0px -8% 0px" });
+    $$(".reveal").forEach(function(r){ io.observe(r); });
+  } else { $$(".reveal").forEach(function(r){ r.classList.add("in"); }); }
+})();
+</script>
+</body>
+</html>

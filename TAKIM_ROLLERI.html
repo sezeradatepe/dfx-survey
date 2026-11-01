@@ -1,0 +1,1205 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agile ve Takım Rolleri</title>
+<meta name="description" content="Sektöre yeni başlayanlar için Agile/Scrum rolleri (Product Owner, Scrum Master, Developers) ve bir yazılım takımındaki roller: Junior, Senior, Tech Lead, Domain Architect, Analist, QA, DevOps ve daha fazlası.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f8fa; --surface:#ffffff; --surface-2:#f1f3f6; --border:#e3e6eb;
+  --text:#1b1f24; --muted:#5d6672; --faint:#8a929c;
+  --brand:#4e9a2c; --brand-soft:#e8f4e1; --brand-strong:#3a7a1f;
+  --accent:#4f5bd5; --accent-soft:#eceefc;
+  --info:#2f6fd6; --info-soft:#e7f0fd;
+  --warn:#b46d00; --warn-soft:#fdf3e1;
+  --danger:#c4352b; --danger-soft:#fdeceb;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 16px rgba(16,24,40,.06);
+  --radius:14px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1215; --surface:#161a1f; --surface-2:#1d2228; --border:#2a3038;
+    --text:#e6e9ed; --muted:#a0a8b3; --faint:#717a85;
+    --brand:#7cc35a; --brand-soft:#1d2a18; --brand-strong:#9bd67d;
+    --accent:#8f98f2; --accent-soft:#1f2240;
+    --info:#6ea3f2; --info-soft:#15233a;
+    --warn:#e6a23c; --warn-soft:#2c2214;
+    --danger:#f07167; --danger-soft:#331a19;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1215; --surface:#161a1f; --surface-2:#1d2228; --border:#2a3038;
+  --text:#e6e9ed; --muted:#a0a8b3; --faint:#717a85;
+  --brand:#7cc35a; --brand-soft:#1d2a18; --brand-strong:#9bd67d;
+  --accent:#8f98f2; --accent-soft:#1f2240;
+  --info:#6ea3f2; --info-soft:#15233a;
+  --warn:#e6a23c; --warn-soft:#2c2214;
+  --danger:#f07167; --danger-soft:#331a19;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font:15.5px/1.65 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+code{font-size:.86em;background:var(--surface-2);border:1px solid var(--border);padding:.08em .38em;border-radius:6px;overflow-wrap:anywhere}
+h1,h2,h3,h4{line-height:1.25;letter-spacing:-.015em;margin:0}
+p{margin:.6em 0}
+ul{padding-left:1.2em}
+li{margin:3px 0}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:40;height:60px;display:flex;align-items:center;gap:12px;padding:0 16px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--brand),var(--accent));width:0;transition:width .1s linear}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--text)}
+.logo-mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;font-size:15px;font-weight:800}
+.topbar .spacer{flex:1}
+.icon-btn{height:36px;min-width:36px;padding:0 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font:500 13px Inter,sans-serif;text-decoration:none}
+.icon-btn:hover{border-color:var(--brand);text-decoration:none}
+.menu-btn{display:none}
+
+/* ---------- layout ---------- */
+.layout{display:grid;grid-template-columns:280px minmax(0,1fr);max-width:1360px;margin:0 auto}
+.sidebar{position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;padding:20px 14px 40px;border-right:1px solid var(--border)}
+.search{position:relative;margin-bottom:14px}
+.search input{width:100%;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:0 52px 0 12px;font:14px Inter,sans-serif;outline:none}
+.search input:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.search kbd{position:absolute;right:8px;top:8px;font-size:11px;color:var(--faint);border:1px solid var(--border);border-radius:5px;padding:1px 5px;background:var(--surface-2)}
+.nav-group{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:18px 10px 6px}
+.nav a{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;color:var(--muted);font-size:14px;text-decoration:none;transition:background .15s,color .15s}
+.nav a .num{font:600 11px "JetBrains Mono",monospace;color:var(--faint);min-width:18px}
+.nav a:hover{background:var(--surface-2);color:var(--text)}
+.nav a.active{background:var(--brand-soft);color:var(--brand-strong);font-weight:600}
+.nav a.active .num{color:var(--brand)}
+.nav a.hidden{display:none}
+.nav-empty{display:none;color:var(--faint);font-size:13px;padding:8px 10px}
+
+main{padding:0 40px 120px;min-width:0}
+section.doc{padding-top:56px;max-width:960px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font:600 12px "JetBrains Mono",monospace;color:var(--brand);letter-spacing:.04em;text-transform:uppercase}
+section.doc>h2{font-size:30px;font-weight:800;margin:8px 0 6px}
+section.doc>.lead{color:var(--muted);font-size:16.5px;margin:0 0 22px}
+h3{font-size:19px;font-weight:700;margin:34px 0 10px}
+h4{font-size:15.5px;font-weight:700;margin:20px 0 6px}
+
+/* ---------- hero ---------- */
+.hero{margin-top:36px;padding:44px 40px;border-radius:22px;position:relative;overflow:hidden;background:radial-gradient(1200px 400px at 0% 0%,var(--brand-soft),transparent 60%),radial-gradient(900px 400px at 100% 100%,var(--accent-soft),transparent 60%),var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);max-width:1040px}
+.hero h1{font-size:44px;font-weight:800;letter-spacing:-.03em;margin:12px 0 10px}
+.hero h1 span{background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:17px;max-width:680px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.stat b{display:block;font-size:24px;font-weight:800;letter-spacing:-.02em}
+.stat span{color:var(--muted);font-size:13px}
+
+/* ---------- generic components ---------- */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font:600 12px Inter,sans-serif;background:var(--surface-2);border:1px solid var(--border);color:var(--muted)}
+.pill.brand{background:var(--brand-soft);color:var(--brand-strong);border-color:transparent}
+.pill.accent{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.pill.danger{background:var(--danger-soft);color:var(--danger);border-color:transparent}
+.pill.info{background:var(--info-soft);color:var(--info);border-color:transparent}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card>h4:first-child{margin-top:0}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.feature{display:flex;gap:12px;align-items:flex-start}
+.feature .ic{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--brand-soft);font-size:18px}
+.feature h4{margin:2px 0 2px}
+.feature p{margin:0;color:var(--muted);font-size:14px}
+
+.callout{display:flex;gap:12px;padding:14px 16px;border-radius:12px;margin:16px 0;border:1px solid transparent;font-size:14.5px}
+.callout .ci{flex:none;font-size:17px;line-height:1.4}
+.callout p{margin:.2em 0}
+.callout.info{background:var(--info-soft);border-color:color-mix(in srgb,var(--info) 25%,transparent)}
+.callout.tip{background:var(--brand-soft);border-color:color-mix(in srgb,var(--brand) 25%,transparent)}
+.callout.warn{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 25%,transparent)}
+.callout.danger{background:var(--danger-soft);border-color:color-mix(in srgb,var(--danger) 25%,transparent)}
+.callout b.t{display:block;margin-bottom:2px}
+
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:14px 0;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--surface-2);font-weight:600;color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:color-mix(in srgb,var(--surface-2) 60%,transparent)}
+
+/* ---------- tabs ---------- */
+.tabs{margin:14px 0}
+.tab-list{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:12px}
+.tab-list button{border:none;background:none;color:var(--muted);font:500 14px Inter,sans-serif;padding:9px 12px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:8px 8px 0 0}
+.tab-list button:hover{color:var(--text);background:var(--surface-2)}
+.tab-list button[aria-selected="true"]{color:var(--brand-strong);border-bottom-color:var(--brand);font-weight:600}
+.tab-panel{display:none;animation:fade .25s ease}
+.tab-panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ---------- flows ---------- */
+.flow-wrap{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:18px;box-shadow:var(--shadow);margin:16px 0}
+.flow-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.flow-bar h4{margin:0;flex:1;min-width:180px}
+.btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:9px;border:1px solid var(--brand);background:var(--brand);color:#fff;font:600 13px Inter,sans-serif;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--brand-strong)}
+.btn:hover{filter:brightness(1.05)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow-step{flex:1 1 110px;min-width:110px;cursor:pointer;border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:10px 12px;font:inherit;color:var(--text);text-align:left;transition:all .2s}
+.flow-step .n{font:700 11px "JetBrains Mono",monospace;color:var(--faint)}
+.flow-step b{display:block;font-size:13.5px;line-height:1.35;margin-top:2px}
+.flow-step small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.flow-step.done{border-color:color-mix(in srgb,var(--brand) 40%,var(--border))}
+.flow-step.active{border-color:var(--brand);background:var(--brand-soft);transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--brand) 22%,transparent)}
+.flow-step.active .n{color:var(--brand)}
+.flow-detail{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--surface-2);font-size:14.5px;color:var(--muted);min-height:48px}
+.flow-detail b{color:var(--text)}
+
+/* ---------- scrum team visual ---------- */
+.team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;position:relative;margin:18px 0}
+.team-core{grid-column:1/-1;text-align:center;padding:14px;border-radius:14px;border:1px dashed color-mix(in srgb,var(--brand) 50%,var(--border));background:color-mix(in srgb,var(--brand-soft) 55%,transparent);font-size:14.5px}
+.team-core b{font-size:16px}
+.acc{border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);padding:18px;box-shadow:var(--shadow);border-top:4px solid var(--c,var(--brand))}
+.acc .big{font-size:30px;line-height:1}
+.acc h4{margin:10px 0 2px;font-size:17px}
+.acc .en{font:500 12px "JetBrains Mono",monospace;color:var(--faint)}
+.acc .q{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:14px;font-style:italic;color:var(--text)}
+.acc ul{margin:10px 0 0;font-size:14px;color:var(--muted)}
+
+.role-detail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.role-detail .card h4{margin-top:0;display:flex;gap:8px;align-items:center}
+.role-detail ul{margin:6px 0 0;font-size:14.5px}
+.myth{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:8px 0}
+.myth div{padding:12px 14px;border-radius:10px;font-size:14px}
+.myth .no{background:var(--danger-soft)}
+.myth .yes{background:var(--brand-soft)}
+.myth b{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.myth .no b{color:var(--danger)}
+.myth .yes b{color:var(--brand-strong)}
+
+/* ---------- role explorer ---------- */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 14px}
+.filters button{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:999px;padding:6px 13px;font:500 13.5px Inter,sans-serif;cursor:pointer}
+.filters button.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.role{cursor:pointer;text-align:left;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:12px;padding:14px;font:inherit;display:flex;gap:12px;align-items:flex-start;transition:all .15s}
+.role:hover{border-color:var(--brand);transform:translateY(-2px)}
+.role.active{border-color:var(--brand);background:var(--brand-soft);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 15%,transparent)}
+.role.hidden{display:none}
+.role .ric{flex:none;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:19px;background:var(--surface-2)}
+.role b{display:block;font-size:14.5px;line-height:1.3}
+.role small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px;line-height:1.4}
+.profile{margin-top:16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);overflow:hidden}
+.profile-head{display:flex;gap:16px;align-items:center;padding:20px 22px;background:radial-gradient(700px 200px at 0% 0%,var(--brand-soft),transparent 70%),var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.profile-head .pic{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;font-size:30px;background:var(--surface-2);border:1px solid var(--border);flex:none}
+.profile-head h3{margin:0;font-size:22px}
+.profile-head .sub{color:var(--muted);font-size:14.5px;margin-top:2px}
+.profile-head .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.profile-body{padding:18px 22px 22px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px}
+.profile-body h4{margin:0 0 6px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.profile-body ul{margin:0;font-size:14.5px}
+.profile-body .wide{grid-column:1/-1}
+.analogy{padding:12px 14px;border-radius:10px;background:var(--accent-soft);font-size:14.5px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 12.5px "JetBrains Mono",monospace;padding:3px 8px;border-radius:7px;background:var(--surface-2);border:1px solid var(--border);color:var(--text)}
+
+/* ---------- seniority bars ---------- */
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface);margin-bottom:14px}
+.seg button{border:none;background:none;padding:8px 16px;font:600 13.5px Inter,sans-serif;color:var(--muted);cursor:pointer}
+.seg button+button{border-left:1px solid var(--border)}
+.seg button.on{background:var(--brand);color:#fff}
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar{display:grid;grid-template-columns:170px 1fr;align-items:center;gap:12px;font-size:14px}
+.bar .track{height:14px;border-radius:7px;background:var(--surface-2);overflow:hidden}
+.bar .fill{height:100%;border-radius:7px;background:linear-gradient(90deg,var(--brand),var(--accent));width:0;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.lvl-note{margin-top:14px;font-size:14.5px;color:var(--muted)}
+.ladder{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0}
+.ladder span{padding:6px 12px;border-radius:9px;background:var(--surface);border:1px solid var(--border);font-weight:600;font-size:13.5px}
+.ladder i{font-style:normal;color:var(--faint)}
+
+/* ---------- RACI ---------- */
+.raci td,.raci th{text-align:center;white-space:nowrap}
+.raci td:first-child,.raci th:first-child{text-align:left;white-space:normal;min-width:190px}
+.r{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;font:700 12px "JetBrains Mono",monospace}
+.r.R{background:var(--brand);color:#fff}
+.r.A{background:var(--accent);color:#fff}
+.r.C{background:var(--warn-soft);color:var(--warn)}
+.r.I{background:var(--surface-2);color:var(--faint);border:1px solid var(--border)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13.5px;color:var(--muted);margin:8px 2px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+
+/* ---------- story card ---------- */
+.story{border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;background:var(--surface);padding:16px 18px;margin:14px 0;font-size:14.5px}
+.story .lbl{font:600 11.5px "JetBrains Mono",monospace;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.story ul{margin:6px 0 0}
+
+/* ---------- details / faq ---------- */
+details.faq{border:1px solid var(--border);border-radius:12px;background:var(--surface);margin-bottom:10px}
+details.faq summary{cursor:pointer;padding:14px 16px;font-weight:600;list-style:none;display:flex;gap:10px;align-items:center}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq summary::before{content:"▸";color:var(--faint);transition:transform .15s}
+details.faq[open] summary::before{transform:rotate(90deg)}
+details.faq .ans{padding:0 16px 14px 36px;color:var(--muted);font-size:14.5px}
+
+/* ---------- quiz ---------- */
+.quiz-q{margin-bottom:14px}
+.quiz-q h4{margin:0 0 10px;font-size:15px}
+.opts{display:grid;gap:6px}
+.opt{text-align:left;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:9px 12px;font:14px Inter,sans-serif;cursor:pointer;transition:all .15s}
+.opt:hover:not([disabled]){border-color:var(--brand)}
+.opt.right{border-color:var(--brand);background:var(--brand-soft)}
+.opt.wrong{border-color:var(--danger);background:var(--danger-soft)}
+.opt[disabled]{cursor:default}
+.why{display:none;margin-top:8px;font-size:13.5px;color:var(--muted)}
+.quiz-q.answered .why{display:block}
+.score{font-weight:700;font-size:15px}
+
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);color:var(--faint);font-size:13px;max-width:960px}
+.backtop{position:fixed;right:18px;bottom:18px;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+.backtop.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+.reveal.in{opacity:1;transform:none}
+.scrim{display:none}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+@media (max-width:1024px){
+  .layout{grid-template-columns:1fr}
+  .menu-btn{display:inline-flex}
+  .sidebar{position:fixed;left:0;top:60px;bottom:0;width:290px;height:auto;background:var(--bg);z-index:35;transform:translateX(-100%);transition:transform .25s ease;box-shadow:var(--shadow)}
+  body.nav-open .sidebar{transform:none}
+  body.nav-open .scrim{display:block;position:fixed;inset:60px 0 0 0;background:rgba(0,0,0,.35);z-index:34}
+  main{padding:0 24px 100px}
+}
+@media (max-width:720px){
+  body{font-size:15px}
+  main{padding:0 16px 90px}
+  .hero{padding:28px 20px;margin-top:20px}
+  .hero h1{font-size:32px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .g2,.g3,.team,.role-detail,.profile-body,.myth{grid-template-columns:minmax(0,1fr)}
+  section.doc>h2{font-size:25px}
+  .logo .txt small,.theme-label,.back-label{display:none}
+  .bar{grid-template-columns:110px 1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menüyü aç">☰</button>
+  <a class="logo" href="#top" style="text-decoration:none">
+    <span class="logo-mark">D</span>
+    <span class="txt">DFX Developer School <small style="color:var(--faint);font-weight:500">· Agile ve Takım Rolleri</small></span>
+  </a>
+  <span class="spacer"></span>
+  <a class="icon-btn" href="EGITIM_DOKUMANI.html" title="Spring Boot eğitim dokümanına git">←<span class="back-label">Spring Boot Eğitimi</span></a>
+  <button class="icon-btn" id="themeBtn" aria-label="Temayı değiştir"><span id="themeIcon">◐</span><span class="theme-label">Tema</span></button>
+  <div class="progress" id="progress"></div>
+</header>
+<div class="scrim" id="scrim"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="search">
+      <input id="navSearch" type="search" placeholder="Bölüm ara…" aria-label="Bölüm ara">
+      <kbd>Ctrl K</kbd>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="nav-group">Başlangıç</div>
+      <a href="#neden"><span class="num">01</span>Neden Roller Var?</a>
+      <a href="#agile"><span class="num">02</span>Agile ve Scrum Nedir?</a>
+      <div class="nav-group">Scrum Rolleri</div>
+      <a href="#scrum-takimi"><span class="num">03</span>Scrum Takımı</a>
+      <a href="#po"><span class="num">04</span>Product Owner</a>
+      <a href="#sm"><span class="num">05</span>Scrum Master</a>
+      <a href="#dev"><span class="num">06</span>Developers</a>
+      <a href="#etkinlik"><span class="num">07</span>Etkinlikler ve Kim Katılır?</a>
+      <div class="nav-group">Yazılım Takımı</div>
+      <a href="#roller"><span class="num">08</span>Rol Kataloğu</a>
+      <a href="#kidem"><span class="num">09</span>Jr → Mid → Sr</a>
+      <a href="#raci"><span class="num">10</span>Kim Ne Yapar? (RACI)</a>
+      <a href="#senaryo"><span class="num">11</span>Bir Özelliğin Yolculuğu</a>
+      <div class="nav-group">Pekiştirme</div>
+      <a href="#karisan"><span class="num">12</span>Sık Karıştırılanlar</a>
+      <a href="#tavsiye"><span class="num">13</span>Yeni Başlayanlara Öneriler</a>
+      <a href="#sozluk"><span class="num">14</span>Sözlük</a>
+      <a href="#quiz-bolum"><span class="num">15</span>Quiz</a>
+      <div class="nav-empty" id="navEmpty">Eşleşen bölüm yok.</div>
+    </nav>
+  </aside>
+
+  <main id="top">
+    <!-- =============== HERO =============== -->
+    <div class="hero reveal">
+      <span class="eyebrow">● DFX Developer School</span>
+      <h1>Bir yazılım takımında <span>kim, ne yapar?</span></h1>
+      <p>Sektöre ilk adımı atarken en çok kafa karıştıran konulardan biri, toplantılarda duyduğunuz unvanlar: Product Owner, Scrum Master, Tech Lead, Domain Architect, Analist, QA… Bu dokümanda önce Agile/Scrum'daki rolleri, ardından gerçek bir yazılım takımında karşılaşacağınız rolleri sade bir dille ve örneklerle anlatıyoruz.</p>
+      <div class="hero-meta">
+        <span class="pill brand">Agile</span>
+        <span class="pill brand">Scrum Guide 2020</span>
+        <span class="pill accent">Kariyer basamakları</span>
+        <span class="pill accent">RACI matrisi</span>
+        <span class="pill">Yeni başlayanlar için</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>3</b><span>Scrum sorumluluğu</span></div>
+        <div class="stat"><b>5</b><span>Scrum etkinliği</span></div>
+        <div class="stat"><b>15</b><span>Takım rolü</span></div>
+        <div class="stat"><b>10</b><span>Quiz sorusu</span></div>
+      </div>
+    </div>
+
+    <!-- =============== 01 NEDEN =============== -->
+    <section class="doc reveal" id="neden">
+      <span class="eyebrow">01 · Giriş</span>
+      <h2>Neden Roller Var?</h2>
+      <p class="lead">Bir yazılım ürünü tek kişinin yapamayacağı kadar çok iş içerir: ne yapılacağına karar vermek, gereksinimi netleştirmek, mimariyi tasarlamak, kod yazmak, test etmek, canlıya almak… Roller, bu işlerin <b>kimin sorumluluğunda</b> olduğunu netleştirir.</p>
+
+      <div class="callout info"><span class="ci">🎬</span><div><b class="t">Film seti benzetmesi</b><p>Bir filmde yapımcı <i>hangi filmin çekileceğine</i>, yönetmen <i>nasıl çekileceğine</i>, oyuncular ve ekip <i>çekime</i>, kurgu ekibi <i>kalite ve bütünlüğe</i> odaklanır. Herkes aynı filmi yapar ama farklı sorulara cevap verir. Yazılım takımı da böyledir.</p></div></div>
+
+      <div class="grid g3">
+        <div class="card feature"><div class="ic">🎯</div><div><h4>Ne yapmalıyız?</h4><p>Product Owner, İş Analisti</p></div></div>
+        <div class="card feature"><div class="ic">🏛️</div><div><h4>Nasıl kurmalıyız?</h4><p>Architect, Tech Lead, Senior Developer</p></div></div>
+        <div class="card feature"><div class="ic">⌨️</div><div><h4>Kim geliştirir?</h4><p>Junior, Mid ve Senior Developer'lar</p></div></div>
+        <div class="card feature"><div class="ic">🧪</div><div><h4>Doğru çalışıyor mu?</h4><p>QA / Test Mühendisi, SDET</p></div></div>
+        <div class="card feature"><div class="ic">🚀</div><div><h4>Canlıda nasıl yaşar?</h4><p>DevOps / Platform Mühendisi</p></div></div>
+        <div class="card feature"><div class="ic">🔄</div><div><h4>Takım iyi çalışıyor mu?</h4><p>Scrum Master, Engineering Manager</p></div></div>
+      </div>
+
+      <div class="callout warn"><span class="ci">⚠️</span><div><b class="t">Rol ≠ Unvan ≠ Kişi</b><p>Küçük bir şirkette bir kişi birden fazla rolü üstlenebilir (örneğin Senior Developer aynı zamanda Tech Lead'dir). Büyük kurumlarda (banka, telekom) ise her rol ayrı bir kişi, hatta ayrı bir ekiptir. Burada anlatılanlar <b>genel kabul gören</b> tanımlardır; şirketten şirkete farklılık gösterir.</p></div></div>
+    </section>
+
+    <!-- =============== 02 AGILE =============== -->
+    <section class="doc reveal" id="agile">
+      <span class="eyebrow">02 · Temeller</span>
+      <h2>Agile ve Scrum Nedir?</h2>
+      <p class="lead"><b>Agile (Çevik)</b> bir düşünce biçimidir: işi küçük parçalara böl, sık teslim et, geri bildirim al, yönünü düzelt. <b>Scrum</b> ise bu düşünceyi uygulamak için en yaygın kullanılan <b>çerçevedir (framework)</b>.</p>
+
+      <div class="tabs">
+        <div class="tab-list">
+          <button data-tab="waterfall">Şelale (Waterfall)</button>
+          <button data-tab="agile">Agile</button>
+          <button data-tab="manifesto">Agile Manifesto</button>
+        </div>
+        <div class="tab-panel" data-panel="waterfall">
+          <div class="card">
+            <p>Geleneksel yaklaşımda iş, sırayla ilerleyen büyük aşamalara bölünür: <b>Analiz → Tasarım → Geliştirme → Test → Canlıya alma</b>. Müşteri ürünü genellikle aylar sonra, en sonda görür.</p>
+            <p style="color:var(--muted)">Sorun: Gereksinim yolda değişirse ya da yanlış anlaşıldıysa bunu çok geç fark ederiz. Değişiklik pahalıdır.</p>
+          </div>
+        </div>
+        <div class="tab-panel" data-panel="agile">
+          <div class="card">
+            <p>Agile'da ürün <b>1–4 haftalık kısa döngülerle</b> geliştirilir. Her döngünün sonunda <b>çalışan</b>, gösterilebilir bir parça ortaya çıkar. Müşteri/paydaş her döngüde ürünü görür ve geri bildirim verir.</p>
+            <p style="color:var(--muted)">Kazanç: Yanlış yöne gidildiğini haftalar içinde fark ederiz; değişiklik süreç tarafından beklenir ve karşılanır.</p>
+          </div>
+        </div>
+        <div class="tab-panel" data-panel="manifesto">
+          <div class="card">
+            <p>2001'de yayımlanan Agile Manifesto 4 temel değer önerir. Sağdakiler de değerlidir, ancak <b>soldakiler daha çok önemsenir</b>:</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Daha çok değer verilen</th><th>Yerine</th></tr></thead>
+              <tbody>
+                <tr><td><b>Bireyler ve etkileşimler</b></td><td>Süreçler ve araçlar</td></tr>
+                <tr><td><b>Çalışan yazılım</b></td><td>Kapsamlı dokümantasyon</td></tr>
+                <tr><td><b>Müşteri ile iş birliği</b></td><td>Sözleşme pazarlıkları</td></tr>
+                <tr><td><b>Değişime yanıt vermek</b></td><td>Bir plana bağlı kalmak</td></tr>
+              </tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-wrap">
+        <div class="flow-bar">
+          <h4>Bir Sprint'in yaşam döngüsü</h4>
+          <button class="btn" data-play="sprint">▶ Oynat</button>
+        </div>
+        <div class="flow" data-flow="sprint">
+          <button class="flow-step" data-detail="<b>Product Backlog</b> — Ürüne yapılması düşünülen tüm işlerin öncelik sırasına dizilmiş listesi. Sahibi <b>Product Owner</b>'dır. En üstteki maddeler en net ve en değerli olanlardır."><span class="n">01</span><b>Product Backlog</b><small>Yapılacaklar listesi</small></button>
+          <button class="flow-step" data-detail="<b>Sprint Planning</b> — Tüm Scrum Takımı bir araya gelir: Bu sprint neden değerli (Sprint Goal), neleri alabiliriz, nasıl yapacağız? Sonuç: <b>Sprint Backlog</b>."><span class="n">02</span><b>Sprint Planning</b><small>Hedef ve plan</small></button>
+          <button class="flow-step" data-detail="<b>Geliştirme</b> — Developers sprint boyunca işleri yapar. Analiz, kodlama, code review, test… hepsi sprint içinde olur. Sprint genellikle 2 haftadır (en fazla 1 ay)."><span class="n">03</span><b>Sprint (1–4 hafta)</b><small>İşin yapıldığı süre</small></button>
+          <button class="flow-step" data-detail="<b>Daily Scrum</b> — Her gün aynı saatte, en fazla 15 dakika. Developers Sprint Goal'a göre nerede olduklarına bakar, günün planını yapar, engelleri görünür kılar. Bir durum raporu toplantısı değildir."><span class="n">04</span><b>Daily Scrum</b><small>Her gün 15 dk</small></button>
+          <button class="flow-step" data-detail="<b>Sprint Review</b> — Sprint sonunda ortaya çıkan çalışan ürün parçası (<b>Increment</b>) paydaşlara gösterilir, geri bildirim alınır ve Product Backlog buna göre güncellenir."><span class="n">05</span><b>Sprint Review</b><small>Ürünü göster</small></button>
+          <button class="flow-step" data-detail="<b>Sprint Retrospective</b> — Takım kendi çalışma şeklini konuşur: Ne iyi gitti? Ne zorladı? Bir sonraki sprintte neyi deneyeceğiz? Odak ürün değil, <b>süreç ve insanlar</b>dır."><span class="n">06</span><b>Retrospective</b><small>Süreci iyileştir</small></button>
+        </div>
+        <div class="flow-detail" data-detail-for="sprint">Bir adıma tıklayın ya da <b>Oynat</b> ile sprint döngüsünü izleyin.</div>
+      </div>
+    </section>
+
+    <!-- =============== 03 SCRUM TAKIMI =============== -->
+    <section class="doc reveal" id="scrum-takimi">
+      <span class="eyebrow">03 · Scrum Rolleri</span>
+      <h2>Scrum Takımı</h2>
+      <p class="lead">Scrum'da yalnızca <b>üç sorumluluk (accountability)</b> vardır. Scrum Guide 2020 bunlara artık "rol" yerine "sorumluluk" der; çünkü önemli olan unvan değil, kimin neyden <b>hesap verdiğidir</b>.</p>
+
+      <div class="team">
+        <div class="acc" style="--c:var(--accent)">
+          <div class="big">🎯</div>
+          <h4>Product Owner</h4>
+          <div class="en">"NE" ve "NEDEN"</div>
+          <ul><li>Ürünün değerini en üst düzeye çıkarır</li><li>Product Backlog'un sahibidir</li><li>Öncelikleri belirler</li></ul>
+          <p class="q">"Şu an en değerli iş hangisi?"</p>
+        </div>
+        <div class="acc" style="--c:var(--brand)">
+          <div class="big">🧭</div>
+          <h4>Scrum Master</h4>
+          <div class="en">"SÜREÇ" ve "TAKIM"</div>
+          <ul><li>Scrum'ın doğru anlaşılmasını sağlar</li><li>Engelleri kaldırır</li><li>Takımın etkinliğini artırır</li></ul>
+          <p class="q">"Takımı yavaşlatan ne?"</p>
+        </div>
+        <div class="acc" style="--c:var(--warn)">
+          <div class="big">🛠️</div>
+          <h4>Developers</h4>
+          <div class="en">"NASIL"</div>
+          <ul><li>Her sprintte kullanılabilir bir Increment üretir</li><li>Sprint Backlog'un sahibidir</li><li>Kaliteden sorumludur</li></ul>
+          <p class="q">"Bunu en iyi nasıl yaparız?"</p>
+        </div>
+        <div class="team-core">
+          <b>Scrum Takımı</b> = 1 Product Owner + 1 Scrum Master + Developers · genellikle <b>10 kişi veya daha az</b><br>
+          <span style="color:var(--muted)">Alt takım ya da hiyerarşi yoktur. Takım <b>kendi kendini yönetir</b> ve <b>çapraz fonksiyoneldir</b>: işi bitirmek için gereken tüm yetkinlikler takım içindedir.</span>
+        </div>
+      </div>
+
+      <div class="callout tip"><span class="ci">💡</span><div><b class="t">"Developers" kimlerdir?</b><p>Scrum'da "Developer" yalnızca kod yazan kişi demek değildir. Analist, QA, UI/UX tasarımcı, DevOps… <b>Increment'i oluşturmaya katkı veren herkes</b> Developers sorumluluğunun içindedir. 08. bölümdeki roller pratikte bu grubun içinde yer alır.</p></div></div>
+    </section>
+
+    <!-- =============== 04 PO =============== -->
+    <section class="doc reveal" id="po">
+      <span class="eyebrow">04 · Scrum Rolleri</span>
+      <h2>🎯 Product Owner (Ürün Sahibi)</h2>
+      <p class="lead">Product Owner, ürünün <b>değerinden</b> sorumlu olan <b>tek bir kişidir</b>. Müşterinin, iş biriminin ve kullanıcıların sesini takıma taşır; neyin, hangi sırayla yapılacağına karar verir.</p>
+
+      <div class="role-detail">
+        <div class="card">
+          <h4>📋 Sorumlulukları</h4>
+          <ul>
+            <li><b>Product Goal</b>'u (ürün hedefi) belirler ve takıma anlatır</li>
+            <li>Product Backlog maddelerini oluşturur ve açıkça ifade eder</li>
+            <li>Backlog'u <b>önceliklendirir</b> (sıralar)</li>
+            <li>Backlog'un şeffaf, görünür ve anlaşılır olmasını sağlar</li>
+            <li>Sprint Review'da yapılan işi kabul eder ya da geri bildirim verir</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>🗓️ Günlük hayatında</h4>
+          <ul>
+            <li>Paydaşlarla (iş birimi, müşteri, yönetim) toplantılar</li>
+            <li>User story ve kabul kriterleri yazma</li>
+            <li>Takımın "Bu madde tam olarak ne istiyor?" sorularını cevaplama</li>
+            <li>Backlog refinement (iyileştirme) oturumları</li>
+            <li>"Hayır" ya da "Şimdi değil" demek 🙂</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Örnek: PO'nun yazdığı bir User Story</h3>
+      <div class="story">
+        <div class="lbl">User Story · DFX Survey</div>
+        <p><b>Bir</b> anket yöneticisi <b>olarak</b>, anketin bitmesine 1 gün kala cevap vermeyen katılımcılara otomatik hatırlatma maili gitmesini <b>istiyorum</b>, <b>böylece</b> katılım oranı artsın.</p>
+        <div class="lbl" style="margin-top:10px">Kabul kriterleri (Acceptance Criteria)</div>
+        <ul>
+          <li>Anketin bitiş tarihine 24 saat kala çalışır</li>
+          <li>Sadece henüz oy vermemiş katılımcılara gider</li>
+          <li>Bir katılımcıya aynı anket için en fazla 1 hatırlatma gider</li>
+        </ul>
+      </div>
+
+      <div class="myth"><div class="no"><b>Yanlış bilinen</b>PO takımın patronudur, kime ne iş verileceğine karar verir.</div><div class="yes"><b>Doğrusu</b>PO "ne"ye karar verir; işin "nasıl" yapılacağına ve kimin alacağına Developers karar verir.</div></div>
+      <div class="myth"><div class="no"><b>Yanlış bilinen</b>Bir ürünün birden fazla PO'su olabilir, komite karar verir.</div><div class="yes"><b>Doğrusu</b>PO tek bir kişidir. Birçok paydaşın isteğini temsil edebilir ama son öncelik kararı ondadır.</div></div>
+    </section>
+
+    <!-- =============== 05 SM =============== -->
+    <section class="doc reveal" id="sm">
+      <span class="eyebrow">05 · Scrum Rolleri</span>
+      <h2>🧭 Scrum Master</h2>
+      <p class="lead">Scrum Master, takımın Scrum'ı doğru anlayıp uygulamasından ve <b>takımın etkinliğinden</b> sorumludur. Emir veren bir yönetici değil; takıma, PO'ya ve organizasyona <b>hizmet eden bir lider</b>dir.</p>
+
+      <div class="role-detail">
+        <div class="card">
+          <h4>📋 Sorumlulukları</h4>
+          <ul>
+            <li>Takıma kendi kendini yönetme ve çapraz fonksiyonel olma konusunda koçluk</li>
+            <li>Takımın ilerlemesini engelleyen sorunları (impediment) kaldırma</li>
+            <li>Scrum etkinliklerinin yapılmasını ve amacına uygun, zamanında bitmesini sağlama</li>
+            <li>PO'ya backlog yönetimi tekniklerinde yardım</li>
+            <li>Organizasyona Scrum'ı benimsetme</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>🗓️ Günlük hayatında</h4>
+          <ul>
+            <li>Retrospective'i hazırlayıp kolaylaştırma (facilitation)</li>
+            <li>"Test ortamı 3 gündür çalışmıyor" gibi engelleri ilgili ekiplerle çözme</li>
+            <li>Takımı dış kesintilerden koruma</li>
+            <li>Takım içi anlaşmazlıklarda arabuluculuk</li>
+            <li>Metrikleri (ör. sprint hedefine ulaşma) takımla birlikte yorumlama</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout info"><span class="ci">🏃</span><div><b class="t">Benzetme: Spor takımının antrenörü</b><p>Antrenör sahaya çıkıp gol atmaz; oyuncuların daha iyi oynaması için ortamı, taktiği ve alışkanlıkları geliştirir. Scrum Master da kodu yazmaz, takımın daha iyi çalışmasını sağlar.</p></div></div>
+
+      <div class="myth"><div class="no"><b>Yanlış bilinen</b>Scrum Master toplantı organizatörü ya da sekreterdir; Daily'de herkesten rapor alır.</div><div class="yes"><b>Doğrusu</b>Daily, Developers'ın kendi toplantısıdır. SM onların bunu verimli yapmasına yardım eder, rapor toplamaz.</div></div>
+      <div class="myth"><div class="no"><b>Yanlış bilinen</b>Scrum Master = Proje Yöneticisi.</div><div class="yes"><b>Doğrusu</b>Proje yöneticisi kapsam, bütçe ve takvimi yönetir; SM ise takımın kendini yönetebilmesini sağlar. 12. bölümde ayrıntılı karşılaştırma var.</div></div>
+    </section>
+
+    <!-- =============== 06 DEV =============== -->
+    <section class="doc reveal" id="dev">
+      <span class="eyebrow">06 · Scrum Rolleri</span>
+      <h2>🛠️ Developers (Geliştirme Ekibi)</h2>
+      <p class="lead">Developers, her sprintte <b>kullanılabilir, kaliteli bir ürün parçası (Increment)</b> ortaya çıkarmaktan sorumludur. Sektöre başladığınızda büyük olasılıkla bu grubun bir parçası olacaksınız.</p>
+
+      <div class="role-detail">
+        <div class="card">
+          <h4>📋 Sorumlulukları</h4>
+          <ul>
+            <li>Sprint Backlog'u oluşturmak ve sahiplenmek</li>
+            <li><b>Definition of Done</b>'a (Bitti Tanımı) uyarak kaliteyi sağlamak</li>
+            <li>Planı her gün Sprint Goal'a göre uyarlamak</li>
+            <li>Birbirini profesyonel olarak sorumlu tutmak</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>✅ Örnek "Definition of Done"</h4>
+          <ul>
+            <li>Kod yazıldı ve en az 1 kişi tarafından review edildi</li>
+            <li>Unit testler yazıldı ve geçiyor</li>
+            <li>QA testleri tamamlandı, kritik bug yok</li>
+            <li>Test ortamına deploy edildi</li>
+            <li>PO kabul kriterlerini doğruladı</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout tip"><span class="ci">🧩</span><div><b class="t">"Bende çalışıyor" yeterli değil</b><p>Bir iş, takımın ortak <b>Definition of Done</b> listesindeki tüm maddeleri karşılamadan "bitti" sayılmaz. Yeni başlayanların en sık düştüğü hata, kodu yazınca işi bitmiş saymaktır.</p></div></div>
+    </section>
+
+    <!-- =============== 07 ETKINLIK =============== -->
+    <section class="doc reveal" id="etkinlik">
+      <span class="eyebrow">07 · Scrum Etkinlikleri</span>
+      <h2>Etkinlikler ve Kim Katılır?</h2>
+      <p class="lead">İşe başladığınızda takviminizde bu toplantıları göreceksiniz. Hangisinin ne için yapıldığını ve kimin katıldığını bilmek, ilk haftalarınızı çok kolaylaştırır.</p>
+
+      <div class="table-wrap"><table>
+        <thead><tr><th>Etkinlik</th><th>Amaç</th><th>Süre (2 haftalık sprint)</th><th>Katılımcılar</th></tr></thead>
+        <tbody>
+          <tr><td><b>Sprint Planning</b></td><td>Sprint hedefi ve yapılacak işler</td><td>~4 saate kadar</td><td>Tüm Scrum Takımı</td></tr>
+          <tr><td><b>Daily Scrum</b></td><td>Günün planı, engeller</td><td>15 dk, her gün</td><td>Developers (PO/SM isteğe bağlı)</td></tr>
+          <tr><td><b>Backlog Refinement</b></td><td>Gelecek işleri netleştirme, tahminleme</td><td>Süreklidir, genellikle haftada 1 oturum</td><td>PO + Developers</td></tr>
+          <tr><td><b>Sprint Review</b></td><td>Ürünü gösterme, geri bildirim</td><td>~2 saate kadar</td><td>Scrum Takımı + paydaşlar</td></tr>
+          <tr><td><b>Sprint Retrospective</b></td><td>Çalışma şeklini iyileştirme</td><td>~1,5 saate kadar</td><td>Tüm Scrum Takımı</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="callout info"><span class="ci">ℹ️</span><div><p>Scrum Guide süreleri <b>1 aylık sprint</b> için verir (Planning en fazla 8 saat, Review 4 saat, Retro 3 saat). Daha kısa sprintlerde süreler orantılı olarak kısalır. Backlog Refinement resmî bir etkinlik değil, sürekli devam eden bir faaliyettir.</p></div></div>
+
+      <h3>Daily Scrum'da ne söylemeli?</h3>
+      <div class="grid g3">
+        <div class="card"><h4>✅ Dün</h4><p style="color:var(--muted);margin:0">"Hatırlatma maili için zamanlayıcı servisini bitirdim, review'a açtım."</p></div>
+        <div class="card"><h4>🎯 Bugün</h4><p style="color:var(--muted);margin:0">"Review yorumlarını düzeltip unit testleri yazacağım."</p></div>
+        <div class="card"><h4>🚧 Engel</h4><p style="color:var(--muted);margin:0">"Test ortamında SMTP ayarlarına erişimim yok, yardıma ihtiyacım var."</p></div>
+      </div>
+      <p style="color:var(--muted);font-size:14px">Bu üç soru zorunlu bir kalıp değildir; ancak yeni başlayanlar için iyi bir başlangıçtır. Engeli söylemekten çekinmeyin, Daily tam olarak bunun için var.</p>
+    </section>
+
+    <!-- =============== 08 ROLLER =============== -->
+    <section class="doc reveal" id="roller">
+      <span class="eyebrow">08 · Yazılım Takımı</span>
+      <h2>Rol Kataloğu</h2>
+      <p class="lead">Scrum yalnızca üç sorumluluk tanımlar; ama gerçek şirketlerde çok daha fazla unvanla karşılaşırsınız. Aşağıdan bir role tıklayın ve ayrıntılarını inceleyin.</p>
+
+      <div class="filters" id="roleFilters">
+        <button class="on" data-g="all">Tümü</button>
+        <button data-g="gelistirme">⌨️ Geliştirme</button>
+        <button data-g="mimari">🏛️ Mimari</button>
+        <button data-g="analiz">🔍 Analiz</button>
+        <button data-g="kalite">🧪 Kalite</button>
+        <button data-g="operasyon">🚀 Operasyon</button>
+        <button data-g="tasarim">🎨 Tasarım</button>
+        <button data-g="yonetim">📈 Yönetim</button>
+      </div>
+      <div class="roles" id="roleGrid"></div>
+      <div class="profile" id="profile" aria-live="polite"></div>
+    </section>
+
+    <!-- =============== 09 KIDEM =============== -->
+    <section class="doc reveal" id="kidem">
+      <span class="eyebrow">09 · Kariyer</span>
+      <h2>Junior → Mid → Senior</h2>
+      <p class="lead">Kıdem, yalnızca kaç yıl çalıştığınızla değil; <b>ne kadar bağımsız çalışabildiğiniz</b>, <b>ne büyüklükte problemleri</b> çözebildiğiniz ve <b>çevrenizi ne kadar etkilediğinizle</b> ölçülür.</p>
+
+      <div class="ladder">
+        <span>Stajyer</span><i>→</i><span>Junior</span><i>→</i><span>Mid-Level</span><i>→</i><span>Senior</span><i>→</i>
+        <span style="border-color:var(--brand)">Tech Lead / Staff / Architect</span><i>veya</i><span style="border-color:var(--accent)">Engineering Manager</span>
+      </div>
+
+      <div class="card">
+        <div class="seg" id="lvlSeg" role="tablist">
+          <button data-l="jr" class="on">Junior</button>
+          <button data-l="mid">Mid-Level</button>
+          <button data-l="sr">Senior</button>
+        </div>
+        <div class="bars" id="lvlBars"></div>
+        <div class="lvl-note" id="lvlNote"></div>
+      </div>
+
+      <div class="table-wrap"><table>
+        <thead><tr><th>Konu</th><th>Junior</th><th>Mid-Level</th><th>Senior</th></tr></thead>
+        <tbody>
+          <tr><td><b>Tipik deneyim*</b></td><td>0–2 yıl</td><td>2–5 yıl</td><td>5+ yıl</td></tr>
+          <tr><td><b>Aldığı işler</b></td><td>İyi tanımlanmış, küçük görevler</td><td>Bir özelliği baştan sona</td><td>Belirsiz, büyük, riskli işler</td></tr>
+          <tr><td><b>Yardım ihtiyacı</b></td><td>Sık yönlendirme bekler</td><td>Takıldığında sorar</td><td>Başkalarının takıldığı yerde yardım eder</td></tr>
+          <tr><td><b>Code review</b></td><td>Çoğunlukla review alır</td><td>Hem alır hem yapar</td><td>Kalite standardını belirler</td></tr>
+          <tr><td><b>Teknik kararlar</b></td><td>Verilen yaklaşımı uygular</td><td>Kendi modülünde karar verir</td><td>Ekip genelini etkileyen kararlar verir</td></tr>
+          <tr><td><b>Odak</b></td><td>"Çalışsın"</td><td>"Doğru ve temiz çalışsın"</td><td>"Bugün ve 2 yıl sonra da sürdürülebilir olsun"</td></tr>
+        </tbody>
+      </table></div>
+      <p style="color:var(--faint);font-size:13px">* Yıllar yalnızca kabaca bir fikir verir. 3 yıllık deneyimle Senior seviyesinde çalışan da, 8 yıl sonra hâlâ Mid seviyesinde kalan da olabilir.</p>
+    </section>
+
+    <!-- =============== 10 RACI =============== -->
+    <section class="doc reveal" id="raci">
+      <span class="eyebrow">10 · Sorumluluk Matrisi</span>
+      <h2>Kim Ne Yapar? (RACI)</h2>
+      <p class="lead">RACI, bir işte kimin hangi rolde olduğunu gösteren basit bir tablodur. Aşağıdaki matris <b>tipik bir kurumsal yazılım takımı</b> için örnektir.</p>
+
+      <div class="legend">
+        <span><i class="r R">R</i> Responsible — işi yapan</span>
+        <span><i class="r A">A</i> Accountable — sonuçtan hesap veren (tek kişi)</span>
+        <span><i class="r C">C</i> Consulted — görüşü alınan</span>
+        <span><i class="r I">I</i> Informed — bilgilendirilen</span>
+      </div>
+      <div class="table-wrap"><table class="raci" id="raciTable"></table></div>
+
+      <div class="callout warn"><span class="ci">⚠️</span><div><p>Bu tablo bir kural değil, bir örnektir. Bazı takımlarda analistin rolünü PO üstlenir, bazılarında QA ayrı bir ekip değil developer'ların kendisidir. İşe başladığınızda <b>"Bu takımda bu işten kim sorumlu?"</b> diye sormak tamamen normaldir.</p></div></div>
+    </section>
+
+    <!-- =============== 11 SENARYO =============== -->
+    <section class="doc reveal" id="senaryo">
+      <span class="eyebrow">11 · Uçtan Uca Örnek</span>
+      <h2>Bir Özelliğin Yolculuğu</h2>
+      <p class="lead">04. bölümdeki <b>"anket hatırlatma maili"</b> isteğinin fikirden canlıya kadar hangi rollerin elinden geçtiğini adım adım izleyelim.</p>
+
+      <div class="flow-wrap">
+        <div class="flow-bar">
+          <h4>Hatırlatma maili özelliği</h4>
+          <button class="btn" data-play="feature">▶ Oynat</button>
+        </div>
+        <div class="flow" data-flow="feature">
+          <button class="flow-step" data-detail="<b>🎯 Product Owner</b> — İş biriminden &quot;katılım düşük&quot; şikayetini alır. Bunu bir hedefe dönüştürür, user story olarak backlog'a ekler ve önceliğini yükseltir."><span class="n">01</span><b>İhtiyaç doğar</b><small>Product Owner</small></button>
+          <button class="flow-step" data-detail="<b>🔍 İş / Sistem Analisti</b> — Detayları netleştirir: Hangi saatte çalışacak? Mail şablonu ne olacak? Oy veren kişi nasıl tespit edilir? Etkilenen tablolar ve servisler hangileri? Analiz dokümanı hazırlanır."><span class="n">02</span><b>Analiz</b><small>Analist</small></button>
+          <button class="flow-step" data-detail="<b>🏛️ Domain / Software Architect</b> — Zamanlanmış görev (scheduler) mi, mesaj kuyruğu mu? Mail servisi mevcut altyapıyı mı kullanacak? Çok sunucuda aynı mail iki kez gider mi? Mimari kararı verilir."><span class="n">03</span><b>Mimari karar</b><small>Architect</small></button>
+          <button class="flow-step" data-detail="<b>🗓️ Scrum Takımı</b> — Refinement ve Sprint Planning'de iş küçük görevlere bölünür, tahminlenir ve sprinte alınır. Scrum Master toplantıyı kolaylaştırır."><span class="n">04</span><b>Planlama</b><small>Tüm takım</small></button>
+          <button class="flow-step" data-detail="<b>⌨️ Junior + Senior Developer</b> — Junior, oy vermeyenleri bulan repository sorgusunu ve mail şablonunu yazar. Senior, scheduler ve tekrar gönderimi engelleyen mantığı kurar; Junior'a eşli programlama ile destek olur."><span class="n">05</span><b>Geliştirme</b><small>Developers</small></button>
+          <button class="flow-step" data-detail="<b>👀 Code Review</b> — Pull request açılır. Senior / Tech Lead kodu inceler: okunabilirlik, test, hata yönetimi, performans. Gerekirse düzeltme istenir."><span class="n">06</span><b>Code Review</b><small>Senior / Tech Lead</small></button>
+          <button class="flow-step" data-detail="<b>🧪 QA</b> — Test senaryoları çalıştırılır: Oy vermiş kişiye mail gidiyor mu? Süresi geçmiş ankette ne oluyor? İki kez mail gidiyor mu? Bulunan bug'lar developer'a döner."><span class="n">07</span><b>Test</b><small>QA / SDET</small></button>
+          <button class="flow-step" data-detail="<b>🚀 DevOps</b> — CI/CD pipeline kodu derler, testleri koşar ve önce test, sonra canlı ortama dağıtır. Mail gönderim hataları için izleme (monitoring) ve alarm kurulur."><span class="n">08</span><b>Canlıya alma</b><small>DevOps</small></button>
+          <button class="flow-step" data-detail="<b>✅ Sprint Review</b> — Özellik paydaşlara gösterilir. PO kabul kriterlerini kontrol eder. Birkaç hafta sonra katılım oranına bakılarak özelliğin işe yarayıp yaramadığı ölçülür."><span class="n">09</span><b>Kabul ve ölçüm</b><small>PO + paydaşlar</small></button>
+        </div>
+        <div class="flow-detail" data-detail-for="feature">Bir adıma tıklayın ya da <b>Oynat</b> ile özelliğin yolculuğunu izleyin.</div>
+      </div>
+
+      <div class="callout tip"><span class="ci">🔁</span><div><p>Gerçek hayatta bu akış tek yönlü değildir. QA bug bulunca iş developer'a döner; developer analizde eksik görünce analiste sorar. Agile'ın gücü de bu <b>hızlı geri bildirim döngüsünden</b> gelir.</p></div></div>
+    </section>
+
+    <!-- =============== 12 KARISAN =============== -->
+    <section class="doc reveal" id="karisan">
+      <span class="eyebrow">12 · Karşılaştırma</span>
+      <h2>Sık Karıştırılanlar</h2>
+      <p class="lead">Unvanlar birbirine benzediğinde aradaki farkı en iyi "hangi soruya cevap veriyor?" sorusu açıklar.</p>
+
+      <details class="faq" open><summary>Product Owner vs Proje Yöneticisi (Project Manager)</summary>
+        <div class="ans"><b>PO</b> ürünün <i>değerine</i> odaklanır: "Neyi yaparsak kullanıcıya en çok faydası olur?" <b>Proje Yöneticisi</b> ise projenin <i>kapsam, takvim ve bütçe</i> içinde tamamlanmasına odaklanır: "Söz verilen tarihte, söz verilen bütçeyle bitecek mi?" Scrum'da proje yöneticisi rolü tanımlı değildir; ancak birçok kurumda (özellikle birden fazla takımın çalıştığı projelerde) bulunur.</div></details>
+      <details class="faq"><summary>Scrum Master vs Proje Yöneticisi</summary>
+        <div class="ans"><b>Proje yöneticisi</b> plan yapar, iş dağıtır ve takip eder. <b>Scrum Master</b> iş dağıtmaz; takımın işi kendisinin planlayıp dağıtabilmesini sağlar. Biri "yönetir", diğeri "kolaylaştırır".</div></details>
+      <details class="faq"><summary>Product Owner vs İş Analisti (Business Analyst)</summary>
+        <div class="ans"><b>PO</b> "ne yapılacak ve hangi sırayla?" kararını verir. <b>İş analisti</b> o kararın <i>ayrıntısını</i> çıkarır: iş kuralları, istisnai durumlar, ekran akışları, veri ihtiyaçları. Analist öneri sunar, öncelik kararı PO'dadır. Küçük takımlarda PO analiz işini de yapabilir.</div></details>
+      <details class="faq"><summary>İş Analisti vs Sistem Analisti</summary>
+        <div class="ans"><b>İş analisti</b> iş tarafının dilini konuşur: "Müşteri kredi başvurusu yapınca ne olmalı?" <b>Sistem analisti</b> bunu teknik dile çevirir: "Hangi servis çağrılacak, hangi tabloya yazılacak, hangi alan zorunlu?" Biri <i>ne</i> gerektiğini, diğeri bunun <i>sistemde nasıl karşılanacağını</i> tanımlar.</div></details>
+      <details class="faq"><summary>Domain Architect vs Software / Solution Architect</summary>
+        <div class="ans"><b>Domain Architect</b> belirli bir <i>iş alanının</i> (ör. ödemeler, krediler, müşteri yönetimi) teknik bütünlüğünden sorumludur; o alandaki tüm uygulamaların sınırlarını, veri modelini ve entegrasyonlarını gözetir. <b>Software/Solution Architect</b> daha çok <i>belirli bir uygulamanın veya çözümün</i> teknik tasarımına odaklanır. Domain Architect "ormanı", Solution Architect "bir ağacı" daha yakından görür.</div></details>
+      <details class="faq"><summary>Senior Developer vs Tech Lead</summary>
+        <div class="ans"><b>Senior</b> bir <i>yetkinlik seviyesidir</i>; <b>Tech Lead</b> ise bir <i>sorumluluktur</i>. Tech Lead genellikle bir senior'dır, ama ek olarak takımın teknik yönünden, kod standartlarından ve teknik kararların koordinasyonundan sorumludur. Her senior tech lead değildir.</div></details>
+      <details class="faq"><summary>QA vs Tester vs SDET</summary>
+        <div class="ans"><b>Tester</b> yazılımı test eder ve hata bulur. <b>QA (Quality Assurance)</b> daha geniş bir kavramdır: hatanın oluşmasını önleyecek süreçleri de kapsar (test stratejisi, kabul kriterlerinin kontrolü, kalite metrikleri). <b>SDET</b> (Software Development Engineer in Test) testleri kod yazarak otomatikleştiren, developer yetkinliğine sahip test mühendisidir.</div></details>
+      <details class="faq"><summary>Tech Lead vs Engineering Manager</summary>
+        <div class="ans"><b>Tech Lead</b> teknik yönü belirler: mimari, kod kalitesi, teknik borç. <b>Engineering Manager</b> insanlara odaklanır: işe alım, performans görüşmeleri, kariyer gelişimi, takım sağlığı. Kısaca: biri <i>sistemi</i>, diğeri <i>sistemi kuran insanları</i> büyütür.</div></details>
+    </section>
+
+    <!-- =============== 13 TAVSIYE =============== -->
+    <section class="doc reveal" id="tavsiye">
+      <span class="eyebrow">13 · İlk Adımlar</span>
+      <h2>Yeni Başlayanlara Öneriler</h2>
+      <p class="lead">Junior olarak bir takıma katıldığınızda sizden her şeyi bilmeniz beklenmez. Beklenen; <b>öğrenmeye açık olmanız</b>, <b>görünür çalışmanız</b> ve <b>takımla iletişim kurmanız</b>dır.</p>
+
+      <div class="grid g2">
+        <div class="card feature"><div class="ic">🙋</div><div><h4>Soru sormaktan çekinmeyin</h4><p>15–30 dakika kendiniz deneyin, ilerleyemiyorsanız ne denediğinizi anlatarak sorun. "Takıldım ve şunları denedim" cümlesi çok değerlidir.</p></div></div>
+        <div class="card feature"><div class="ic">🗺️</div><div><h4>Takımın haritasını çıkarın</h4><p>PO kim, analist kim, QA kim, ortamlar ve deploy kimde? İlk haftada kime ne sorulacağını öğrenmek işinizi çok hızlandırır.</p></div></div>
+        <div class="card feature"><div class="ic">📖</div><div><h4>Önce kodu okuyun</h4><p>Var olan kodun yapısını, isimlendirmesini ve alışkanlıklarını takip edin. Yeni yazdığınız kod çevresindeki koda benzemeli.</p></div></div>
+        <div class="card feature"><div class="ic">👀</div><div><h4>Code review'ı öğrenme fırsatı görün</h4><p>Gelen yorumlar kişisel değildir; kod hakkındadır. Her yorum, size ücretsiz mentorluktur.</p></div></div>
+        <div class="card feature"><div class="ic">🚧</div><div><h4>Engelleri erken söyleyin</h4><p>"Yetişmeyecek" demek, sprint sonunda sürpriz yapmaktan çok daha iyidir. Daily tam olarak bunun için var.</p></div></div>
+        <div class="card feature"><div class="ic">✅</div><div><h4>"Bitti"nin anlamını bilin</h4><p>Takımın Definition of Done listesini öğrenin. Test yazılmamış, review'dan geçmemiş iş bitmiş sayılmaz.</p></div></div>
+        <div class="card feature"><div class="ic">🧪</div><div><h4>QA'yı rakip değil müttefik görün</h4><p>QA'nın bulduğu her bug, müşterinin bulmadığı bir bug'dır. Test senaryolarını önceden sormak, işinizi daha kaliteli yapar.</p></div></div>
+        <div class="card feature"><div class="ic">🎯</div><div><h4>İşin "neden"ini anlayın</h4><p>Sadece "ne"yi değil, "neden"i de sorun. Kullanıcının problemini anlayan developer, daha iyi çözüm üretir.</p></div></div>
+      </div>
+    </section>
+
+    <!-- =============== 14 SOZLUK =============== -->
+    <section class="doc reveal" id="sozluk">
+      <span class="eyebrow">14 · Referans</span>
+      <h2>Sözlük</h2>
+      <p class="lead">Toplantılarda sık duyacağınız terimler.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Terim</th><th>Anlamı</th></tr></thead>
+        <tbody>
+          <tr><td><b>Stakeholder (Paydaş)</b></td><td>Üründen etkilenen ya da üründe söz sahibi olan kişi/birim: müşteri, iş birimi, yönetim, hukuk…</td></tr>
+          <tr><td><b>User Story</b></td><td>Bir ihtiyacın kullanıcı gözünden kısa anlatımı: "Bir … olarak, … istiyorum, böylece …"</td></tr>
+          <tr><td><b>Acceptance Criteria</b></td><td>Bir story'nin kabul edilmesi için sağlanması gereken koşullar</td></tr>
+          <tr><td><b>Epic</b></td><td>Birden fazla sprinte yayılan, birçok story'ye bölünen büyük iş</td></tr>
+          <tr><td><b>Backlog Refinement</b></td><td>Backlog maddelerini netleştirme, bölme ve tahminleme çalışması</td></tr>
+          <tr><td><b>Story Point</b></td><td>Bir işin büyüklüğünün/karmaşıklığının göreceli tahmini (saat değildir)</td></tr>
+          <tr><td><b>Velocity</b></td><td>Takımın bir sprintte ortalama tamamladığı story point miktarı; takımın kendi planlaması içindir, takımları karşılaştırmak için değildir</td></tr>
+          <tr><td><b>Increment</b></td><td>Sprint sonunda ortaya çıkan, Definition of Done'ı karşılayan çalışan ürün parçası</td></tr>
+          <tr><td><b>Definition of Done</b></td><td>Bir işin "bitti" sayılması için takımın ortak kalite kontrol listesi</td></tr>
+          <tr><td><b>Impediment</b></td><td>Takımın ilerlemesini engelleyen sorun</td></tr>
+          <tr><td><b>Pull Request (PR)</b></td><td>Yapılan kod değişikliğinin incelenip ana koda eklenmesi için açılan istek</td></tr>
+          <tr><td><b>Code Review</b></td><td>Bir değişikliğin başka bir developer tarafından incelenmesi</td></tr>
+          <tr><td><b>Bug / Regression</b></td><td>Hata / Daha önce çalışan bir özelliğin yeni bir değişiklikle bozulması</td></tr>
+          <tr><td><b>CI/CD</b></td><td>Kodun otomatik derlenip test edilmesi (Continuous Integration) ve ortamlara otomatik dağıtılması (Continuous Delivery/Deployment)</td></tr>
+          <tr><td><b>Technical Debt (Teknik borç)</b></td><td>Hızlı gitmek için yapılan kısa yollar; ileride "faizi" ile geri ödenir</td></tr>
+          <tr><td><b>Pair Programming</b></td><td>İki developer'ın aynı iş üzerinde birlikte çalışması; Junior'lar için çok etkili bir öğrenme yöntemi</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- =============== 15 QUIZ =============== -->
+    <section class="doc reveal" id="quiz-bolum">
+      <span class="eyebrow">15 · Pekiştirme</span>
+      <h2>Kendinizi Test Edin</h2>
+      <p class="lead">Öğrendiklerinizi kısa bir quiz ile pekiştirin.</p>
+      <div class="card" id="quiz"></div>
+      <footer>
+        <b>Hazırlayan:</b> DFX Developer School · Kaynak: Scrum Guide (2020), Agile Manifesto (2001) · Son güncelleme: Kasım 2026
+      </footer>
+    </section>
+  </main>
+</div>
+<button class="icon-btn backtop" id="backtop" aria-label="Başa dön">↑</button>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function store(k, v){ try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch(e) { return null; } }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]; }); }
+
+  /* ---------- theme ---------- */
+  var root = document.documentElement;
+  var saved = store("dfx-theme");
+  if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+  function isDark(){
+    var t = root.getAttribute("data-theme");
+    if (t) return t === "dark";
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  function syncThemeIcon(){ $("#themeIcon").textContent = isDark() ? "☀" : "☾"; }
+  $("#themeBtn").addEventListener("click", function(){
+    var next = isDark() ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    store("dfx-theme", next);
+    syncThemeIcon();
+  });
+  syncThemeIcon();
+
+  /* ---------- tabs ---------- */
+  $$(".tabs").forEach(function(t){
+    var btns = $$(":scope > .tab-list > button", t);
+    var panels = $$(":scope > .tab-panel", t);
+    t.querySelector(".tab-list").setAttribute("role", "tablist");
+    function activate(key){
+      btns.forEach(function(b){ b.setAttribute("aria-selected", String(b.dataset.tab === key)); });
+      panels.forEach(function(p){ p.classList.toggle("active", p.dataset.panel === key); });
+    }
+    btns.forEach(function(b){ b.setAttribute("role", "tab"); b.addEventListener("click", function(){ activate(b.dataset.tab); }); });
+    if (btns[0]) activate(btns[0].dataset.tab);
+  });
+
+  /* ---------- flows ---------- */
+  $$("[data-flow]").forEach(function(flow){
+    var key = flow.dataset.flow;
+    var steps = $$(".flow-step", flow);
+    var detail = $('[data-detail-for="' + key + '"]');
+    var btn = $('[data-play="' + key + '"]');
+    var timer = null, idx = -1;
+    function setActive(i){
+      idx = i;
+      steps.forEach(function(s, j){ s.classList.toggle("active", j === i); s.classList.toggle("done", j < i); });
+      if (steps[i]) detail.innerHTML = steps[i].dataset.detail;
+    }
+    function stop(){ clearInterval(timer); timer = null; btn.textContent = "▶ Oynat"; }
+    steps.forEach(function(s, i){ s.addEventListener("click", function(){ stop(); setActive(i); }); });
+    btn.addEventListener("click", function(){
+      if (timer) { stop(); return; }
+      btn.textContent = "❚❚ Durdur";
+      setActive(idx >= steps.length - 1 || idx < 0 ? 0 : idx + 1);
+      timer = setInterval(function(){
+        if (idx >= steps.length - 1) { stop(); return; }
+        setActive(idx + 1);
+      }, reduceMotion ? 3200 : 2600);
+    });
+  });
+
+  /* ---------- role catalog ---------- */
+  var groupNames = { gelistirme:"Geliştirme", mimari:"Mimari", analiz:"Analiz", kalite:"Kalite", operasyon:"Operasyon", tasarim:"Tasarım", yonetim:"Yönetim" };
+  var roles = [
+    { id:"intern", ic:"🌱", g:"gelistirme", name:"Stajyer / Intern", tag:"Öğrenmek için takıma katılan",
+      exp:"Öğrenci / yeni mezun",
+      analogy:"Hastanedeki intörn doktor gibi: gerçek ortamda, deneyimli birinin gözetiminde öğrenir.",
+      does:["Takımın kullandığı araçları, kod yapısını ve süreçleri öğrenir","Küçük, riski düşük görevler alır (ör. dokümantasyon, basit bug)","Mentoru ile düzenli görüşür"],
+      day:["Mentoruyla eşli programlama","Daily'ye katılıp takımın dilini öğrenme","Eğitim içerikleri ve proje kodunu okuma"],
+      tools:["Git","IDE","Jira","Confluence"], works:["Mentor (genellikle Senior)","Junior Developer'lar"],
+      skills:["Merak","Temel programlama","Soru sorma becerisi"],
+      tip:"Staj sonunda en çok hatırlanan şey yazdığınız kod değil, ne kadar hızlı öğrendiğiniz ve nasıl iletişim kurduğunuzdur." },
+    { id:"jr", ic:"🧑‍💻", g:"gelistirme", name:"Junior Developer", tag:"Kariyerinin başındaki geliştirici",
+      exp:"Genellikle 0–2 yıl",
+      analogy:"Usta yanındaki kalfa gibi: işi kendisi yapar ama ustası kontrol eder ve yol gösterir.",
+      does:["İyi tanımlanmış görevleri geliştirir (ör. bir endpoint, bir ekran, bir bug fix)","Unit test yazar","Code review'dan gelen geri bildirimleri uygular","Takımın kod standartlarını öğrenir ve uygular"],
+      day:["Daily Scrum","Jira'dan aldığı görev üzerinde kodlama","Pull request açma ve review yorumlarını düzeltme","Takıldığı yerde Senior'a danışma"],
+      tools:["Java / Spring Boot","Git","IDE","Postman","Jira"], works:["Senior Developer","QA","Analist"],
+      skills:["Temel programlama ve OOP","Git kullanımı","Hata ayıklama (debug)","Öğrenmeye açıklık"],
+      tip:"Junior olmak 'az bilmek' değil, 'çok öğrenecek olmak' demektir. Her gün bir şey öğrendiğinizi not edin." },
+    { id:"mid", ic:"👩‍💻", g:"gelistirme", name:"Mid-Level Developer", tag:"Bağımsız çalışabilen geliştirici",
+      exp:"Genellikle 2–5 yıl",
+      analogy:"Tek başına yemek çıkarabilen aşçı: tarifi bilir, mutfağı tanır, gerekirse şefe danışır.",
+      does:["Bir özelliği analizden canlıya kadar baştan sona geliştirir","Code review yapar","Kendi modülünde teknik kararlar alır","Junior'lara gündelik konularda yardım eder"],
+      day:["Story'leri görevlere bölme","Kodlama ve review","Refinement'ta tahminlemeye katkı","QA ile test senaryolarını konuşma"],
+      tools:["Framework'ler","SQL","Docker","CI/CD araçları"], works:["Senior Developer","Analist","QA","PO"],
+      skills:["Temiz kod","Test yazma","Veritabanı tasarımı","Kendi işini planlama"],
+      tip:"Mid seviyeye geçişin işareti: Size verilen işi kimseye sormadan, kalitesiyle bitirebilmek." },
+    { id:"sr", ic:"🧙", g:"gelistirme", name:"Senior Developer", tag:"Teknik derinliği ve etkisi yüksek geliştirici",
+      exp:"Genellikle 5+ yıl",
+      analogy:"Takımın kaptanı gibi: sahada oynar ama aynı zamanda oyunu okur ve diğerlerini yönlendirir.",
+      does:["Belirsiz ve karmaşık problemleri çözer","Teknik tasarım yapar, mimari kararlara katkı verir","Kod kalitesinin standardını belirler","Junior ve Mid'lere mentorluk yapar","Riskleri ve teknik borcu erkenden görür"],
+      day:["Zor bir problem üzerinde kodlama","Kritik pull request'leri review etme","Junior ile eşli programlama","Architect ve analistle teknik toplantı"],
+      tools:["Tasarım desenleri","Performans araçları","Monitoring","Mimari dokümanlar"], works:["Tech Lead","Architect","Junior / Mid Developer","DevOps"],
+      skills:["Sistem tasarımı","Problem çözme","Mentorluk","İletişim ve ikna"],
+      tip:"Senior'ın değeri yazdığı kod kadar, çevresindeki insanları ne kadar geliştirdiğiyle ölçülür." },
+    { id:"lead", ic:"🧑‍✈️", g:"gelistirme", name:"Tech Lead / Lead Developer", tag:"Takımın teknik yönünden sorumlu",
+      exp:"Genellikle Senior seviyesi + liderlik",
+      analogy:"Orkestra şefi: her enstrümanı çalabilir ama asıl işi herkesin uyum içinde çalmasını sağlamaktır.",
+      does:["Takımın teknik vizyonunu ve standartlarını belirler","Teknik kararları koordine eder","Teknik borcu yönetir ve önceliklendirir","PO ile teknik fizibiliteyi konuşur","Architect ile takım arasında köprü olur"],
+      day:["Mimari ve tasarım toplantıları","Önemli PR'ların review'u","PO ile önceliklendirme görüşmesi","Takım üyeleriyle teknik birebirler"],
+      tools:["ADR (karar kayıtları)","Diyagram araçları","Kod analiz araçları (Sonar vb.)"], works:["Architect","PO","Engineering Manager","Tüm developer'lar"],
+      skills:["Teknik liderlik","Karar verme","Önceliklendirme","İletişim"],
+      tip:"Tech Lead bir unvandan çok bir sorumluluktur; bazı takımlarda Senior'lar bu rolü dönüşümlü üstlenir." },
+    { id:"swarch", ic:"🏗️", g:"mimari", name:"Software / Solution Architect", tag:"Bir uygulamanın veya çözümün teknik tasarımcısı",
+      exp:"Genellikle uzun yıllar geliştirme deneyimi",
+      analogy:"Bina mimarı: binanın nasıl duracağını, hangi malzemeyle yapılacağını ve depreme nasıl dayanacağını tasarlar.",
+      does:["Uygulamanın genel yapısını (katmanlar, servisler, veri akışı) tasarlar","Teknoloji seçimlerini yapar veya yönlendirir","Performans, güvenlik ve ölçeklenebilirlik gereksinimlerini karşılar","Mimari kararları dokümante eder"],
+      day:["Çözüm tasarım dokümanı hazırlama","Takımlarla teknik inceleme toplantıları","Yeni teknolojileri değerlendirme (PoC)","Güvenlik ve altyapı ekipleriyle görüşme"],
+      tools:["UML / C4 diyagramları","ADR","Bulut mimarisi","API tasarımı"], works:["Tech Lead","Domain Architect","DevOps","Güvenlik ekibi"],
+      skills:["Sistem tasarımı","Geniş teknoloji bilgisi","Trade-off analizi","Dokümantasyon"],
+      tip:"Her mimari karar bir ödünleşimdir (trade-off). İyi mimar 'en iyi' çözümü değil, 'bu durum için en uygun' çözümü seçer." },
+    { id:"domarch", ic:"🗺️", g:"mimari", name:"Domain Architect", tag:"Bir iş alanının teknik bütünlüğünden sorumlu",
+      exp:"Genellikle hem teknik hem iş alanı deneyimi",
+      analogy:"Şehir planlamacısı: tek bir binayı değil, bir mahalledeki tüm binaların, yolların ve altyapının uyumunu planlar.",
+      does:["Bir iş alanının (ör. Ödemeler, Krediler, Müşteri) uygulama haritasını yönetir","Alanın sınırlarını (bounded context) ve servis sorumluluklarını belirler","Alan içindeki ortak veri modelini ve terimleri tanımlar","Diğer domain'lerle entegrasyon kurallarını belirler","Alandaki projelerin mimari uyumunu denetler"],
+      day:["Yeni bir ihtiyacın hangi sisteme ait olduğuna karar verme","Farklı takımların entegrasyon tasarımlarını inceleme","İş birimiyle alanın yol haritasını konuşma","Kurumsal mimari ekibiyle standartları hizalama"],
+      tools:["Domain-Driven Design (DDD)","Context map","Entegrasyon desenleri","Kurumsal mimari araçları"], works:["Solution Architect","İş Analisti","PO","Birden çok takımın Tech Lead'i"],
+      skills:["İş alanı bilgisi","DDD","Entegrasyon mimarisi","Kurumsal bakış açısı"],
+      tip:"Bankacılık, telekom, sigorta gibi büyük kurumlarda sık görülür. Örneğin bir bankada 'Kartlar Domain Architect'i, kartla ilgili tüm sistemlerin uyumundan sorumludur." },
+    { id:"ba", ic:"🔍", g:"analiz", name:"İş Analisti (Business Analyst)", tag:"İş ihtiyacını anlaşılır gereksinime çevirir",
+      exp:"İş alanı bilgisi önemli",
+      analogy:"Tercüman: iş biriminin dilini, takımın anlayacağı net gereksinimlere çevirir.",
+      does:["Paydaşlarla görüşüp ihtiyaçları toplar","İş kurallarını, istisnaları ve akışları tanımlar","User story ve kabul kriterleri yazımında PO'ya destek olur","Süreç akış diyagramları ve ekran taslakları hazırlar","Geliştirme sırasında takımın sorularını yanıtlar"],
+      day:["İş birimiyle analiz toplantısı","Analiz dokümanı / story yazma","Refinement'ta story'leri takıma anlatma","UAT (kullanıcı kabul testi) desteği"],
+      tools:["Jira","Confluence","BPMN","Wireframe araçları"], works:["Product Owner","Sistem Analisti","QA","Paydaşlar"],
+      skills:["Dinleme ve soru sorma","Yazılı iletişim","Süreç modelleme","Detaycılık"],
+      tip:"İyi bir analist 'Ne istiyorsunuz?' yerine 'Hangi problemi çözmeye çalışıyorsunuz?' diye sorar." },
+    { id:"sa", ic:"🧾", g:"analiz", name:"Sistem Analisti", tag:"Gereksinimi teknik tasarıma bağlar",
+      exp:"Genellikle teknik geçmiş (geliştirme veya veritabanı)",
+      analogy:"Tesisat projecisi: mimarın çizdiği binanın su ve elektrik hatlarının tam olarak nereden geçeceğini çizer.",
+      does:["İş gereksinimini sistem gereksinimine dönüştürür","Etkilenen servisleri, tabloları ve entegrasyonları belirler","API sözleşmelerini ve veri alanlarını tanımlar","Etki analizi yapar: 'Bu değişiklik neleri bozar?'"],
+      day:["Mevcut sistemi ve veriyi inceleme (SQL sorguları)","Teknik analiz dokümanı yazma","Developer'larla alan/servis detaylarını netleştirme"],
+      tools:["SQL","Swagger / OpenAPI","Sequence diyagramları","Confluence"], works:["İş Analisti","Developer'lar","Architect"],
+      skills:["Veritabanı bilgisi","API bilgisi","Analitik düşünme","Etki analizi"],
+      tip:"Türkiye'deki kurumsal şirketlerde iş ve sistem analisti çoğu zaman ayrı rollerdir; küçük şirketlerde tek kişide birleşir." },
+    { id:"qa", ic:"🧪", g:"kalite", name:"QA / Test Mühendisi", tag:"Ürünün kalitesinin bekçisi",
+      exp:"Giriş seviyesinden başlanabilir",
+      analogy:"Uçak bakım kontrol uzmanı: uçak kalkmadan önce kontrol listesindeki her maddeyi tek tek doğrular.",
+      does:["Kabul kriterlerinden test senaryoları üretir","Fonksiyonel, regresyon ve uçtan uca testleri yürütür","Bulduğu hataları açık ve tekrar edilebilir şekilde raporlar","Analiz aşamasında 'Bu durumda ne olacak?' sorularıyla belirsizlikleri yakalar","Canlıya çıkış öncesi kalite onayı verir"],
+      day:["Test senaryosu yazma","Test ortamında test koşma","Bug kaydı açma ve developer ile netleştirme","Düzeltilen bug'ları tekrar test etme"],
+      tools:["Jira / Xray","Postman","Tarayıcı geliştirici araçları","SQL"], works:["Developer'lar","Analist","PO"],
+      skills:["Detaycılık","Kullanıcı gibi düşünme","Net raporlama","Temel teknik bilgi"],
+      tip:"İyi bir bug kaydı: adımlar, beklenen sonuç, gerçekleşen sonuç, ortam ve ekran görüntüsü içerir." },
+    { id:"sdet", ic:"🤖", g:"kalite", name:"Test Otomasyon Mühendisi (SDET)", tag:"Testleri kodla otomatikleştirir",
+      exp:"Hem test hem yazılım bilgisi",
+      analogy:"Fabrikadaki kalite kontrol robotunu kuran mühendis: aynı kontrolü her ürün için otomatik ve hatasız yaptırır.",
+      does:["UI, API ve entegrasyon test otomasyonu yazar","Otomasyon testlerini CI/CD pipeline'ına bağlar","Test altyapısını ve framework'ünü kurar","Performans ve yük testleri hazırlar"],
+      day:["Otomasyon senaryosu kodlama","Kırılan (flaky) testleri inceleme","Pipeline'daki test raporlarını takip etme"],
+      tools:["Selenium / Playwright","Cucumber","JUnit / TestNG","JMeter","Jenkins / GitLab CI"], works:["QA","Developer'lar","DevOps"],
+      skills:["Programlama","Test tasarımı","CI/CD","Analitik düşünme"],
+      tip:"Developer olarak başlayıp test otomasyonuna, ya da QA olarak başlayıp SDET'e geçmek oldukça yaygın bir kariyer yoludur." },
+    { id:"devops", ic:"🚀", g:"operasyon", name:"DevOps / Platform Mühendisi", tag:"Kodun canlıya güvenle ulaşmasını sağlar",
+      exp:"Geliştirme veya sistem yönetimi geçmişi",
+      analogy:"Havalimanı operasyon ekibi: uçakları (kodu) güvenle kaldırıp indirecek pist, kule ve yakıt altyapısını işletir.",
+      does:["CI/CD pipeline'larını kurar ve yönetir","Ortamları (dev, test, prod) hazırlar","Container ve orkestrasyon altyapısını yönetir","İzleme (monitoring), loglama ve alarm sistemlerini kurar","Canlı ortam sorunlarına müdahale eder"],
+      day:["Pipeline hatalarını giderme","Yeni bir servis için ortam hazırlama","Altyapıyı kod olarak yazma (IaC)","Alarm ve performans metriklerini inceleme"],
+      tools:["Docker","Kubernetes","Jenkins / GitLab CI / GitHub Actions","Terraform","Prometheus / Grafana"], works:["Developer'lar","Architect","Güvenlik ekibi"],
+      skills:["Linux","Ağ temelleri","Scripting","Otomasyon zihniyeti"],
+      tip:"DevOps aslında bir kültürün adıdır: 'Geliştiren ile işleten arasındaki duvarı kaldır.' Zamanla bir unvana da dönüşmüştür." },
+    { id:"uiux", ic:"🎨", g:"tasarim", name:"UI/UX Tasarımcı", tag:"Kullanıcı deneyimini ve arayüzü tasarlar",
+      exp:"Tasarım ve kullanıcı araştırması",
+      analogy:"İç mimar: bir mekânın sadece güzel değil, kullanışlı ve rahat olmasını sağlar.",
+      does:["Kullanıcı araştırması ve kullanılabilirlik testleri yapar","Kullanıcı akışlarını ve wireframe'leri hazırlar","Görsel tasarım ve tasarım sistemini oluşturur","Developer'lara tasarımın uygulanmasında destek olur"],
+      day:["Figma'da ekran tasarımı","Kullanıcı görüşmeleri","Developer ile tasarım detaylarını netleştirme"],
+      tools:["Figma","Prototipleme araçları","Tasarım sistemi"], works:["PO","İş Analisti","Frontend Developer'lar"],
+      skills:["Empati","Görsel tasarım","Kullanıcı araştırması","Erişilebilirlik"],
+      tip:"UX 'nasıl çalışıyor ve hissettiriyor', UI 'nasıl görünüyor' sorusuna cevap verir." },
+    { id:"em", ic:"🧑‍🏫", g:"yonetim", name:"Engineering Manager", tag:"İnsanları ve takımları büyütür",
+      exp:"Genellikle Senior / Lead geçmişi",
+      analogy:"Bahçıvan: bitkileri kendisi büyütmez ama büyüyebilecekleri ortamı hazırlar.",
+      does:["Takım üyeleriyle birebir görüşmeler yapar","Kariyer gelişimi ve performans değerlendirmesinden sorumludur","İşe alım süreçlerini yürütür","Takımın sağlığını, motivasyonunu ve kapasitesini yönetir","Organizasyonla takım arasında köprü kurar"],
+      day:["Birebir görüşmeler (1:1)","Mülakatlar","Diğer yöneticilerle planlama","Takımın engellerini üst yönetimle çözme"],
+      tools:["Performans sistemleri","OKR / hedefler","İşe alım araçları"], works:["Tech Lead","Scrum Master","PO","İK"],
+      skills:["İnsan yönetimi","Geri bildirim verme","Empati","Organizasyon bilgisi"],
+      tip:"Senior olduktan sonra iki yol vardır: teknik uzmanlık (Staff / Principal / Architect) veya yöneticilik (EM). İkisi de değerlidir." },
+    { id:"pm", ic:"📅", g:"yonetim", name:"Proje Yöneticisi", tag:"Kapsam, takvim ve bütçeyi yönetir",
+      exp:"Proje yönetimi deneyimi",
+      analogy:"Düğün organizatörü: salon, yemek, müzik ve davetiyelerin doğru zamanda, bütçe içinde hazır olmasını sağlar.",
+      does:["Proje planını ve kilometre taşlarını oluşturur","Birden fazla takım ve tedarikçi arasında koordinasyon sağlar","Riskleri ve bağımlılıkları takip eder","Üst yönetime ilerleme raporu verir","Bütçe ve kaynak takibi yapar"],
+      day:["Durum (status) toplantıları","Risk ve bağımlılık takibi","Paydaşlara raporlama"],
+      tools:["MS Project","Jira","Gantt şemaları","Risk kayıtları"], works:["PO","Scrum Master","Paydaşlar","Tedarikçiler"],
+      skills:["Planlama","Risk yönetimi","Koordinasyon","İletişim"],
+      tip:"Scrum'da tanımlı bir rol değildir; ancak çok takımlı, sabit tarihli kurumsal projelerde sıkça bulunur." }
+  ];
+  var grid = $("#roleGrid"), profile = $("#profile");
+  roles.forEach(function(r){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "role"; b.dataset.id = r.id; b.dataset.g = r.g;
+    b.innerHTML = "<span class='ric'>" + r.ic + "</span><span><b>" + esc(r.name) + "</b><small>" + esc(r.tag) + "</small></span>";
+    b.addEventListener("click", function(){ showRole(r.id, true); });
+    grid.appendChild(b);
+  });
+  function list(items){ return "<ul>" + items.map(function(i){ return "<li>" + esc(i) + "</li>"; }).join("") + "</ul>"; }
+  function chips(items){ return "<div class='chips'>" + items.map(function(i){ return "<span class='chip'>" + esc(i) + "</span>"; }).join("") + "</div>"; }
+  function showRole(id, scroll){
+    var r = roles.filter(function(x){ return x.id === id; })[0];
+    $$(".role", grid).forEach(function(b){ b.classList.toggle("active", b.dataset.id === id); });
+    profile.innerHTML =
+      "<div class='profile-head'><div class='pic'>" + r.ic + "</div><div><h3>" + esc(r.name) + "</h3><div class='sub'>" + esc(r.tag) + "</div>" +
+      "<div class='meta'><span class='pill brand'>" + esc(groupNames[r.g]) + "</span><span class='pill'>⏱ " + esc(r.exp) + "</span></div></div></div>" +
+      "<div class='profile-body'>" +
+        "<div class='wide analogy'>💭 <b>Benzetme:</b> " + esc(r.analogy) + "</div>" +
+        "<div><h4>Ne yapar?</h4>" + list(r.does) + "</div>" +
+        "<div><h4>Tipik bir günü</h4>" + list(r.day) + "</div>" +
+        "<div><h4>Beklenen yetkinlikler</h4>" + list(r.skills) + "</div>" +
+        "<div><h4>Araçlar ve kavramlar</h4>" + chips(r.tools) + "<h4 style='margin-top:14px'>En çok kiminle çalışır?</h4>" + chips(r.works) + "</div>" +
+        "<div class='wide callout tip' style='margin:0'><span class='ci'>💡</span><div><p>" + esc(r.tip) + "</p></div></div>" +
+      "</div>";
+    if (scroll) profile.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block:"nearest" });
+  }
+  $$("#roleFilters button").forEach(function(f){
+    f.addEventListener("click", function(){
+      $$("#roleFilters button").forEach(function(x){ x.classList.toggle("on", x === f); });
+      var g = f.dataset.g, first = null;
+      $$(".role", grid).forEach(function(b){
+        var vis = g === "all" || b.dataset.g === g;
+        b.classList.toggle("hidden", !vis);
+        if (vis && !first) first = b.dataset.id;
+      });
+      if (first) showRole(first, false);
+    });
+  });
+  showRole("jr", false);
+
+  /* ---------- seniority bars ---------- */
+  var dims = ["Teknik derinlik", "Bağımsızlık", "Etki alanı", "Belirsizlikle başa çıkma", "Mentorluk", "İletişim"];
+  var levels = {
+    jr:  { v:[30, 25, 15, 20, 5, 35],  note:"<b>Junior:</b> Odak öğrenmek ve verilen işi doğru yapmak. Etki alanı genellikle kendi görevidir. Sık geri bildirim almak bu seviyenin doğal bir parçasıdır." },
+    mid: { v:[60, 65, 45, 50, 35, 60], note:"<b>Mid-Level:</b> Bir özelliği baştan sona sahiplenir. Kendi işini planlar, review yapar ve Junior'lara gündelik konularda yardımcı olur." },
+    sr:  { v:[88, 90, 80, 85, 80, 85], note:"<b>Senior:</b> Etki alanı takım ve ötesidir. Belirsiz problemleri çözülebilir parçalara böler, standartları belirler ve başkalarını büyütür." }
+  };
+  var barsEl = $("#lvlBars");
+  dims.forEach(function(d){
+    var row = document.createElement("div");
+    row.className = "bar";
+    row.innerHTML = "<span></span><div class='track'><div class='fill'></div></div>";
+    row.children[0].textContent = d;
+    barsEl.appendChild(row);
+  });
+  function showLevel(l){
+    $$("#lvlSeg button").forEach(function(b){ b.classList.toggle("on", b.dataset.l === l); });
+    $$(".fill", barsEl).forEach(function(f, i){ f.style.width = levels[l].v[i] + "%"; });
+    $("#lvlNote").innerHTML = levels[l].note;
+  }
+  $$("#lvlSeg button").forEach(function(b){ b.addEventListener("click", function(){ showLevel(b.dataset.l); }); });
+
+  /* ---------- RACI ---------- */
+  var raciCols = ["PO", "SM", "Analist", "Architect", "Tech Lead", "Developer", "QA", "DevOps"];
+  var raciRows = [
+    ["Ürün vizyonu ve önceliklendirme", "A R", "I", "C", "C", "C", "I", "I", "I"],
+    ["Gereksinim analizi", "A", "I", "R", "C", "C", "C", "C", "I"],
+    ["Mimari kararlar", "C", "I", "C", "A R", "R", "C", "I", "C"],
+    ["Kod geliştirme", "I", "I", "C", "C", "A", "R", "C", "I"],
+    ["Code review", "", "", "", "C", "A R", "R", "", ""],
+    ["Test", "C", "I", "C", "", "C", "R", "A R", "I"],
+    ["Canlıya alma (deploy)", "A", "I", "I", "C", "R", "C", "C", "R"],
+    ["Süreç iyileştirme (retro)", "R", "A R", "R", "", "R", "R", "R", "R"],
+    ["Engelleri kaldırma", "C", "A R", "", "", "C", "C", "C", "C"]
+  ];
+  var raci = $("#raciTable");
+  var html = "<thead><tr><th>Faaliyet</th>" + raciCols.map(function(c){ return "<th lang='en'>" + c + "</th>"; }).join("") + "</tr></thead><tbody>";
+  raciRows.forEach(function(row){
+    html += "<tr><td><b>" + row[0] + "</b></td>";
+    row.slice(1).forEach(function(cell){
+      html += "<td>" + (cell ? cell.split(" ").map(function(x){ return "<i class='r " + x + "'>" + x + "</i>"; }).join(" ") : "<span style='color:var(--faint)'>–</span>") + "</td>";
+    });
+    html += "</tr>";
+  });
+  raci.innerHTML = html + "</tbody>";
+
+  /* ---------- quiz ---------- */
+  var quiz = [
+    { q:"Scrum Guide 2020'ye göre bir Scrum Takımında hangi üç sorumluluk vardır?", o:["Proje Yöneticisi, Developer, Tester", "Product Owner, Scrum Master, Developers", "Tech Lead, Analist, QA", "Architect, Product Owner, Developers"], a:1, w:"Scrum yalnızca üç sorumluluk tanımlar: Product Owner, Scrum Master ve Developers. Diğer unvanlar Developers grubunun içinde yer alır." },
+    { q:"Product Backlog'un önceliklendirilmesinden kim sorumludur?", o:["Scrum Master", "Tech Lead", "Product Owner", "Takımın oylaması"], a:2, w:"Backlog'un sahibi ve son öncelik kararını veren kişi Product Owner'dır. Takım ve paydaşlar görüş verebilir." },
+    { q:"Daily Scrum hakkında hangisi doğrudur?", o:["Scrum Master'a durum raporu verilen toplantıdır", "Developers'ın Sprint Goal'a göre günü planladığı, en fazla 15 dakikalık toplantıdır", "Haftada bir yapılır", "Müşterinin katıldığı demo toplantısıdır"], a:1, w:"Daily Scrum, Developers'ın kendi toplantısıdır. Amaç rapor vermek değil, birlikte günü planlamak ve engelleri görünür kılmaktır." },
+    { q:"Sprint sonunda yapılan işin paydaşlara gösterildiği etkinlik hangisidir?", o:["Sprint Retrospective", "Sprint Planning", "Sprint Review", "Backlog Refinement"], a:2, w:"Review'da ürün (Increment) gösterilir. Retrospective'de ise takımın çalışma şekli konuşulur." },
+    { q:"Scrum Master'ın en doğru tanımı hangisidir?", o:["Takıma iş dağıtan yönetici", "Takımın etkinliğini artıran, engelleri kaldıran, hizmet eden lider", "Takımın en kıdemli developer'ı", "Müşteriyi temsil eden kişi"], a:1, w:"Scrum Master iş dağıtmaz; takımın kendini yönetebilmesini ve Scrum'ı doğru uygulamasını sağlar." },
+    { q:"Bankada 'Ödemeler' alanındaki tüm sistemlerin uyumundan, sınırlarından ve entegrasyonlarından sorumlu rol hangisidir?", o:["Junior Developer", "Domain Architect", "QA", "Scrum Master"], a:1, w:"Domain Architect belirli bir iş alanının (domain) teknik bütünlüğünden sorumludur." },
+    { q:"'Müşteri kredi başvurusu yaptığında hangi iş kuralları uygulanmalı?' sorusunu kim netleştirir?", o:["DevOps", "İş Analisti", "SDET", "Engineering Manager"], a:1, w:"İş analisti iş ihtiyacını ve kurallarını toplayıp takımın anlayacağı gereksinimlere dönüştürür. Sistem analisti bunu teknik detaya çevirir." },
+    { q:"Junior ile Senior Developer arasındaki en temel fark nedir?", o:["Senior daha hızlı yazar", "Senior'ın daha çok sertifikası vardır", "Senior belirsiz problemleri bağımsız çözer ve çevresindekileri geliştirir", "Senior kod yazmaz, sadece toplantıya girer"], a:2, w:"Kıdem; bağımsızlık, etki alanı ve başkalarını büyütme kapasitesiyle ölçülür. Yıl ve hız tek başına belirleyici değildir." },
+    { q:"Kodunuz yazıldı ve sizin bilgisayarınızda çalışıyor. İş 'bitti' mi?", o:["Evet, kod çalışıyorsa bitmiştir", "Takımın Definition of Done listesindeki tüm maddeler sağlandıysa bitmiştir", "PO onaylamasa da bitmiştir", "QA'ya gerek yoktur"], a:1, w:"Bir iş, review, test ve diğer DoD maddeleri tamamlanmadan bitmiş sayılmaz." },
+    { q:"Testleri kod yazarak otomatikleştiren ve CI/CD'ye bağlayan rol hangisidir?", o:["İş Analisti", "Product Owner", "SDET / Test Otomasyon Mühendisi", "UI/UX Tasarımcı"], a:2, w:"SDET (Software Development Engineer in Test), yazılım geliştirme yetkinliğine sahip test mühendisidir." }
+  ];
+  var qEl = $("#quiz"), correct = 0, answered = 0;
+  var scoreEl = document.createElement("div");
+  scoreEl.className = "score";
+  quiz.forEach(function(item, qi){
+    var box = document.createElement("div");
+    box.className = "quiz-q";
+    box.innerHTML = "<h4></h4><div class='opts'></div><div class='why'></div>";
+    box.querySelector("h4").textContent = (qi + 1) + ". " + item.q;
+    box.querySelector(".why").textContent = "💡 " + item.w;
+    var opts = box.querySelector(".opts");
+    item.o.forEach(function(o, oi){
+      var b = document.createElement("button");
+      b.className = "opt"; b.type = "button"; b.textContent = o;
+      b.addEventListener("click", function(){
+        if (box.classList.contains("answered")) return;
+        box.classList.add("answered");
+        answered++;
+        if (oi === item.a) correct++;
+        $$(".opt", opts).forEach(function(x, xi){
+          x.disabled = true;
+          if (xi === item.a) x.classList.add("right");
+          else if (xi === oi) x.classList.add("wrong");
+        });
+        renderScore();
+      });
+      opts.appendChild(b);
+    });
+    qEl.appendChild(box);
+  });
+  var reset = document.createElement("button");
+  reset.className = "btn ghost"; reset.type = "button"; reset.textContent = "↺ Sıfırla";
+  reset.addEventListener("click", function(){
+    correct = 0; answered = 0;
+    $$(".quiz-q", qEl).forEach(function(b){ b.classList.remove("answered"); });
+    $$(".opt", qEl).forEach(function(o){ o.disabled = false; o.classList.remove("right", "wrong"); });
+    renderScore();
+  });
+  var foot = document.createElement("div");
+  foot.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px;flex-wrap:wrap";
+  foot.appendChild(scoreEl); foot.appendChild(reset);
+  qEl.appendChild(foot);
+  function renderScore(){
+    scoreEl.textContent = answered === quiz.length
+      ? "Sonuç: " + correct + " / " + quiz.length + (correct === quiz.length ? " 🎉 Mükemmel!" : correct >= 7 ? " 👏 Çok iyi" : " — ilgili bölümleri tekrar gözden geçirin")
+      : "Cevaplanan: " + answered + " / " + quiz.length;
+  }
+  renderScore();
+
+  /* ---------- nav: scrollspy, progress, search, mobile ---------- */
+  var links = $$("#nav a");
+  var sections = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var progress = $("#progress"), backtop = $("#backtop");
+  function onScroll(){
+    var y = window.scrollY, h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (y / h * 100) : 0) + "%";
+    backtop.classList.toggle("show", y > 800);
+    var cur = 0;
+    sections.forEach(function(s, i){ if (s && s.getBoundingClientRect().top < 140) cur = i; });
+    links.forEach(function(a, i){ a.classList.toggle("active", i === cur); });
+  }
+  window.addEventListener("scroll", onScroll, { passive:true });
+  onScroll();
+  backtop.addEventListener("click", function(){ window.scrollTo({ top:0, behavior: reduceMotion ? "auto" : "smooth" }); });
+
+  var search = $("#navSearch");
+  var sectionText = sections.map(function(s){ return s ? s.textContent.toLocaleLowerCase("tr") : ""; });
+  search.addEventListener("input", function(){
+    var q = search.value.trim().toLocaleLowerCase("tr"), any = false;
+    links.forEach(function(a, i){
+      var hit = !q || a.textContent.toLocaleLowerCase("tr").indexOf(q) > -1 || sectionText[i].indexOf(q) > -1;
+      a.classList.toggle("hidden", !hit);
+      if (hit) any = true;
+    });
+    $$(".nav-group").forEach(function(g){
+      var n = g.nextElementSibling, vis = false;
+      while (n && n.tagName === "A") { if (!n.classList.contains("hidden")) vis = true; n = n.nextElementSibling; }
+      g.style.display = vis ? "" : "none";
+    });
+    $("#navEmpty").style.display = any ? "none" : "block";
+  });
+  search.addEventListener("keydown", function(e){
+    if (e.key === "Enter") { var first = links.filter(function(a){ return !a.classList.contains("hidden"); })[0]; if (first) { first.click(); search.blur(); } }
+    if (e.key === "Escape") { search.value = ""; search.dispatchEvent(new Event("input")); search.blur(); }
+  });
+  document.addEventListener("keydown", function(e){
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      document.body.classList.add("nav-open");
+      search.focus();
+    }
+  });
+
+  function closeNav(){ document.body.classList.remove("nav-open"); }
+  $("#menuBtn").addEventListener("click", function(){ document.body.classList.toggle("nav-open"); });
+  $("#scrim").addEventListener("click", closeNav);
+  links.forEach(function(a){ a.addEventListener("click", closeNav); });
+
+  /* ---------- reveal ---------- */
+  var barsDone = false;
+  if ("IntersectionObserver" in window && !reduceMotion) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, { rootMargin:"0px 0px -8% 0px" });
+    $$(".reveal").forEach(function(r){ io.observe(r); });
+    var bo = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if (en.isIntersecting && !barsDone) { barsDone = true; showLevel("jr"); } });
+    });
+    bo.observe(barsEl);
+  } else {
+    $$(".reveal").forEach(function(r){ r.classList.add("in"); });
+    showLevel("jr");
+  }
+})();
+</script>
+</body>
+</html>

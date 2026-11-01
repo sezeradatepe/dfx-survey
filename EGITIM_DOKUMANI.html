@@ -1,0 +1,2851 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DFX Survey Eğitimi</title>
+<meta name="description" content="DFX Survey projesi üzerinden Spring Boot 4, Spring Data JPA, Spring Security + JWT, MapStruct ve Spring Mail eğitimi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>window.Prism = window.Prism || {}; window.Prism.manual = true;</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<style>
+:root{
+  --bg:#f7f8fa; --surface:#ffffff; --surface-2:#f1f3f6; --border:#e3e6eb;
+  --text:#1b1f24; --muted:#5d6672; --faint:#8a929c;
+  --brand:#4e9a2c; --brand-soft:#e8f4e1; --brand-strong:#3a7a1f;
+  --accent:#4f5bd5; --accent-soft:#eceefc;
+  --info:#2f6fd6; --info-soft:#e7f0fd;
+  --warn:#b46d00; --warn-soft:#fdf3e1;
+  --danger:#c4352b; --danger-soft:#fdeceb;
+  --get:#1f8a5b; --post:#b4630a;
+  --code-bg:#fbfbfc; --code-border:#e6e8ec;
+  --tk-comment:#8a929c; --tk-keyword:#a626a4; --tk-string:#3a7a1f; --tk-number:#b4630a;
+  --tk-func:#2f6fd6; --tk-annot:#c4352b; --tk-class:#9a6700; --tk-punct:#5d6672; --tk-tag:#c4352b; --tk-attr:#9a6700;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 16px rgba(16,24,40,.06);
+  --radius:14px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1215; --surface:#161a1f; --surface-2:#1d2228; --border:#2a3038;
+    --text:#e6e9ed; --muted:#a0a8b3; --faint:#717a85;
+    --brand:#7cc35a; --brand-soft:#1d2a18; --brand-strong:#9bd67d;
+    --accent:#8f98f2; --accent-soft:#1f2240;
+    --info:#6ea3f2; --info-soft:#15233a;
+    --warn:#e6a23c; --warn-soft:#2c2214;
+    --danger:#f07167; --danger-soft:#331a19;
+    --get:#4fc78d; --post:#f0a24a;
+    --code-bg:#12161a; --code-border:#262c33;
+    --tk-comment:#6b7480; --tk-keyword:#d88ee0; --tk-string:#9bd67d; --tk-number:#f0a24a;
+    --tk-func:#7fb0f5; --tk-annot:#f07c72; --tk-class:#e6c06b; --tk-punct:#a0a8b3; --tk-tag:#f07c72; --tk-attr:#e6c06b;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1215; --surface:#161a1f; --surface-2:#1d2228; --border:#2a3038;
+  --text:#e6e9ed; --muted:#a0a8b3; --faint:#717a85;
+  --brand:#7cc35a; --brand-soft:#1d2a18; --brand-strong:#9bd67d;
+  --accent:#8f98f2; --accent-soft:#1f2240;
+  --info:#6ea3f2; --info-soft:#15233a;
+  --warn:#e6a23c; --warn-soft:#2c2214;
+  --danger:#f07167; --danger-soft:#331a19;
+  --get:#4fc78d; --post:#f0a24a;
+  --code-bg:#12161a; --code-border:#262c33;
+  --tk-comment:#6b7480; --tk-keyword:#d88ee0; --tk-string:#9bd67d; --tk-number:#f0a24a;
+  --tk-func:#7fb0f5; --tk-annot:#f07c72; --tk-class:#e6c06b; --tk-punct:#a0a8b3; --tk-tag:#f07c72; --tk-attr:#e6c06b;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font:15.5px/1.65 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+:not(pre)>code{font-size:.86em;background:var(--surface-2);border:1px solid var(--border);padding:.08em .38em;border-radius:6px;overflow-wrap:anywhere}
+h1,h2,h3,h4{line-height:1.25;letter-spacing:-.015em;margin:0}
+p{margin:.6em 0}
+ul{padding-left:1.2em}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:40;height:60px;display:flex;align-items:center;gap:12px;padding:0 16px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--brand),var(--accent));width:0;transition:width .1s linear}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--text)}
+.logo-mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;font-size:15px;font-weight:800}
+.topbar .spacer{flex:1}
+.icon-btn{height:36px;min-width:36px;padding:0 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font:500 13px Inter,sans-serif}
+.icon-btn:hover{border-color:var(--brand)}
+.menu-btn{display:none}
+
+/* ---------- layout ---------- */
+.layout{display:grid;grid-template-columns:280px minmax(0,1fr);max-width:1360px;margin:0 auto}
+.sidebar{position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;padding:20px 14px 40px;border-right:1px solid var(--border)}
+.search{position:relative;margin-bottom:14px}
+.search input{width:100%;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:0 52px 0 12px;font:14px Inter,sans-serif;outline:none}
+.search input:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.search kbd{position:absolute;right:8px;top:8px;font-size:11px;color:var(--faint);border:1px solid var(--border);border-radius:5px;padding:1px 5px;background:var(--surface-2)}
+.nav-group{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:18px 10px 6px}
+.nav a{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;color:var(--muted);font-size:14px;text-decoration:none;transition:background .15s,color .15s}
+.nav a .num{font:600 11px "JetBrains Mono",monospace;color:var(--faint);min-width:18px}
+.nav a:hover{background:var(--surface-2);color:var(--text)}
+.nav a.active{background:var(--brand-soft);color:var(--brand-strong);font-weight:600}
+.nav a.active .num{color:var(--brand)}
+.nav a.hidden{display:none}
+.nav-empty{display:none;color:var(--faint);font-size:13px;padding:8px 10px}
+
+main{padding:0 40px 120px;min-width:0}
+section.doc{padding-top:56px;max-width:920px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font:600 12px "JetBrains Mono",monospace;color:var(--brand);letter-spacing:.04em;text-transform:uppercase}
+section.doc>h2{font-size:30px;font-weight:800;margin:8px 0 6px}
+section.doc>.lead{color:var(--muted);font-size:16.5px;margin:0 0 22px}
+h3{font-size:19px;font-weight:700;margin:34px 0 10px}
+h4{font-size:15.5px;font-weight:700;margin:20px 0 6px}
+
+/* ---------- hero ---------- */
+.hero{margin-top:36px;padding:44px 40px;border-radius:22px;position:relative;overflow:hidden;background:radial-gradient(1200px 400px at 0% 0%,var(--brand-soft),transparent 60%),radial-gradient(900px 400px at 100% 100%,var(--accent-soft),transparent 60%),var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);max-width:1040px}
+.hero h1{font-size:44px;font-weight:800;letter-spacing:-.03em;margin:12px 0 10px}
+.hero h1 span{background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:17px;max-width:640px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:28px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.stat b{display:block;font-size:24px;font-weight:800;letter-spacing:-.02em}
+.stat span{color:var(--muted);font-size:13px}
+
+/* ---------- generic components ---------- */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font:600 12px Inter,sans-serif;background:var(--surface-2);border:1px solid var(--border);color:var(--muted)}
+.pill.brand{background:var(--brand-soft);color:var(--brand-strong);border-color:transparent}
+.pill.accent{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.pill.danger{background:var(--danger-soft);color:var(--danger);border-color:transparent}
+.pill.info{background:var(--info-soft);color:var(--info);border-color:transparent}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.feature{display:flex;gap:12px;align-items:flex-start}
+.feature .ic{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--brand-soft);font-size:18px}
+.feature h4{margin:2px 0 2px}
+.feature p{margin:0;color:var(--muted);font-size:14px}
+
+.callout{display:flex;gap:12px;padding:14px 16px;border-radius:12px;margin:16px 0;border:1px solid transparent;font-size:14.5px}
+.callout .ci{flex:none;font-size:17px;line-height:1.4}
+.callout p{margin:.2em 0}
+.callout.info{background:var(--info-soft);border-color:color-mix(in srgb,var(--info) 25%,transparent)}
+.callout.tip{background:var(--brand-soft);border-color:color-mix(in srgb,var(--brand) 25%,transparent)}
+.callout.warn{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 25%,transparent)}
+.callout.danger{background:var(--danger-soft);border-color:color-mix(in srgb,var(--danger) 25%,transparent)}
+.callout b.t{display:block;margin-bottom:2px}
+
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:14px 0;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--surface-2);font-weight:600;color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:color-mix(in srgb,var(--surface-2) 60%,transparent)}
+
+/* ---------- code ---------- */
+.code{margin:14px 0;border:1px solid var(--code-border);border-radius:12px;background:var(--code-bg);overflow:hidden}
+.code-head{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-bottom:1px solid var(--code-border);background:color-mix(in srgb,var(--surface-2) 70%,var(--code-bg))}
+.code-head .dots{display:flex;gap:5px}
+.code-head .dots i{width:9px;height:9px;border-radius:50%;background:var(--border)}
+.code-title{font:500 12.5px "JetBrains Mono",monospace;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.code-lang{font:600 10.5px Inter,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+.copy{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:7px;font:500 12px Inter,sans-serif;padding:3px 9px;cursor:pointer}
+.copy:hover{color:var(--text);border-color:var(--brand)}
+.copy.ok{color:var(--brand);border-color:var(--brand)}
+.code pre{margin:0;padding:14px 16px;overflow-x:auto;font-size:13px;line-height:1.6;tab-size:4}
+.code pre code{font-family:inherit;color:var(--text);background:none}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--tk-comment);font-style:italic}
+.token.keyword,.token.important,.token.boolean{color:var(--tk-keyword)}
+.token.string,.token.char,.token.attr-value,.token.inserted{color:var(--tk-string)}
+.token.number,.token.constant{color:var(--tk-number)}
+.token.function{color:var(--tk-func)}
+.token.annotation,.token.punctuation.annotation{color:var(--tk-annot)}
+.token.class-name,.token.namespace{color:var(--tk-class)}
+.token.namespace{opacity:.8}
+.token.punctuation,.token.operator{color:var(--tk-punct)}
+.token.tag{color:var(--tk-tag)}
+.token.attr-name,.token.property,.token.key{color:var(--tk-attr)}
+
+/* ---------- tabs ---------- */
+.tabs{margin:14px 0}
+.tab-list{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:4px}
+.tab-list button{border:none;background:none;color:var(--muted);font:500 13.5px Inter,sans-serif;padding:9px 12px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:8px 8px 0 0}
+.tab-list button:hover{color:var(--text);background:var(--surface-2)}
+.tab-list button[aria-selected="true"]{color:var(--brand-strong);border-bottom-color:var(--brand);font-weight:600}
+.tab-panel{display:none;animation:fade .25s ease}
+.tab-panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ---------- tech cards ---------- */
+.tech{display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:12px;background:var(--surface);border:1px solid var(--border);transition:transform .15s,border-color .15s}
+.tech:hover{transform:translateY(-2px);border-color:var(--brand)}
+.tech .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tech h4{margin:0;font-size:15px}
+.tech .ver{font:600 11.5px "JetBrains Mono",monospace;color:var(--brand-strong);background:var(--brand-soft);border-radius:6px;padding:2px 7px}
+.tech p{margin:0;color:var(--muted);font-size:13.5px}
+.tech .where{font:500 11.5px "JetBrains Mono",monospace;color:var(--faint)}
+
+/* ---------- file tree ---------- */
+.tree{font:13.5px/1.9 "JetBrains Mono",monospace;padding:16px 18px;background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow-x:auto}
+.tree details{margin-left:16px}
+.tree>details{margin-left:0}
+.tree summary{cursor:pointer;list-style:none;color:var(--text);font-weight:600;white-space:nowrap}
+.tree summary::-webkit-details-marker{display:none}
+.tree summary::before{content:"▸";display:inline-block;width:16px;color:var(--faint);transition:transform .15s}
+.tree details[open]>summary::before{transform:rotate(90deg)}
+.tree .f{margin-left:32px;white-space:nowrap;color:var(--muted)}
+.tree .f b{font-weight:500;color:var(--text)}
+.tree .f.new b::after{content:"yeni";font:600 10px Inter,sans-serif;color:var(--brand-strong);background:var(--brand-soft);border-radius:5px;padding:1px 5px;margin-left:6px;vertical-align:1px}
+.tree .note{color:var(--faint);margin-left:10px;font-family:Inter,sans-serif;font-size:12.5px}
+
+/* ---------- layers ---------- */
+.layers{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px;align-items:start}
+.layer-stack{display:flex;flex-direction:column;gap:8px}
+.layer{cursor:pointer;text-align:left;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:12px;padding:14px 16px;font:inherit;display:flex;align-items:center;gap:12px;transition:all .15s;position:relative}
+.layer:not(:last-child)::after{content:"↓";position:absolute;left:50%;bottom:-17px;transform:translateX(-50%);color:var(--faint);font-size:13px;z-index:1}
+.layer .lic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:17px;background:var(--surface-2);flex:none}
+.layer b{display:block;font-size:14.5px}
+.layer small{color:var(--muted);font-size:12.5px}
+.layer:hover{border-color:var(--brand)}
+.layer.active{border-color:var(--brand);background:var(--brand-soft);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 15%,transparent)}
+.layer-detail{min-height:100%}
+.layer-detail h4{margin-top:0}
+.layer-detail ul{margin:8px 0;padding-left:1.1em}
+.layer-detail li{margin:3px 0;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font:500 12px "JetBrains Mono",monospace;padding:3px 8px;border-radius:7px;background:var(--surface-2);border:1px solid var(--border);color:var(--text)}
+
+/* ---------- flows ---------- */
+.flow-wrap{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:18px;box-shadow:var(--shadow);margin:16px 0}
+.flow-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.flow-bar h4{margin:0;flex:1;min-width:180px}
+.btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:9px;border:1px solid var(--brand);background:var(--brand);color:#fff;font:600 13px Inter,sans-serif;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--brand-strong)}
+.btn:hover{filter:brightness(1.05)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow-step{flex:1 1 100px;min-width:100px;cursor:pointer;border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:10px 12px;font:inherit;color:var(--text);text-align:left;transition:all .2s;position:relative}
+.flow-step .n{font:700 11px "JetBrains Mono",monospace;color:var(--faint)}
+.flow-step b{display:block;font-size:13px;line-height:1.35;margin-top:2px}
+.flow-step small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px;font-family:"JetBrains Mono",monospace;word-break:break-word}
+.flow-step.done{border-color:color-mix(in srgb,var(--brand) 40%,var(--border))}
+.flow-step.active{border-color:var(--brand);background:var(--brand-soft);transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--brand) 22%,transparent)}
+.flow-step.active .n{color:var(--brand)}
+.flow-detail{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--surface-2);font-size:14px;color:var(--muted);min-height:48px}
+.flow-detail b{color:var(--text)}
+
+/* ---------- ER ---------- */
+.er-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:10px;box-shadow:var(--shadow)}
+.er{min-width:760px;width:100%;height:auto;display:block}
+.er .tbl rect.box{fill:var(--surface);stroke:var(--border);stroke-width:1.2}
+.er .tbl rect.hd{fill:var(--surface-2)}
+.er .tbl text{font:12px "JetBrains Mono",monospace;fill:var(--muted)}
+.er .tbl text.tn{font:700 13px Inter,sans-serif;fill:var(--text)}
+.er .tbl text.pk{fill:var(--tk-number);font-weight:600}
+.er .tbl text.fk{fill:var(--accent);font-weight:500}
+.er .tbl{cursor:pointer;transition:opacity .2s}
+.er .tbl:hover rect.box,.er .tbl.hl rect.box{stroke:var(--brand);stroke-width:2}
+.er path.rel{fill:none;stroke:var(--faint);stroke-width:1.6;transition:stroke .2s,stroke-width .2s}
+.er path.rel.hl{stroke:var(--brand);stroke-width:2.6}
+.er text.card{font:600 11px "JetBrains Mono",monospace;fill:var(--faint)}
+.er.dim .tbl:not(.hl){opacity:.35}
+.er-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:10px 4px 2px}
+.er-legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.er-legend .l-pk::before{background:var(--tk-number)}
+.er-legend .l-fk::before{background:var(--accent)}
+
+/* ---------- endpoints ---------- */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 14px}
+.filters button{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:999px;padding:5px 12px;font:500 13px Inter,sans-serif;cursor:pointer}
+.filters button.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.ep{border:1px solid var(--border);border-radius:12px;background:var(--surface);margin-bottom:10px;overflow:hidden}
+.ep-head{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;flex-wrap:wrap}
+.ep-head:hover{background:var(--surface-2)}
+.method{font:700 11.5px "JetBrains Mono",monospace;padding:4px 8px;border-radius:6px;min-width:52px;text-align:center;color:#fff}
+.method.GET{background:var(--get)}
+.method.POST{background:var(--post)}
+.ep-path{font:500 13.5px "JetBrains Mono",monospace;flex:1;min-width:200px;word-break:break-all}
+.ep-desc{color:var(--muted);font-size:13.5px}
+.ep-body{display:none;padding:4px 16px 16px;border-top:1px solid var(--border)}
+.ep.open .ep-body{display:block;animation:fade .2s}
+.ep .chev{color:var(--faint);transition:transform .2s}
+.ep.open .chev{transform:rotate(90deg)}
+
+/* ---------- issues ---------- */
+.issue{border:1px solid var(--border);border-left:4px solid var(--border);border-radius:12px;background:var(--surface);padding:14px 16px;margin-bottom:10px}
+.issue.crit{border-left-color:var(--danger)}
+.issue.high{border-left-color:var(--warn)}
+.issue.mid{border-left-color:var(--info)}
+.issue.low{border-left-color:var(--faint)}
+.issue.done{border-left-color:var(--brand)}
+.issue-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.issue-top h4{margin:0;flex:1;min-width:220px;font-size:15px}
+.issue .file{font:500 12px "JetBrains Mono",monospace;color:var(--muted)}
+.issue p{margin:.5em 0 0;font-size:14px;color:var(--muted)}
+.issue details{margin-top:8px}
+.issue summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--brand-strong)}
+
+/* ---------- mail preview ---------- */
+.mail{max-width:420px;border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);background:#fff;color:#374151;font-family:"Segoe UI",Inter,sans-serif}
+.mail .mh{background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;text-align:center;padding:22px}
+.mail .mh div{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;margin:0 auto 10px;font-size:22px}
+.mail .mb{padding:20px;font-size:13.5px}
+.mail .box{background:#eff6ff;border-left:4px solid #3b82f6;border-radius:0 8px 8px 0;padding:12px 14px;margin:12px 0}
+.mail .box b{color:#1e3a8a;display:block}
+.mail .cta{display:block;text-align:center;margin:16px auto 4px;width:max-content;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border-radius:8px;padding:10px 26px;font-weight:600}
+.mail .mf{background:#f8fafc;text-align:center;font-size:11.5px;color:#9ca3af;padding:12px}
+
+/* ---------- stats bars ---------- */
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:110px 1fr 36px;align-items:center;gap:10px;font-size:13px}
+.bar .track{height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.bar .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--brand),var(--accent));width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.bar span:last-child{font-family:"JetBrains Mono",monospace;color:var(--muted);text-align:right}
+
+/* ---------- quiz ---------- */
+.quiz-q{margin-bottom:14px}
+.quiz-q h4{margin:0 0 10px;font-size:15px}
+.opts{display:grid;gap:6px}
+.opt{text-align:left;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:9px 12px;font:14px Inter,sans-serif;cursor:pointer;transition:all .15s}
+.opt:hover:not([disabled]){border-color:var(--brand)}
+.opt.right{border-color:var(--brand);background:var(--brand-soft)}
+.opt.wrong{border-color:var(--danger);background:var(--danger-soft)}
+.opt[disabled]{cursor:default}
+.why{display:none;margin-top:8px;font-size:13.5px;color:var(--muted)}
+.quiz-q.answered .why{display:block}
+.score{font-weight:700;font-size:15px}
+
+.diff{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.diff .card h4{margin-top:0}
+.diff ul{margin:0;padding-left:1.1em;font-size:14px}
+.diff li{margin:4px 0}
+
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);color:var(--faint);font-size:13px;max-width:920px}
+.backtop{position:fixed;right:18px;bottom:18px;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+.backtop.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+.reveal.in{opacity:1;transform:none}
+.scrim{display:none}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+@media (max-width:1024px){
+  .layout{grid-template-columns:1fr}
+  .menu-btn{display:inline-flex}
+  .sidebar{position:fixed;left:0;top:60px;bottom:0;width:290px;height:auto;background:var(--bg);z-index:35;transform:translateX(-100%);transition:transform .25s ease;box-shadow:var(--shadow)}
+  body.nav-open .sidebar{transform:none}
+  body.nav-open .scrim{display:block;position:fixed;inset:60px 0 0 0;background:rgba(0,0,0,.35);z-index:34}
+  main{padding:0 24px 100px}
+}
+@media (max-width:720px){
+  body{font-size:15px}
+  main{padding:0 16px 90px}
+  .hero{padding:28px 20px;margin-top:20px}
+  .hero h1{font-size:32px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .g2,.g3,.layers,.diff{grid-template-columns:minmax(0,1fr)}
+  section.doc>h2{font-size:25px}
+  .logo .txt small{display:none}
+  .bar{grid-template-columns:90px 1fr 30px}
+  .theme-label{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menüyü aç">☰</button>
+  <a class="logo" href="#top" style="text-decoration:none">
+    <span class="logo-mark">D</span>
+    <span class="txt">DFX Survey <small style="color:var(--faint);font-weight:500">· Spring Boot Eğitimi</small></span>
+  </a>
+  <span class="spacer"></span>
+  <a class="icon-btn" href="TAKIM_ROLLERI.html" title="Agile ve takım rolleri dokümanına git" style="text-decoration:none">👥<span class="theme-label">Takım Rolleri</span></a>
+  <button class="icon-btn" id="themeBtn" aria-label="Temayı değiştir"><span id="themeIcon">◐</span><span class="theme-label">Tema</span></button>
+  <div class="progress" id="progress"></div>
+</header>
+<div class="scrim" id="scrim"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="search">
+      <input id="navSearch" type="search" placeholder="Bölüm ara…" aria-label="Bölüm ara">
+      <kbd>Ctrl K</kbd>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="nav-group">Başlangıç</div>
+      <a href="#proje"><span class="num">01</span>Proje Hakkında</a>
+      <a href="#stack"><span class="num">02</span>Teknoloji Stack</a>
+      <a href="#yapi"><span class="num">03</span>Proje Yapısı</a>
+      <a href="#mimari"><span class="num">04</span>Katmanlı Mimari</a>
+      <a href="#konfig"><span class="num">05</span>Konfigürasyon</a>
+      <div class="nav-group">Veri Katmanı</div>
+      <a href="#entity"><span class="num">06</span>Entity ve İlişkiler</a>
+      <a href="#repository"><span class="num">07</span>Repository Katmanı</a>
+      <div class="nav-group">İş ve Web Katmanı</div>
+      <a href="#service"><span class="num">08</span>Service Katmanı</a>
+      <a href="#controller"><span class="num">09</span>Controller Katmanı</a>
+      <a href="#dto"><span class="num">10</span>DTO Pattern</a>
+      <a href="#mapstruct"><span class="num">11</span>MapStruct</a>
+      <a href="#validator"><span class="num">12</span>Validator Pattern</a>
+      <div class="nav-group">Altyapı</div>
+      <a href="#security"><span class="num">13</span>Güvenlik ve JWT</a>
+      <a href="#mail"><span class="num">14</span>Mail Servisi</a>
+      <div class="nav-group">Referans</div>
+      <a href="#api"><span class="num">15</span>API Endpoints</a>
+      <a href="#db"><span class="num">16</span>Veritabanı Şeması</a>
+      <a href="#review"><span class="num">17</span>Kod İnceleme</a>
+      <a href="#ozet"><span class="num">18</span>Özet ve Quiz</a>
+      <a href="#kaynak"><span class="num">19</span>Kaynaklar</a>
+      <div class="nav-empty" id="navEmpty">Eşleşen bölüm yok.</div>
+    </nav>
+  </aside>
+
+  <main id="top">
+    <!-- =============== HERO =============== -->
+    <div class="hero reveal">
+      <span class="eyebrow">● DFX Developer School</span>
+      <h1>DFX Survey ile <span>Spring Boot 4</span></h1>
+      <p>Gerçek bir anket uygulamasının kodunu katman katman okuyarak Spring Data JPA, Spring Security + JWT, MapStruct, Spring Mail ve Validator desenlerini öğrenin. Her örnek doğrudan projedeki kaynak koddan alınmıştır.</p>
+      <div class="hero-meta">
+        <span class="pill brand">Java 21</span>
+        <span class="pill brand">Spring Boot 4.0.0</span>
+        <span class="pill accent">PostgreSQL</span>
+        <span class="pill accent">JWT · jjwt 0.12.5</span>
+        <span class="pill">MapStruct 1.5.5</span>
+        <span class="pill">Springdoc 2.5.0</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>7</b><span>Entity / tablo</span></div>
+        <div class="stat"><b>6</b><span>Repository</span></div>
+        <div class="stat"><b>4</b><span>Servis</span></div>
+        <div class="stat"><b>7</b><span>REST endpoint</span></div>
+        <div class="stat"><b>2</b><span>Rol (ADMIN / USER)</span></div>
+      </div>
+    </div>
+
+    <!-- =============== 01 PROJE =============== -->
+    <section class="doc reveal" id="proje">
+      <span class="eyebrow">01 · Genel Bakış</span>
+      <h2>Proje Hakkında</h2>
+      <p class="lead"><b>DFX Survey</b>; yöneticinin anket oluşturup e-posta ile dağıttığı, kullanıcıların giriş yaparak oy verdiği ve sonuçların istatistiksel olarak raporlandığı bir Spring Boot REST uygulamasıdır.</p>
+
+      <div class="grid g3">
+        <div class="card feature"><div class="ic">🛠️</div><div><h4>Admin paneli</h4><p>Likert ve serbest metin sorularıyla anket oluşturma</p></div></div>
+        <div class="card feature"><div class="ic">🔐</div><div><h4>JWT + rol yetkilendirme</h4><p>Admin ve katılımcı token'ları birbirinin endpoint'lerine giremez</p></div></div>
+        <div class="card feature"><div class="ic">🔑</div><div><h4>BCrypt şifreler</h4><p>Kullanıcılar <code>users</code> tablosunda hash'li tutulur</p></div></div>
+        <div class="card feature"><div class="ic">✉️</div><div><h4>E-posta daveti</h4><p>Anket oluşunca HTML şablonlu davet maili</p></div></div>
+        <div class="card feature"><div class="ic">🛡️</div><div><h4>Çift oy koruması</h4><p><code>VoteRequestValidator</code> ile tekrar oy engeli</p></div></div>
+        <div class="card feature"><div class="ic">📊</div><div><h4>İstatistik</h4><p>Likert dağılımı ve serbest metin cevap raporu</p></div></div>
+      </div>
+
+      <div class="flow-wrap">
+        <div class="flow-bar">
+          <h4>Uçtan uca senaryo</h4>
+          <button class="btn" data-play="scenario">▶ Oynat</button>
+        </div>
+        <div class="flow" data-flow="scenario">
+          <button class="flow-step" data-detail="<b>POST /admin/login</b> — Admin kullanıcı adı ve şifreyle giriş yapar. Başarılıysa yanıtın <code>Authorization</code> header'ında JWT döner."><span class="n">01</span><b>Admin giriş yapar</b><small>/admin/login</small></button>
+          <button class="flow-step" data-detail="<b>POST /admin/api/v1/surveys</b> — Anket, soruları ve likert seçenekleri tek bir <code>save()</code> ile cascade olarak kaydedilir."><span class="n">02</span><b>Anket oluşturur</b><small>SurveyServiceImpl</small></button>
+          <button class="flow-step" data-detail="<b>MailServiceImpl</b> — <code>mailList</code> alanındaki virgülle ayrılmış adreslere HTML davet maili gönderilir. Mail hatası anket kaydını bozmaz (try/catch)."><span class="n">03</span><b>Davet maili gider</b><small>JavaMailSender</small></button>
+          <button class="flow-step" data-detail="<b>POST /user/login</b> — Katılımcı giriş yapar ve kendi JWT'sini alır. <code>/user/**</code> altındaki diğer istekler bu token'ı ister."><span class="n">04</span><b>Kullanıcı giriş yapar</b><small>/user/login</small></button>
+          <button class="flow-step" data-detail="<b>GET /user/api/v1/surveys/detail/{id}</b> — <code>SurveyValidator</code> anketin var olduğunu ve süresinin dolmadığını kontrol eder."><span class="n">05</span><b>Anketi görüntüler</b><small>SurveyValidator</small></button>
+          <button class="flow-step" data-detail="<b>POST /user/api/v1/surveys/complete-survey</b> — Validasyonlar geçerse <code>VoteServiceImpl.submitVote</code> cevapları ve <code>responses</code> kaydını yazar."><span class="n">06</span><b>Oy verir</b><small>VoteServiceImpl</small></button>
+          <button class="flow-step" data-detail="<b>GET /admin/api/v1/surveys/response/{id}</b> — Her likert seçeneği için sayım yapılır, serbest metin cevaplar listelenir."><span class="n">07</span><b>Sonuçları inceler</b><small>surveyResponse()</small></button>
+        </div>
+        <div class="flow-detail" data-detail-for="scenario">Bir adıma tıklayın ya da <b>Oynat</b> ile senaryoyu izleyin.</div>
+      </div>
+    </section>
+
+    <!-- =============== 02 STACK =============== -->
+    <section class="doc reveal" id="stack">
+      <span class="eyebrow">02 · Bağımlılıklar</span>
+      <h2>Teknoloji Stack</h2>
+      <p class="lead">Tüm sürümler <code>pom.xml</code>'den alınmıştır. Sürümü yazılmayanlar Spring Boot 4.0.0 parent BOM'u tarafından yönetilir.</p>
+
+      <div class="grid g3">
+        <div class="tech"><div class="top"><h4>Java</h4><span class="ver">21</span></div><p>LTS sürüm; record, pattern matching, virtual thread desteği.</p><span class="where">java.version</span></div>
+        <div class="tech"><div class="top"><h4>Spring Boot</h4><span class="ver">4.0.0</span></div><p>Ana framework. Modüler auto-configure paketleri ile gelir.</p><span class="where">spring-boot-starter-parent</span></div>
+        <div class="tech"><div class="top"><h4>Spring Web</h4><span class="ver">BOM</span></div><p>REST controller'lar, gömülü Tomcat, JSON dönüşümü.</p><span class="where">starter-web</span></div>
+        <div class="tech"><div class="top"><h4>Spring Data JPA</h4><span class="ver">BOM</span></div><p>Hibernate tabanlı ORM, repository arayüzleri.</p><span class="where">starter-data-jpa</span></div>
+        <div class="tech"><div class="top"><h4>Spring Security</h4><span class="ver">BOM</span></div><p>Filter chain, yetkilendirme, BCrypt şifre doğrulama.</p><span class="where">starter-security</span></div>
+        <div class="tech"><div class="top"><h4>PostgreSQL</h4><span class="ver">runtime</span></div><p>İlişkisel veritabanı (Docker ile postgres:16).</p><span class="where">org.postgresql</span></div>
+        <div class="tech"><div class="top"><h4>jjwt</h4><span class="ver">0.12.5</span></div><p>JWT üretme / doğrulama. api + impl + jackson.</p><span class="where">io.jsonwebtoken</span></div>
+        <div class="tech"><div class="top"><h4>Lombok</h4><span class="ver">BOM</span></div><p><code>@Data</code>, <code>@RequiredArgsConstructor</code>, <code>@Slf4j</code>…</p><span class="where">provided</span></div>
+        <div class="tech"><div class="top"><h4>MapStruct</h4><span class="ver">1.5.5</span></div><p>Derleme zamanında Entity ↔ DTO dönüşümü.</p><span class="where">annotationProcessor</span></div>
+        <div class="tech"><div class="top"><h4>Spring Mail</h4><span class="ver">BOM</span></div><p><code>JavaMailSender</code> ile SMTP üzerinden HTML mail.</p><span class="where">starter-mail</span></div>
+        <div class="tech"><div class="top"><h4>Springdoc OpenAPI</h4><span class="ver">2.5.0</span></div><p>Swagger UI: <code>/swagger-ui/index.html</code></p><span class="where">webmvc-ui</span></div>
+        <div class="tech"><div class="top"><h4>Commons Collections4</h4><span class="ver">4.4</span></div><p><code>CollectionUtils.isNotEmpty()</code> gibi yardımcılar.</p><span class="where">org.apache.commons</span></div>
+      </div>
+
+      <h3>pom.xml'in önemli parçaları</h3>
+      <div class="tabs">
+        <div class="tab-list"><button data-tab="starters">Starter'lar</button><button data-tab="jwt">JWT</button><button data-tab="ap">Annotation Processor</button></div>
+        <div class="tab-panel" data-panel="starters">
+<script type="text/plain" class="src" data-lang="xml" data-title="pom.xml">
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>4.0.0</version>
+</parent>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-mail</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <scope>runtime</scope>
+</dependency>
+</script>
+        </div>
+        <div class="tab-panel" data-panel="jwt">
+<script type="text/plain" class="src" data-lang="xml" data-title="pom.xml — jjwt">
+<!-- Derleme zamanında sadece API'yi görürüz -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-api</artifactId>
+    <version>0.12.5</version>
+</dependency>
+<!-- Gerçek implementasyon ve JSON serializer çalışma zamanında yüklenir -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-impl</artifactId>
+    <version>0.12.5</version>
+    <scope>runtime</scope>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-jackson</artifactId>
+    <version>0.12.5</version>
+    <scope>runtime</scope>
+</dependency>
+</script>
+        </div>
+        <div class="tab-panel" data-panel="ap">
+<script type="text/plain" class="src" data-lang="xml" data-title="pom.xml — maven-compiler-plugin">
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <configuration>
+        <annotationProcessorPaths>
+            <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </path>
+            <path>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>1.5.5.Final</version>
+            </path>
+            <!-- Lombok getter/setter'ları MapStruct'tan ÖNCE üretilsin -->
+            <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-mapstruct-binding</artifactId>
+                <version>0.2.0</version>
+            </path>
+        </annotationProcessorPaths>
+    </configuration>
+</plugin>
+</script>
+          <div class="callout tip"><span class="ci">💡</span><div><b class="t">Neden lombok-mapstruct-binding?</b><p>MapStruct, getter/setter'ları görerek kod üretir. Lombok da bu metotları derleme sırasında üretir. Binding, iki processor'ın doğru sırada çalışmasını sağlar; yoksa MapStruct "unmapped property" uyarıları verir.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 03 YAPI =============== -->
+    <section class="doc reveal" id="yapi">
+      <span class="eyebrow">03 · Paketler</span>
+      <h2>Proje Yapısı</h2>
+      <p class="lead">Klasörleri açıp kapatarak inceleyin. <span class="pill brand" style="padding:1px 7px">yeni</span> etiketi, ilk dokümandan sonra projeye eklenen sınıfları gösterir.</p>
+
+      <div class="tree">
+        <details open><summary>com.dfxsurvey.dfxsurvey/</summary>
+          <div class="f"><b>DfxSurveyApplication.java</b><span class="note">@SpringBootApplication, @EntityScan, @EnableJpaRepositories</span></div>
+          <details><summary>configurations/</summary>
+            <div class="f"><b>SecurityConfigurations.java</b><span class="note">SecurityFilterChain</span></div>
+          </details>
+          <details open><summary>controllers/</summary>
+            <details open><summary>admin/</summary>
+              <div class="f"><b>LoginController.java</b><span class="note">POST /admin/login</span></div>
+              <div class="f"><b>SurveyController.java</b><span class="note">anket oluştur / listele / sonuç</span></div>
+            </details>
+            <details open><summary>user/</summary>
+              <div class="f new"><b>CustomerLoginController.java</b><span class="note">POST /user/login</span></div>
+              <div class="f"><b>SurveyActionController.java</b><span class="note">anket detayı / oy verme</span></div>
+            </details>
+            <details><summary>dto/</summary>
+              <div class="f"><b>CreateSurveyRequest.java</b></div>
+              <div class="f"><b>VoteRequestDto.java</b></div>
+              <div class="f"><b>SurveyDto.java</b></div>
+              <div class="f new"><b>SurveyDetailResultResponse.java</b></div>
+              <div class="f new"><b>QuestionStatisticsDto.java</b></div>
+              <div class="f new"><b>FreeTextAnswerDto.java</b></div>
+              <div class="f new"><b>SurveyDetailDto.java</b><span class="note">şimdilik boş</span></div>
+            </details>
+          </details>
+          <details open><summary>dao/</summary>
+            <details><summary>entity/</summary>
+              <div class="f"><b>SurveyEntity.java</b></div>
+              <div class="f"><b>QuestionEntity.java</b></div>
+              <div class="f"><b>LikertOptionEntity.java</b></div>
+              <div class="f"><b>AnswerEntity.java</b></div>
+              <div class="f"><b>CompletedSurveyEntity.java</b><span class="note">tablo: responses</span></div>
+              <div class="f"><b>TokenEntity.java</b></div>
+              <div class="f new"><b>UserEntity.java</b><span class="note">tablo: users</span></div>
+              <div class="f new"><b>Role.java</b><span class="note">enum: ADMIN, USER</span></div>
+            </details>
+            <details><summary>repository/</summary>
+              <div class="f"><b>SurveyRepository.java</b></div>
+              <div class="f"><b>QuestionRepository.java</b></div>
+              <div class="f"><b>LikertOptionRepository.java</b></div>
+              <div class="f"><b>SurveyAnswerRepository.java</b></div>
+              <div class="f"><b>ResponseRepository.java</b></div>
+              <div class="f new"><b>UserRepository.java</b></div>
+            </details>
+          </details>
+          <details open><summary>services/</summary>
+            <div class="f"><b>ISurveyService.java</b></div>
+            <div class="f"><b>IVoteService.java</b></div>
+            <div class="f"><b>IMailService.java</b></div>
+            <div class="f new"><b>ILoginService.java</b></div>
+            <details><summary>impl/</summary>
+              <div class="f"><b>SurveyServiceImpl.java</b></div>
+              <div class="f"><b>VoteServiceImpl.java</b></div>
+              <div class="f"><b>MailServiceImpl.java</b></div>
+              <div class="f new"><b>LoginServiceImpl.java</b><span class="note">BCrypt doğrulama</span></div>
+            </details>
+          </details>
+          <details><summary>filters/</summary>
+            <div class="f"><b>JwtAuthFilter.java</b><span class="note">tüm token'lar, rolü authority'ye çevirir</span></div>
+            <div class="f new"><b>JwtErrorResponseWriter.java</b><span class="note">401 / 403 JSON yanıtları</span></div>
+          </details>
+          <details><summary>validators/</summary>
+            <div class="f"><b>Validator.java</b><span class="note">generic arayüz</span></div>
+            <details><summary>impl/</summary>
+              <div class="f"><b>SurveyValidator.java</b></div>
+              <div class="f new"><b>VoteRequestValidator.java</b><span class="note">çift oy kontrolü</span></div>
+            </details>
+          </details>
+          <details><summary>mapper/</summary>
+            <div class="f"><b>ServiceMapper.java</b></div>
+            <details><summary>cfg/</summary><div class="f"><b>MapstructConfig.java</b></div></details>
+          </details>
+          <details><summary>exceptions/</summary><div class="f"><b>ValidationException.java</b></div></details>
+          <details><summary>utils/</summary><div class="f"><b>JwtUtil.java</b><span class="note">token üret / doğrula (role claim)</span></div><div class="f new"><b>JwtUser.java</b><span class="note">record: username + role</span></div></details>
+        </details>
+        <details><summary>resources/</summary>
+          <div class="f"><b>application.properties</b><span class="note">datasource, JPA, SMTP</span></div>
+          <div class="f new"><b>data.sql</b><span class="note">admin kullanıcısı seed</span></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- =============== 04 MİMARİ =============== -->
+    <section class="doc reveal" id="mimari">
+      <span class="eyebrow">04 · Mimari</span>
+      <h2>Katmanlı Mimari</h2>
+      <p class="lead">Her katman yalnızca bir alttakiyle konuşur. Bir katmana tıklayarak projedeki karşılığını görün.</p>
+
+      <div class="layers">
+        <div class="layer-stack" id="layerStack">
+          <button class="layer active" data-layer="filter"><span class="lic">🛡️</span><span><b>Filter / Security</b><small>JWT doğrulama, SecurityContext</small></span></button>
+          <button class="layer" data-layer="controller"><span class="lic">🌐</span><span><b>Controller</b><small>HTTP ↔ Java, endpoint tanımları</small></span></button>
+          <button class="layer" data-layer="service"><span class="lic">⚙️</span><span><b>Service</b><small>İş kuralları, transaction, validasyon</small></span></button>
+          <button class="layer" data-layer="repository"><span class="lic">🗂️</span><span><b>Repository</b><small>CRUD ve sorgular</small></span></button>
+          <button class="layer" data-layer="db"><span class="lic">🐘</span><span><b>PostgreSQL</b><small>dfx_survey_db</small></span></button>
+        </div>
+        <div class="card layer-detail" id="layerDetail"></div>
+      </div>
+
+      <h3>Neden katmanlı mimari?</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Avantaj</th><th>Açıklama</th><th>Projeden örnek</th></tr></thead>
+        <tbody>
+          <tr><td><b>Separation of Concerns</b></td><td>Her katman tek bir sorumluluğa odaklanır</td><td>Controller iş kuralı içermez, servisi çağırır</td></tr>
+          <tr><td><b>Test edilebilirlik</b></td><td>Katmanlar mock'lanarak bağımsız test edilir</td><td><code>ISurveyService</code> mock'lanarak controller testi</td></tr>
+          <tr><td><b>Bakım kolaylığı</b></td><td>Değişiklik izole kalır</td><td>Mail sağlayıcısı değişse sadece <code>MailServiceImpl</code> değişir</td></tr>
+          <tr><td><b>Yeniden kullanım</b></td><td>Servis birden çok yerden çağrılır</td><td><code>getSurveyById</code> hem detay hem oy akışında</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="flow-wrap">
+        <div class="flow-bar">
+          <h4>Bir isteğin yolculuğu: <code>POST /user/api/v1/surveys/complete-survey</code></h4>
+          <button class="btn" data-play="journey">▶ Oynat</button>
+        </div>
+        <div class="flow" data-flow="journey">
+          <button class="flow-step" data-detail="İstemci gövdede <code>VoteRequestDto</code> JSON'u ve <code>Authorization: Bearer &lt;token&gt;</code> header'ı gönderir."><span class="n">01</span><b>Client</b><small>JSON + Bearer</small></button>
+          <button class="flow-step" data-detail="<code>JwtAuthFilter</code> token'ı doğrular ve kullanıcı adını principal, rolü <code>ROLE_USER</code> olarak <code>SecurityContextHolder</code>'a yazar. <code>hasRole(&quot;USER&quot;)</code> kuralı geçilmezse 403."><span class="n">02</span><b>JWT + rol</b><small>JwtAuthFilter</small></button>
+          <button class="flow-step" data-detail="<code>@RequestBody</code> ile JSON → <code>VoteRequestDto</code> dönüşümü yapılır. Kullanıcı adı istekten değil, Spring'in inject ettiği <code>Authentication</code> nesnesinden (<code>authentication.getName()</code>) alınır; ardından servisler sırayla çağrılır."><span class="n">03</span><b>Controller</b><small>SurveyActionController</small></button>
+          <button class="flow-step" data-detail="<code>surveyService.getSurveyById()</code> → <code>surveyRepository.findById(id).orElse(null)</code>"><span class="n">04</span><b>Anketi getir</b><small>SurveyServiceImpl</small></button>
+          <button class="flow-step" data-detail="<code>SurveyValidator</code>: anket null mı, süresi dolmuş mu? <code>VoteRequestValidator</code>: bu kullanıcı daha önce oy vermiş mi? Hata → <code>ValidationException</code> → 400."><span class="n">05</span><b>Validasyon</b><small>2 validator</small></button>
+          <button class="flow-step" data-detail="<code>@Transactional submitVote()</code>: kullanıcıya bağlı bir <code>CompletedSurveyEntity</code> kurulur, cevaplar ve <code>TokenEntity</code> ona eklenir ve tek bir <code>save()</code> ile cascade olarak kaydedilir. Hata olursa hepsi rollback."><span class="n">06</span><b>Oy kaydet</b><small>VoteServiceImpl</small></button>
+          <button class="flow-step" data-detail="Hibernate INSERT'leri üretir: <code>answers</code>, <code>tokens</code>, <code>responses</code>. Transaction metot bitince commit edilir."><span class="n">07</span><b>PostgreSQL</b><small>INSERT × n</small></button>
+          <button class="flow-step" data-detail="<code>ResponseEntity.ok(survey)</code> ile 200 döner. Validasyon hatasında <code>ResponseEntity.badRequest().body(e.getMessage())</code>."><span class="n">08</span><b>Response</b><small>200 / 400</small></button>
+        </div>
+        <div class="flow-detail" data-detail-for="journey">Bir adıma tıklayın ya da <b>Oynat</b> ile isteği takip edin.</div>
+      </div>
+    </section>
+
+    <!-- =============== 05 KONFİG =============== -->
+    <section class="doc reveal" id="konfig">
+      <span class="eyebrow">05 · Çalıştırma</span>
+      <h2>Konfigürasyon</h2>
+      <p class="lead">Uygulamanın ayağa kalkması için gereken her şey: ana sınıf, <code>application.properties</code>, veritabanı ve seed verisi.</p>
+
+      <h3>Ana uygulama sınıfı</h3>
+<script type="text/plain" class="src" data-lang="java" data-title="DfxSurveyApplication.java">
+@SpringBootApplication(scanBasePackages = "com.dfxsurvey.dfxsurvey")
+@EntityScan("com.dfxsurvey.dfxsurvey.dao.entity")
+@EnableJpaRepositories("com.dfxsurvey.dfxsurvey.dao.repository")
+public class DfxSurveyApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DfxSurveyApplication.class, args);
+    }
+}
+</script>
+      <div class="callout info"><span class="ci">ℹ️</span><div><b class="t">Spring Boot 4 paket değişikliği</b><p>Boot 4'te auto-configuration modüllere bölündü. Bu yüzden <code>@EntityScan</code> artık <code>org.springframework.boot.persistence.autoconfigure</code> paketinden import ediliyor (Boot 3'te <code>org.springframework.boot.autoconfigure.domain</code>). Eski bir projeden kod kopyalarken import hatası alırsanız ilk bakılacak yer burası.</p></div></div>
+
+      <h3>Veritabanını Docker ile başlatma</h3>
+<script type="text/plain" class="src" data-lang="bash" data-title="terminal">
+docker run -d --name dfx-postgres \
+  -e POSTGRES_DB=dfx_survey_db \
+  -e POSTGRES_USER=dfx_user \
+  -e POSTGRES_PASSWORD=<sifre> \
+  -p 5432:5432 postgres:16
+</script>
+
+      <h3>application.properties</h3>
+<script type="text/plain" class="src" data-lang="properties" data-title="src/main/resources/application.properties">
+spring.application.name=dfx-survey
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/dfx_survey_db
+spring.datasource.username=dfx_user
+spring.datasource.password=${DB_PASSWORD}
+
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# data.sql, Hibernate tabloları oluşturduktan SONRA çalışsın
+spring.jpa.defer-datasource-initialization=true
+spring.sql.init.mode=always
+</script>
+      <div class="callout warn"><span class="ci">⚠️</span><div><b class="t">Şifreler kaynak koda yazılmamalı</b><p>Projede datasource ve SMTP şifreleri dosyada açık duruyor. Yukarıdaki gibi <code>${DB_PASSWORD}</code> placeholder'ı kullanıp değeri ortam değişkeninden vermek hem güvenli hem de ortam (dev/prod) bazında esnektir.</p></div></div>
+
+      <h3>spring.jpa.hibernate.ddl-auto</h3>
+      <p>Hibernate'in entity sınıflarına bakarak şemaya ne yapacağını belirler. Projede <code>create</code> kullanılıyor; yani <b>her yeniden başlatmada tüm veri silinir</b> ve <code>data.sql</code> tekrar çalışır.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Değer</th><th>Davranış</th><th>Ne zaman?</th></tr></thead>
+        <tbody>
+          <tr><td><code>create</code></td><td>Her açılışta tabloları silip yeniden oluşturur</td><td>Eğitim / prototip <span class="pill brand">projede</span></td></tr>
+          <tr><td><code>create-drop</code></td><td>Açılışta oluşturur, kapanışta siler</td><td>Entegrasyon testleri</td></tr>
+          <tr><td><code>update</code></td><td>Eksik kolon/tabloları ekler; silmez, değiştirmez</td><td>Lokal geliştirme</td></tr>
+          <tr><td><code>validate</code></td><td>Şema ile entity'leri karşılaştırır, uyumsuzsa hata verir</td><td>Flyway/Liquibase ile birlikte</td></tr>
+          <tr><td><code>none</code></td><td>Şemaya hiç dokunmaz</td><td>Production</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Seed verisi: data.sql</h3>
+<script type="text/plain" class="src" data-lang="sql" data-title="src/main/resources/data.sql">
+INSERT INTO users(id, is_active, password, username, role)
+VALUES (3, true, '$2a$12$q.qk7s6ikyggkJquutr9XuEKm3FktYP4r49rfS.oJPi/3praAFe02', 'admin', 'ADMIN');
+
+-- Eğitim ortamı test katılımcısı (şifresi dosyadaki yorum satırında)
+INSERT INTO users(id, is_active, password, username, role)
+VALUES (4, true, '$2a$12$qmpBspeOAtovFBdI417qwuALTAJXK9fGl1CoXRsy0CzL/Z/EcJm8i', 'katilimci', 'USER');
+</script>
+      <p><code>admin</code> yalnızca <code>/admin/login</code>'den, <code>katilimci</code> yalnızca <code>/user/login</code>'den token alabilir. Rol, <code>@Enumerated(EnumType.STRING)</code> sayesinde veritabanında okunabilir metin olarak (<code>'ADMIN'</code>, <code>'USER'</code>) tutulur.</p>
+      <p>Şifre düz metin değil, <b>BCrypt hash</b>'i olarak saklanır: <code>$2a$</code> algoritma sürümü, <code>12</code> maliyet faktörü (2¹² tur), ardından 22 karakter salt ve hash gelir. Login sırasında <code>BCryptPasswordEncoder.matches()</code> girilen şifreyi aynı salt ile hash'leyip karşılaştırır.</p>
+      <div class="callout tip"><span class="ci">💡</span><div><p><code>defer-datasource-initialization=true</code> olmasaydı Spring, <code>data.sql</code>'i Hibernate tabloları oluşturmadan önce çalıştırmaya çalışır ve <i>relation "users" does not exist</i> hatası alırdınız.</p></div></div>
+    </section>
+
+    <!-- =============== 06 ENTITY =============== -->
+    <section class="doc reveal" id="entity">
+      <span class="eyebrow">06 · JPA</span>
+      <h2>Entity Yapısı ve İlişkiler</h2>
+      <p class="lead">Projede 7 entity var. Bir tablonun üzerine gelince ilişkileri vurgulanır, tıklayınca kodu açılır.</p>
+
+      <div class="er-wrap">
+        <svg class="er" id="er" viewBox="0 0 1040 640" role="img" aria-label="Entity ilişki diyagramı">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="color:var(--faint)"/></marker>
+          </defs>
+          <g id="er-rels"></g>
+          <g id="er-tables"></g>
+        </svg>
+        <div class="er-legend"><span class="l-pk">Primary key</span><span class="l-fk">Foreign key</span><span>1 —→ N : ok, FK'yı tutan (N) tarafı gösterir</span></div>
+      </div>
+
+      <div class="callout info"><span class="ci">🔍</span><div><b class="t">Diyagram nasıl okunur? Örnek: users → tokens</b>
+        <p>FK hangi tablodaysa ilişkinin <b>N</b> tarafı orasıdır. <code>tokens.user_id</code> kolonu her satırda <b>tek</b> bir kullanıcıyı gösterir:</p>
+        <ul style="margin:.3em 0">
+          <li>Bir token → yalnızca <b>1</b> kullanıcıya ait (<code>TokenEntity</code>'de <code>@ManyToOne UserEntity user</code>)</li>
+          <li>Bir kullanıcı → <b>N</b> token'a sahip olabilir (katıldığı her anket için bir tane)</li>
+        </ul>
+        <p>Bir token'ın N kullanıcıya bağlanması gerekseydi FK'nın <code>users</code> tablosunda (<code>users.token_id</code>) ya da bir ara tabloda (<code>@ManyToMany</code>) durması gerekirdi. Kodda böyle bir yapı yok, ilişki doğru kurulmuş.</p>
+        <p><b>Eksik olan:</b> bir kullanıcının aynı anket için birden fazla token almasını engelleyen bir kural. <code>@Table(name = "tokens", uniqueConstraints = @UniqueConstraint(columnNames = {"survey_id", "user_id"}))</code> ile "her anket için kullanıcı başına tek token" veritabanı seviyesinde garanti edilebilir.</p>
+      </div></div>
+
+      <div class="tabs" id="entityTabs">
+        <div class="tab-list">
+          <button data-tab="e-survey">SurveyEntity</button>
+          <button data-tab="e-question">QuestionEntity</button>
+          <button data-tab="e-likert">LikertOptionEntity</button>
+          <button data-tab="e-completed">CompletedSurveyEntity</button>
+          <button data-tab="e-answer">AnswerEntity</button>
+          <button data-tab="e-token">TokenEntity</button>
+          <button data-tab="e-user">UserEntity</button>
+        </div>
+        <div class="tab-panel" data-panel="e-survey">
+<script type="text/plain" class="src" data-lang="java" data-title="dao/entity/SurveyEntity.java">
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "surveys")
+public class SurveyEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+    private String description;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime expiresAt;
+
+    private String mailList;   // "a@x.com,b@y.com"
+
+    private String token;
+
+    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestionEntity> questions = new ArrayList<>();
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="e-question">
+<script type="text/plain" class="src" data-lang="java" data-title="dao/entity/QuestionEntity.java">
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "questions")
+public class QuestionEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "survey_id")
+    @JsonIgnore                      // Survey → Question → Survey … döngüsünü kırar
+    private SurveyEntity survey;
+
+    private String questionText;
+    private String questionType;     // "LIKERT" veya "FREETEXT"
+    private Boolean required = true;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LikertOptionEntity> likertOptions = new ArrayList<>();
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="e-likert">
+<script type="text/plain" class="src" data-lang="java" data-title="dao/entity/LikertOptionEntity.java">
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "likert_options")
+public class LikertOptionEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
+    @JsonIgnore
+    private QuestionEntity question;
+
+    private Integer value;   // 1..5
+    private String label;    // "Çok Kötü" … "Mükemmel"
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="e-completed">
+<script type="text/plain" class="src" data-lang="java" data-title="dao/entity/CompletedSurveyEntity.java">
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "responses")
+public class CompletedSurveyEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "survey_id")
+    private SurveyEntity survey;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "token_id")
+    private TokenEntity token;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
+    private LocalDateTime submittedAt;
+
+    @PrePersist                       // INSERT'ten hemen önce çalışır
+    public void prePersist() {
+        if (submittedAt == null) {
+            submittedAt = LocalDateTime.now();
+        }
+    }
+
+    @OneToMany(mappedBy = "response", cascade = CascadeType.ALL)
+    private List<AnswerEntity> answers;
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="e-answer">
+<script type="text/plain" class="src" data-lang="java" data-title="dao/entity/AnswerEntity.java">
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "answers")
+public class AnswerEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "response_id")
+    private CompletedSurveyEntity response;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
+    private QuestionEntity question;
+
+    private String freetextAnswer;   // FREETEXT soruları için
+    private Integer likertValue;     // LIKERT soruları için (1–5)
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="e-token">
+<script type="text/plain" class="src" data-lang="java" data-title="dao/entity/TokenEntity.java">
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "tokens")
+public class TokenEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "survey_id")
+    private SurveyEntity survey;
+
+    @Column(unique = true)
+    private String token;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime expiresAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="e-user">
+<script type="text/plain" class="src" data-lang="java" data-title="dao/entity/UserEntity.java">
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "users")
+public class UserEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String username;
+    private String password;     // BCrypt hash
+    private boolean is_active;
+
+    @Enumerated(EnumType.STRING)  // veritabanında 'ADMIN' / 'USER' olarak tutulur
+    private Role role;
+}
+
+public enum Role {
+    ADMIN,  // /admin/** endpoint'leri
+    USER    // /user/** endpoint'leri (anket katılımcısı)
+}
+</script>
+          <div class="callout tip"><span class="ci">💡</span><div><p><code>EnumType.STRING</code> yerine varsayılan <code>ORDINAL</code> kullanılsaydı rol <code>0</code>/<code>1</code> olarak saklanırdı; enum'a araya yeni bir değer eklendiğinde mevcut kayıtların anlamı sessizce değişirdi.</p></div></div>
+          <div class="callout info"><span class="ci">ℹ️</span><div><p>Java isimlendirme kuralına göre alan adı <code>isActive</code> olmalıdır. Hibernate'in varsayılan naming stratejisi zaten camelCase'i <code>is_active</code> kolonuna çevirir.</p></div></div>
+        </div>
+      </div>
+
+      <h3>Temel JPA annotation'ları</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Annotation</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td><code>@Entity</code></td><td>Sınıfın bir JPA entity'si olduğunu belirtir</td></tr>
+          <tr><td><code>@Table(name = "surveys")</code></td><td>Eşleşen tablo adını belirler</td></tr>
+          <tr><td><code>@Id</code> + <code>@GeneratedValue(IDENTITY)</code></td><td>Primary key; değeri veritabanı (BIGSERIAL/SERIAL) üretir</td></tr>
+          <tr><td><code>@Column(unique = true)</code></td><td>Kolon seviyesinde kısıt (TokenEntity.token)</td></tr>
+          <tr><td><code>@OneToMany(mappedBy = …)</code></td><td>Bir-çok ilişkisinin <i>inverse</i> tarafı</td></tr>
+          <tr><td><code>@ManyToOne</code> + <code>@JoinColumn</code></td><td>Çok-bir ilişkisinin <i>owning</i> tarafı; FK kolonu burada</td></tr>
+          <tr><td><code>fetch = FetchType.LAZY</code></td><td>İlişkili entity ancak erişildiğinde yüklenir (<code>@ManyToOne</code> varsayılanı EAGER'dır)</td></tr>
+          <tr><td><code>cascade = CascadeType.ALL</code></td><td>Parent üzerindeki işlemler child'lara da uygulanır</td></tr>
+          <tr><td><code>orphanRemoval = true</code></td><td>Listeden çıkarılan child veritabanından da silinir</td></tr>
+          <tr><td><code>@PrePersist</code></td><td>INSERT öncesi çalışan lifecycle callback (varsayılan tarih atama)</td></tr>
+          <tr><td><code>@JsonIgnore</code></td><td>Alanı JSON çıktısından hariç tutar; çift yönlü ilişkide sonsuz döngüyü önler</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Lombok annotation'ları</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Annotation</th><th>Ürettiği</th></tr></thead>
+        <tbody>
+          <tr><td><code>@Data</code></td><td>getter, setter, <code>toString</code>, <code>equals</code>, <code>hashCode</code>, required-args constructor</td></tr>
+          <tr><td><code>@NoArgsConstructor</code></td><td>Parametresiz constructor (JPA için zorunlu)</td></tr>
+          <tr><td><code>@AllArgsConstructor</code></td><td>Tüm alanları alan constructor</td></tr>
+          <tr><td><code>@RequiredArgsConstructor</code></td><td><code>final</code> alanlar için constructor → constructor injection</td></tr>
+          <tr><td><code>@Slf4j</code></td><td><code>private static final Logger log</code></td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout warn"><span class="ci">⚠️</span><div><b class="t">Entity'de @Data dikkat ister</b><p><code>@Data</code>'nın ürettiği <code>toString/hashCode</code>, çift yönlü ilişkilerde (<code>Survey ↔ Question</code>) birbirini çağırarak <code>StackOverflowError</code>'a ve LAZY alanların istemeden yüklenmesine yol açabilir. Entity'lerde <code>@Getter @Setter</code> + ilişkileri hariç tutan <code>@ToString(exclude = …)</code> daha güvenlidir.</p></div></div>
+
+      <h3>Soru tipleri</h3>
+      <div class="grid g2">
+        <div class="card"><span class="pill accent">LIKERT</span><h4>Ölçekli değerlendirme</h4><p style="color:var(--muted);margin:0">"Hizmet kalitesi nasıldı?" → 1–5 arası seçenekler <code>likert_options</code> tablosunda tutulur, cevap <code>likertValue</code>'ya yazılır.</p></div>
+        <div class="card"><span class="pill brand">FREETEXT</span><h4>Serbest metin</h4><p style="color:var(--muted);margin:0">"Eklemek istediğiniz bir şey var mı?" → seçenek yoktur, cevap <code>freetextAnswer</code>'a yazılır.</p></div>
+      </div>
+    </section>
+
+    <!-- =============== 07 REPOSITORY =============== -->
+    <section class="doc reveal" id="repository">
+      <span class="eyebrow">07 · Spring Data JPA</span>
+      <h2>Repository Katmanı</h2>
+      <p class="lead"><code>JpaRepository</code>; <code>Repository → CrudRepository → PagingAndSortingRepository</code> hiyerarşisinin en kapsamlı arayüzüdür. Sadece interface yazarsınız, implementasyonu Spring çalışma zamanında üretir.</p>
+
+      <h3>Projedeki repository'ler</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Repository</th><th>Entity</th><th>Özel metotlar</th></tr></thead>
+        <tbody>
+          <tr><td><code>SurveyRepository</code></td><td>SurveyEntity</td><td><code>findActiveSurveys()</code> (JPQL), <code>findByTitleContainingIgnoreCase</code></td></tr>
+          <tr><td><code>QuestionRepository</code></td><td>QuestionEntity</td><td><code>findBySurveyId</code>, <code>findBySurveyIdAndQuestionType</code></td></tr>
+          <tr><td><code>LikertOptionRepository</code></td><td>LikertOptionEntity</td><td><code>findByQuestionId</code></td></tr>
+          <tr><td><code>SurveyAnswerRepository</code></td><td>AnswerEntity</td><td><code>findByQuestionId</code></td></tr>
+          <tr><td><code>ResponseRepository</code></td><td>CompletedSurveyEntity</td><td><code>findBySurveyIdAndUsername</code> (JPQL + <code>@Param</code>)</td></tr>
+          <tr><td><code>UserRepository</code></td><td>UserEntity</td><td><code>findUserEntityByUsername</code></td></tr>
+        </tbody>
+      </table></div>
+
+<script type="text/plain" class="src" data-lang="java" data-title="dao/repository/SurveyRepository.java">
+@Repository
+public interface SurveyRepository extends JpaRepository<SurveyEntity, Long> {
+
+    // JpaRepository'de zaten var; okunabilirlik için tekrar yazılmış
+    Optional<SurveyEntity> findById(Long id);
+
+    // JPQL: tablo değil ENTITY adı kullanılır
+    @Query("SELECT s FROM SurveyEntity s WHERE s.expiresAt > CURRENT_TIMESTAMP()")
+    List<SurveyEntity> findActiveSurveys();
+
+    // Method naming convention ile türetilmiş sorgu
+    List<SurveyEntity> findByTitleContainingIgnoreCase(String title);
+}
+</script>
+<script type="text/plain" class="src" data-lang="java" data-title="dao/repository/ResponseRepository.java">
+public interface ResponseRepository extends JpaRepository<CompletedSurveyEntity, Long> {
+
+    // Kullanıcı bu ankete daha önce oy vermiş mi?
+    // İlişki üzerinden gezinme: c.user.username → JOIN users
+    @Query("SELECT c FROM CompletedSurveyEntity c " +
+           "WHERE c.survey.id = :surveyId AND c.user.username = :username")
+    Optional<CompletedSurveyEntity> findBySurveyIdAndUsername(@Param("surveyId") Long surveyId,
+                                                             @Param("username") String username);
+}
+</script>
+      <div class="callout warn"><span class="ci">🐞</span><div><b class="t">Gerçek bir hatadan ders: @Param adı sorgudaki adla aynı olmalı</b><p>Bu metot önceden <code>findBySurveyIdAndUserId(… @Param("userId") String username)</code> şeklindeydi. Sorgu <code>:username</code> beklediği için uygulama <b>açılıyor</b>, ama sorgu ilk çalıştığında <code>No argument for named parameter ':username'</code> hatası veriyordu. Yani bu uyumsuzluk derleme veya açılış sırasında değil, ancak <b>çalışma zamanında</b> fark ediliyor. Bu yüzden repository sorgularını bir test veya gerçek istekle denemek gerekir.</p>
+      <p>Düzeltmede üç şey değişti: <code>@Param("username")</code>, metodun adı (parametre id değil kullanıcı adı olduğu için <code>…AndUsername</code>) ve <code>SurveyEntity.id</code> ile aynı tip olsun diye <code>Long surveyId</code>.</p></div></div>
+
+      <h3>JpaRepository'nin yetenekleri</h3>
+      <div class="tabs">
+        <div class="tab-list">
+          <button data-tab="r-crud">CRUD</button>
+          <button data-tab="r-derived">Query Methods</button>
+          <button data-tab="r-jpql">JPQL / Native</button>
+          <button data-tab="r-page">Paging &amp; Sorting</button>
+          <button data-tab="r-spec">Specification</button>
+          <button data-tab="r-proj">Projection</button>
+        </div>
+        <div class="tab-panel" data-panel="r-crud">
+<script type="text/plain" class="src" data-lang="java" data-title="CRUD">
+SurveyEntity survey = surveyRepository.findById(1L).orElseThrow();
+survey.setTitle("Yeni Başlık");
+surveyRepository.save(survey);          // id varsa UPDATE, yoksa INSERT
+
+surveyRepository.deleteById(1L);
+long total   = surveyRepository.count();
+boolean var  = surveyRepository.existsById(1L);
+</script>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Metot</th><th>Açıklama</th></tr></thead>
+            <tbody>
+              <tr><td><code>save(entity)</code></td><td>Kaydeder veya günceller</td></tr>
+              <tr><td><code>saveAndFlush(entity)</code></td><td>Kaydeder ve SQL'i hemen veritabanına gönderir</td></tr>
+              <tr><td><code>findById(id)</code></td><td><code>Optional&lt;T&gt;</code> döner</td></tr>
+              <tr><td><code>findAll()</code></td><td>Tüm kayıtlar</td></tr>
+              <tr><td><code>deleteById(id)</code></td><td>ID ile siler</td></tr>
+              <tr><td><code>count()</code> / <code>existsById(id)</code></td><td>Sayım / varlık kontrolü</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="tab-panel" data-panel="r-derived">
+<script type="text/plain" class="src" data-lang="java" data-title="Method name → SQL">
+// findBy + Alan + Anahtar kelime
+List<SurveyEntity> findByTitleContainingIgnoreCase(String title);
+// → WHERE UPPER(title) LIKE UPPER('%' || ? || '%')
+
+List<QuestionEntity> findBySurveyIdAndQuestionType(Long surveyId, String questionType);
+// → WHERE survey_id = ? AND question_type = ?
+
+UserEntity findUserEntityByUsername(String username);
+// → WHERE username = ?   (bulunamazsa null)
+</script>
+          <div class="chips"><span class="chip">And</span><span class="chip">Or</span><span class="chip">Between</span><span class="chip">LessThan</span><span class="chip">GreaterThan</span><span class="chip">IsNull</span><span class="chip">Like</span><span class="chip">Containing</span><span class="chip">StartingWith</span><span class="chip">In</span><span class="chip">OrderBy…Desc</span><span class="chip">IgnoreCase</span><span class="chip">Top10 / First</span></div>
+        </div>
+        <div class="tab-panel" data-panel="r-jpql">
+<script type="text/plain" class="src" data-lang="java" data-title="JPQL ve Native SQL">
+// JPQL — entity ve alan adlarıyla yazılır, veritabanından bağımsızdır
+@Query("SELECT s FROM SurveyEntity s WHERE s.expiresAt > CURRENT_TIMESTAMP()")
+List<SurveyEntity> findActiveSurveys();
+
+// Native SQL — gerçek tablo/kolon adları, veritabanına özgü
+@Query(value = "SELECT * FROM surveys WHERE expires_at > now()", nativeQuery = true)
+List<SurveyEntity> findActiveSurveysNative();
+</script>
+        </div>
+        <div class="tab-panel" data-panel="r-page">
+<script type="text/plain" class="src" data-lang="java" data-title="Paging & Sorting">
+Page<SurveyEntity> page = surveyRepository.findAll(
+        PageRequest.of(0, 10, Sort.by("expiresAt").descending()));
+
+page.getContent();        // bu sayfadaki kayıtlar
+page.getTotalElements();  // toplam kayıt
+page.getTotalPages();
+
+List<SurveyEntity> sorted = surveyRepository.findAll(Sort.by("title").ascending());
+</script>
+        </div>
+        <div class="tab-panel" data-panel="r-spec">
+<script type="text/plain" class="src" data-lang="java" data-title="Specification (dinamik sorgu)">
+// Repository: extends JpaRepository<SurveyEntity, Long>, JpaSpecificationExecutor<SurveyEntity>
+public class SurveySpecs {
+    public static Specification<SurveyEntity> titleLike(String q) {
+        return (root, query, cb) -> cb.like(cb.lower(root.get("title")), "%" + q.toLowerCase() + "%");
+    }
+    public static Specification<SurveyEntity> active() {
+        return (root, query, cb) -> cb.greaterThan(root.get("expiresAt"), LocalDateTime.now());
+    }
+}
+
+List<SurveyEntity> result = surveyRepository.findAll(
+        SurveySpecs.active().and(SurveySpecs.titleLike("memnuniyet")));
+</script>
+        </div>
+        <div class="tab-panel" data-panel="r-proj">
+<script type="text/plain" class="src" data-lang="java" data-title="Projection">
+// Sadece gereken alanları çeker — mailList gibi hassas alanlar gelmez
+public interface SurveySummary {
+    Long getId();
+    String getTitle();
+}
+
+@Query("SELECT s.id AS id, s.title AS title FROM SurveyEntity s")
+List<SurveySummary> findSummaries();
+</script>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 08 SERVICE =============== -->
+    <section class="doc reveal" id="service">
+      <span class="eyebrow">08 · İş Mantığı</span>
+      <h2>Service Katmanı</h2>
+      <p class="lead">Projede dört servis var: <code>ISurveyService</code>, <code>IVoteService</code>, <code>IMailService</code>, <code>ILoginService</code>. Her biri bir interface ve <code>impl/</code> altındaki implementasyondan oluşur.</p>
+
+      <h3>Neden interface?</h3>
+      <div class="grid g3">
+        <div class="card"><h4 style="margin-top:0">🔗 Loose coupling</h4><p style="margin:0;color:var(--muted);font-size:14px">Controller <code>ISurveyService</code>'e bağımlıdır; arkasında hangi sınıfın çalıştığını bilmez. Bir sınıf diğerinin <i>nasıl</i> çalıştığına değil, <i>ne</i> yaptığına bağlı olur.</p></div>
+        <div class="card"><h4 style="margin-top:0">🧪 Test kolaylığı</h4><p style="margin:0;color:var(--muted);font-size:14px">Mockito ile interface kolayca mock'lanır, controller veritabanı olmadan test edilir.</p></div>
+        <div class="card"><h4 style="margin-top:0">🔄 Esneklik</h4><p style="margin:0;color:var(--muted);font-size:14px">Örneğin <code>IMailService</code> için SMTP yerine SendGrid implementasyonu yazılabilir.</p></div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab-list"><button data-tab="s-create">createSurvey</button><button data-tab="s-stats">surveyResponse</button><button data-tab="s-vote">submitVote</button><button data-tab="s-login">doLogin</button></div>
+        <div class="tab-panel" data-panel="s-create">
+<script type="text/plain" class="src" data-lang="java" data-title="services/impl/SurveyServiceImpl.java — createSurvey">
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class SurveyServiceImpl implements ISurveyService {
+
+    private final SurveyRepository surveyRepository;
+    private final IMailService mailService;
+    private final SurveyAnswerRepository surveyAnswerRepository;
+
+    @Override
+    @Transactional
+    public SurveyEntity createSurvey(CreateSurveyRequest request) {
+
+        SurveyEntity survey = new SurveyEntity();
+        survey.setTitle(request.getTitle());
+        survey.setDescription(request.getDescription());
+        survey.setExpiresAt(request.getExpiresAt());
+        survey.setMailList(request.getMailList());
+
+        if (CollectionUtils.isNotEmpty(request.getQuestions())) {
+            for (CreateSurveyRequest.QuestionCreateRequest qReq : request.getQuestions()) {
+                QuestionEntity question = new QuestionEntity();
+                question.setSurvey(survey);                 // owning side'ı kur
+                question.setQuestionText(qReq.getQuestionText());
+                question.setQuestionType(qReq.getQuestionType());
+                question.setRequired(qReq.getRequired());
+
+                if ("LIKERT".equalsIgnoreCase(qReq.getQuestionType())
+                        && qReq.getLikertOptions() != null) {
+                    for (var loReq : qReq.getLikertOptions()) {
+                        LikertOptionEntity lo = new LikertOptionEntity();
+                        lo.setQuestion(question);
+                        lo.setValue(loReq.getValue());
+                        lo.setLabel(loReq.getLabel());
+                        question.getLikertOptions().add(lo);
+                    }
+                }
+                survey.getQuestions().add(question);        // inverse side'ı kur
+            }
+        }
+
+        SurveyEntity surveyEntity = surveyRepository.save(survey);   // tek save → cascade
+        surveyRepository.flush();   // SQL'i şimdi gönder (commit DEĞİL!)
+
+        try {
+            mailService.sendSimpleMail(surveyEntity.getMailList(), surveyEntity.getTitle(),
+                    surveyEntity.getDescription(), surveyEntity);
+        } catch (Exception e) {
+            log.debug("Mail gönderme işlemi esnasında bir hata oluştu.", e);
+        }
+        return surveyEntity;
+    }
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="s-stats">
+          <p>Admin sonuç ekranı için her soru dolaşılır. LIKERT sorularda tüm seçenekler önce <code>0</code> ile başlatılır, sonra cevaplar sayılır; böylece hiç oy almamış seçenekler de raporda görünür.</p>
+<script type="text/plain" class="src" data-lang="java" data-title="SurveyServiceImpl.java — surveyResponse (sadeleştirilmiş)">
+for (QuestionEntity q : survey.getQuestions()) {
+    List<AnswerEntity> answers = surveyAnswerRepository.findByQuestionId(q.getId());
+    if (answers.isEmpty()) continue;
+
+    if ("LIKERT".equalsIgnoreCase(q.getQuestionType())) {
+        Map<Integer, Integer> countMap = new HashMap<>();
+        q.getLikertOptions().forEach(o -> countMap.put(o.getValue(), 0));    // 1) sıfırla
+
+        for (AnswerEntity a : answers) {                                       // 2) say
+            Integer v = a.getLikertValue();
+            if (v != null && countMap.containsKey(v)) countMap.merge(v, 1, Integer::sum);
+        }
+
+        List<LikertOptionCount> counts = q.getLikertOptions().stream()       // 3) DTO
+                .map(o -> new LikertOptionCount(o.getValue(), o.getLabel(), countMap.get(o.getValue())))
+                .toList();
+        statistics.add(new QuestionStatisticsDto(q.getId(), q.getQuestionText(), counts));
+    } else {
+        answers.forEach(a -> freeTextAnswers.add(
+                new FreeTextAnswerDto(a.getFreetextAnswer(), q.getQuestionText())));
+    }
+}
+</script>
+          <div class="card" style="margin-top:12px">
+            <h4 style="margin-top:0">"Hizmet kalitesi nasıldı?" <span class="pill" style="margin-left:6px">örnek veri</span></h4>
+            <div class="bars" id="bars"></div>
+          </div>
+        </div>
+        <div class="tab-panel" data-panel="s-vote">
+<script type="text/plain" class="src" data-lang="java" data-title="services/impl/VoteServiceImpl.java">
+@Service
+@RequiredArgsConstructor
+public class VoteServiceImpl implements IVoteService {
+
+    private final QuestionRepository questionRepository;
+    private final ResponseRepository responseRepository;
+    private final UserRepository userRepository;
+
+    @Override
+    @Transactional
+    public void submitVote(VoteRequestDto request, SurveyEntity survey) {   // HttpServletRequest yok
+
+        UserEntity user = userRepository.findUserEntityByUsername(request.getUserName());
+        if (user == null) {
+            throw new ValidationException("Oy veren kullanıcı bulunamadı.");
+        }
+
+        CompletedSurveyEntity completed = new CompletedSurveyEntity();
+        completed.setSubmittedAt(LocalDateTime.now());
+        completed.setSurvey(survey);
+        completed.setUser(user);              // çift oy kontrolü bu alana bakar
+        completed.setAnswers(new ArrayList<>());
+
+        TokenEntity token = new TokenEntity();
+        token.setToken(request.getToken());
+        token.setSurvey(survey);
+        token.setUser(user);
+        completed.setToken(token);
+
+        for (VoteRequestDto.AnswerDto dto : request.getAnswers()) {
+            questionRepository.findById(dto.getQuestionId()).ifPresent(question -> {
+                AnswerEntity answer = new AnswerEntity();
+                answer.setResponse(completed);   // cevap hangi oya ait (owning side)
+                answer.setQuestion(question);
+                answer.setLikertValue(dto.getLikertValue());
+                answer.setFreetextAnswer(dto.getTextAnswer());
+                completed.getAnswers().add(answer);
+            });
+        }
+
+        // Tek save: cevaplar (cascade ALL) ve token (cascade PERSIST) birlikte kaydedilir
+        responseRepository.save(completed);
+    }
+}
+</script>
+<script type="text/plain" class="src" data-lang="java" data-title="dao/entity/CompletedSurveyEntity.java — ilgili alanlar">
+// Token ayrı bir repository ile kaydedilmez; oy kaydedilince o da kaydedilsin
+@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+@JoinColumn(name = "token_id")
+private TokenEntity token;
+
+// AnswerEntity.response bu nesneyi gösterdiği için @Data'nın toString/hashCode'u döngüye girmesin
+@ToString.Exclude
+@EqualsAndHashCode.Exclude
+@OneToMany(mappedBy = "response", cascade = CascadeType.ALL)
+private List<AnswerEntity> answers;
+</script>
+          <div class="callout tip"><span class="ci">💡</span><div><b class="t">Bu metottan çıkarılacak dersler</b><ul style="margin:.3em 0 0">
+            <li><b>Servis katmanı HTTP'yi bilmemeli.</b> Eskiden servis <code>HttpServletRequest</code> alıp kullanıcı adını <code>getAttribute("user")</code> ile (yanlış anahtarla) okuyordu. Artık kullanıcı adını parametre olarak alıyor; bu sayede metot bir HTTP isteği olmadan da birim testiyle sınanabiliyor.</li>
+            <li><b>Owning side'ı set edin.</b> <code>answer.setResponse(completed)</code> yazılmazsa cascade cevabı kaydeder, ama <code>response_id</code> NULL kalır.</li>
+            <li><b>Transient entity hatası.</b> <code>@ManyToOne</code> ilişkisinde cascade yoksa ve ilişkili nesne (<code>TokenEntity</code>) daha önce kaydedilmemişse Hibernate <i>"references an unsaved transient instance"</i> hatası verir. Çözüm ya ilişkiye cascade eklemek ya da nesneyi önce kendi repository'siyle kaydetmektir.</li>
+          </ul></div></div>
+        </div>
+        <div class="tab-panel" data-panel="s-login">
+<script type="text/plain" class="src" data-lang="java" data-title="services/impl/LoginServiceImpl.java">
+@Service
+@RequiredArgsConstructor
+public class LoginServiceImpl implements ILoginService {
+
+    private final UserRepository userRepository;
+
+    @Override
+    public Optional<UserEntity> doLogin(String username, String password) {
+        UserEntity user = userRepository.findUserEntityByUsername(username);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        // matches: düz şifreyi hash'teki salt ile hash'leyip karşılaştırır
+        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
+            return Optional.empty();
+        }
+        // Rol kontrolü çağıran controller'a aittir (admin mi, katılımcı mı?)
+        return Optional.of(user);
+    }
+}
+</script>
+          <div class="callout tip"><span class="ci">💡</span><div><p>Encoder'ı her çağrıda <code>new</code>'lemek yerine <code>@Bean PasswordEncoder passwordEncoder()</code> tanımlayıp inject etmek daha idiomatik; yeni kullanıcı kaydında <code>encode()</code> için de aynı bean kullanılır.</p></div></div>
+        </div>
+      </div>
+
+      <h3>@Transactional</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Kavram</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td><code>@Transactional</code></td><td>Metot bir transaction içinde çalışır; metot başarıyla bitince <b>commit</b>, unchecked exception'da <b>rollback</b></td></tr>
+          <tr><td><code>@Transactional(readOnly = true)</code></td><td>Salt okunur; Hibernate dirty-checking yapmaz, performans kazancı</td></tr>
+          <tr><td><code>flush()</code></td><td>Bekleyen SQL'leri veritabanına <i>gönderir</i> ama transaction'ı <b>bitirmez</b>. Sonradan exception olursa yine rollback olur</td></tr>
+          <tr><td>Proxy kuralı</td><td>Aynı sınıf içinden <code>this.metot()</code> çağrısında <code>@Transactional</code> devreye girmez</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout warn"><span class="ci">⚠️</span><div><b class="t">Düzeltme: flush() ≠ commit</b><p>Eski dokümanda <code>flush()</code> için "Transaction'ı commit eder" yazıyordu; bu yanlış. <code>createSurvey</code>'de mail, commit'ten <i>önce</i> gönderiliyor. Commit başarısız olursa kullanıcılar var olmayan bir anketin davetini alır. Doğru yaklaşım: bir event yayınlayıp <code>@TransactionalEventListener(phase = AFTER_COMMIT)</code> içinde (tercihen <code>@Async</code>) mail göndermek.</p></div></div>
+
+      <h3>Cascade ve owning side</h3>
+      <p>JPA cascade, parent entity üzerinde yapılan işlemin bağlı child entity'lere otomatik uygulanmasını sağlar. <code>createSurvey</code>'de tek bir <code>save(survey)</code> çağrısı soruları ve likert seçeneklerini de kaydeder.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Cascade Type</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td><code>PERSIST</code></td><td>Parent kaydedilince child da kaydedilir</td></tr>
+          <tr><td><code>MERGE</code></td><td>Parent güncellenince child da güncellenir</td></tr>
+          <tr><td><code>REMOVE</code></td><td>Parent silinince child da silinir</td></tr>
+          <tr><td><code>REFRESH</code></td><td>Parent DB'den yeniden yüklenince child da yüklenir</td></tr>
+          <tr><td><code>DETACH</code></td><td>Parent persistence context'ten ayrılınca child da ayrılır</td></tr>
+          <tr><td><code>ALL</code></td><td>Hepsi: PERSIST + MERGE + REMOVE + REFRESH + DETACH</td></tr>
+        </tbody>
+      </table></div>
+      <div class="diff">
+        <div class="card"><h4>Owning side — <code>QuestionEntity</code></h4><ul><li><code>@ManyToOne @JoinColumn(name = "survey_id")</code></li><li>FK kolonu bu tabloda</li><li>Hibernate ilişkiyi <b>bu taraftaki</b> değere bakarak yazar</li></ul></div>
+        <div class="card"><h4>Inverse side — <code>SurveyEntity</code></h4><ul><li><code>@OneToMany(mappedBy = "survey", cascade = ALL)</code></li><li>İlişkiyi sadece "gösterir"</li><li>Cascade burada tanımlanır, çünkü işlemi parent'tan başlatırız</li></ul></div>
+      </div>
+      <div class="callout tip"><span class="ci">💡</span><div><p>İki tarafı da set etmeyi unutmayın: <code>question.setSurvey(survey)</code> yazılmazsa cascade soruyu kaydeder ama <code>survey_id</code> kolonu <b>NULL</b> kalır.</p></div></div>
+    </section>
+
+    <!-- =============== 09 CONTROLLER =============== -->
+    <section class="doc reveal" id="controller">
+      <span class="eyebrow">09 · Web</span>
+      <h2>Controller Katmanı</h2>
+      <p class="lead">Dört REST controller: admin tarafında <code>LoginController</code> ve <code>SurveyController</code>, kullanıcı tarafında <code>CustomerLoginController</code> ve <code>SurveyActionController</code>.</p>
+
+      <div class="tabs">
+        <div class="tab-list"><button data-tab="c-survey">SurveyController</button><button data-tab="c-action">SurveyActionController</button><button data-tab="c-login">LoginController</button></div>
+        <div class="tab-panel" data-panel="c-survey">
+<script type="text/plain" class="src" data-lang="java" data-title="controllers/admin/SurveyController.java">
+@RestController
+@RequestMapping("/admin")
+@RequiredArgsConstructor
+public class SurveyController {
+
+    private final ISurveyService surveyService;
+    private final ServiceMapper serviceMapper;
+
+    @PostMapping("/api/v1/surveys")
+    public ResponseEntity<?> createSurvey(@RequestBody CreateSurveyRequest request) {
+        SurveyEntity survey = surveyService.createSurvey(request);
+        return ResponseEntity.ok(survey.getId());
+    }
+
+    @GetMapping("/api/v1/surveys/active")
+    public ResponseEntity<?> getAllActiveSurveys() {
+        List<SurveyEntity> surveys = surveyService.getActiveSurveys();
+        return ResponseEntity.ok(serviceMapper.toSurveyDtos(surveys));   // Entity → DTO
+    }
+
+    @GetMapping("/api/v1/surveys/response/{id}")
+    public ResponseEntity<?> surveyResponse(@PathVariable Long id) {
+        return ResponseEntity.ok(surveyService.surveyResponse(id));
+    }
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="c-action">
+<script type="text/plain" class="src" data-lang="java" data-title="controllers/user/SurveyActionController.java">
+@RestController
+@RequestMapping("/user")
+@RequiredArgsConstructor
+public class SurveyActionController {
+
+    private final ISurveyService surveyService;
+    private final SurveyValidator surveyValidator;
+    private final IVoteService voteService;
+    private final VoteRequestValidator voteRequestValidator;
+
+    @GetMapping("/api/v1/surveys/detail/{id}")
+    public ResponseEntity<?> surveyDetail(@PathVariable Long id) {
+        SurveyEntity survey = surveyService.getSurveyById(id);
+        surveyValidator.validate(survey);
+        return ResponseEntity.ok(survey);
+    }
+
+    @PostMapping("/api/v1/surveys/complete-survey")
+    public ResponseEntity<?> completeSurvey(@RequestBody VoteRequestDto voteRequestDto,
+                                            Authentication authentication) {
+        // Kullanıcı adı JwtAuthFilter'ın doğruladığı token'dan (sub) gelir, istekten değil
+        voteRequestDto.setUserName(authentication.getName());
+        SurveyEntity survey = surveyService.getSurveyById(voteRequestDto.getSurveyId());
+        try {
+            surveyValidator.validate(survey);
+            voteRequestValidator.validate(voteRequestDto);
+            voteService.submitVote(voteRequestDto, survey);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok(survey);
+    }
+}
+</script>
+          <div class="callout tip"><span class="ci">🔑</span><div><b class="t">Kimliği her zaman token'dan alın</b><p>Controller metoduna <code>Authentication</code> (veya <code>Principal</code>) parametresi eklemek yeterli; Spring onu <code>SecurityContext</code>'ten otomatik inject eder. Kullanıcı adını istek parametresinden ya da JSON gövdesinden okumak, istemcinin başka birinin adına işlem yapmasına izin verir. Bu yüzden <code>VoteRequestDto.userName</code> alanı <code>@JsonIgnore</code> ile işaretli: istemci bu alanı gönderse bile değer okunmaz.</p></div></div>
+          <div class="callout info"><span class="ci">ℹ️</span><div><p><code>surveyDetail</code>'deki validator bir exception fırlattığında try/catch olmadığından Spring varsayılan olarak <b>500</b> döner. Tüm controller'lar için tek noktadan hata yönetimi <code>@RestControllerAdvice</code> + <code>@ExceptionHandler(ValidationException.class)</code> ile yapılabilir.</p></div></div>
+        </div>
+        <div class="tab-panel" data-panel="c-login">
+<script type="text/plain" class="src" data-lang="java" data-title="controllers/admin/LoginController.java">
+@RestController
+@RequestMapping("/admin")
+public class LoginController {
+
+    @Autowired private JwtUtil jwtUtil;
+    @Autowired private ILoginService loginService;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String username,
+                                   @RequestParam String password) {
+
+        Optional<UserEntity> user = loginService.doLogin(username, password);
+
+        if (user.isEmpty()) {
+            return ResponseEntity.status(401).body("Invalid credentials");    // kimlik yanlış
+        }
+
+        if (user.get().getRole() != Role.ADMIN) {
+            return ResponseEntity.status(403).body("Bu giriş yalnızca yöneticiler içindir."); // yetki yok
+        }
+
+        String token = jwtUtil.generateToken(username, Role.ADMIN);
+        return ResponseEntity.ok()
+                .header("Authorization", "Bearer " + token)
+                .body("Login successful");
+    }
+}
+// CustomerLoginController aynı mantıkla @RequestMapping("/user") altında çalışır;
+// yalnızca Role.USER'a token verir, diğerlerine 403 "Bu giriş yalnızca katılımcılar içindir."
+</script>
+          <div class="callout tip"><span class="ci">💡</span><div><p><b>Field injection vs constructor injection:</b> Login controller'larında <code>@Autowired</code> alan enjeksiyonu, diğerlerinde <code>@RequiredArgsConstructor</code> + <code>final</code> alanlar kullanılıyor. Constructor injection önerilir: bağımlılıklar değişmez olur ve test sırasında kolayca verilir.</p></div></div>
+        </div>
+      </div>
+
+      <h3>Temel annotation'lar</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Annotation</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td><code>@RestController</code></td><td><code>@Controller</code> + <code>@ResponseBody</code>: dönüş değeri JSON'a çevrilir</td></tr>
+          <tr><td><code>@RequestMapping("/admin")</code></td><td>Sınıftaki tüm endpoint'lerin ön eki</td></tr>
+          <tr><td><code>@GetMapping</code> / <code>@PostMapping</code></td><td>HTTP metodunu eşler</td></tr>
+          <tr><td><code>@PathVariable</code></td><td>URL'deki değişken: <code>/surveys/{id}</code></td></tr>
+          <tr><td><code>@RequestBody</code></td><td>HTTP body (JSON) → Java nesnesi</td></tr>
+          <tr><td><code>@RequestParam</code></td><td>Query string / form parametresi: <code>?username=…</code></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>ResponseEntity</h3>
+<script type="text/plain" class="src" data-lang="java" data-title="ResponseEntity örnekleri">
+return ResponseEntity.ok(data);                         // 200 OK
+return ResponseEntity.status(HttpStatus.CREATED).body(data); // 201 Created
+return ResponseEntity.badRequest().body(e.getMessage()); // 400 Bad Request
+return ResponseEntity.status(401).body("Invalid credentials"); // 401
+return ResponseEntity.ok()
+        .header("Authorization", "Bearer " + token)    // header ile yanıt
+        .body("Login successful");
+</script>
+    </section>
+
+    <!-- =============== 10 DTO =============== -->
+    <section class="doc reveal" id="dto">
+      <span class="eyebrow">10 · Veri Taşıma</span>
+      <h2>DTO Pattern</h2>
+      <p class="lead">DTO'lar API sözleşmesini veritabanı modelinden ayırır. Projede request, response ve istatistik DTO'ları <code>controllers/dto</code> altında.</p>
+
+      <div class="table-wrap"><table>
+        <thead><tr><th>Sebep</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td><b>Güvenlik</b></td><td>Entity'deki hassas alanları gizler</td></tr>
+          <tr><td><b>Performans</b></td><td>Sadece gerekli alanları taşır, LAZY alanları tetiklemez</td></tr>
+          <tr><td><b>Esneklik</b></td><td>API ve veritabanı modeli bağımsız evrilir</td></tr>
+          <tr><td><b>Döngü önleme</b></td><td>Çift yönlü ilişkilerde JSON döngüsü oluşmaz</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout danger"><span class="ci">🔓</span><div><b class="t">Projeden canlı örnek</b><p><code>surveyDetail</code> ve <code>completeSurvey</code> doğrudan <code>SurveyEntity</code> döndürüyor. Bu yüzden oy veren her kullanıcı yanıtta <code>mailList</code> alanını, yani <b>davet edilen herkesin e-posta adresini</b> görüyor. Kullanıcıya özel bir <code>SurveyDetailDto</code> (projede boş olarak duruyor) bu sızıntıyı kapatır.</p></div></div>
+
+      <div class="tabs">
+        <div class="tab-list"><button data-tab="d-create">CreateSurveyRequest</button><button data-tab="d-vote">VoteRequestDto</button><button data-tab="d-survey">SurveyDto</button><button data-tab="d-result">Sonuç DTO'ları</button></div>
+        <div class="tab-panel" data-panel="d-create">
+<script type="text/plain" class="src" data-lang="java" data-title="controllers/dto/CreateSurveyRequest.java">
+@Data
+public class CreateSurveyRequest {
+    private String title;
+    private String description;
+    private LocalDateTime expiresAt;
+    private String mailList;
+    private List<QuestionCreateRequest> questions;
+
+    @Data
+    public static class QuestionCreateRequest {
+        private String questionText;
+        private String questionType;  // FREETEXT veya LIKERT
+        private Boolean required = true;
+        private List<LikertOptionRequest> likertOptions;
+
+        @Data
+        public static class LikertOptionRequest {
+            private Integer value;
+            private String label;
+        }
+    }
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="d-vote">
+<script type="text/plain" class="src" data-lang="java" data-title="controllers/dto/VoteRequestDto.java">
+@Data
+public class VoteRequestDto {
+    private Long surveyId;
+    private String token;
+    private List<AnswerDto> answers;
+    @JsonIgnore                   // istemci gönderemez; controller token'daki kullanıcı adıyla doldurur
+    private String userName;
+
+    @Data
+    public static class AnswerDto {
+        private Long questionId;
+        private Integer likertValue;   // likert soruları için
+        private String textAnswer;     // freetext soruları için
+    }
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="d-survey">
+<script type="text/plain" class="src" data-lang="java" data-title="controllers/dto/SurveyDto.java">
+@Data
+public class SurveyDto {
+    private Long id;
+    private String title;
+    private String description;
+    private String expiresAt;     // MapStruct LocalDateTime → String dönüşümünü otomatik yapar
+    private String mailList;
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="d-result">
+<script type="text/plain" class="src" data-lang="java" data-title="SurveyDetailResultResponse + QuestionStatisticsDto + FreeTextAnswerDto">
+@Data @AllArgsConstructor @NoArgsConstructor
+public class SurveyDetailResultResponse {
+    private List<QuestionStatisticsDto> statistics;
+    private List<FreeTextAnswerDto> freeTextAnswers;
+}
+
+@Data @AllArgsConstructor @NoArgsConstructor
+public class QuestionStatisticsDto {
+    private Long questionId;
+    private String questionText;
+    private List<LikertOptionCount> likertCounts;
+
+    @Data @AllArgsConstructor @NoArgsConstructor
+    public static class LikertOptionCount {
+        private Integer value;
+        private String label;
+        private int count;
+    }
+}
+
+@Data @AllArgsConstructor @NoArgsConstructor
+public class FreeTextAnswerDto {
+    private String freeTextAnswer;    // constructor'da 1. sıra
+    private String freeTextQuestion;  // constructor'da 2. sıra
+}
+</script>
+          <div class="callout info"><span class="ci">ℹ️</span><div><p><code>@AllArgsConstructor</code> parametre sırası alan sırasıdır. İki <code>String</code> alanlı bir constructor'da argümanların yerini karıştırmak derleyiciye takılmaz; projede tam olarak bu oluyor. Java 21'de <code>record</code> + isimli factory metotları bu riski azaltır.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== 11 MAPSTRUCT =============== -->
+    <section class="doc reveal" id="mapstruct">
+      <span class="eyebrow">11 · Object Mapping</span>
+      <h2>MapStruct</h2>
+      <p class="lead">MapStruct, derleme zamanında çalışan bir annotation processor'dır. Siz sadece arayüzü tanımlarsınız, dönüşüm kodunu <code>target/generated-sources</code> altına kendisi yazar.</p>
+
+      <div class="tabs">
+        <div class="tab-list"><button data-tab="m-cfg">MapstructConfig</button><button data-tab="m-mapper">ServiceMapper</button><button data-tab="m-gen">Üretilen kod</button></div>
+        <div class="tab-panel" data-panel="m-cfg">
+<script type="text/plain" class="src" data-lang="java" data-title="mapper/cfg/MapstructConfig.java">
+@MapperConfig(
+        componentModel = "spring",   // Spring bean olarak üretilir → inject edilebilir
+        collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
+        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+        nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL)
+public interface MapstructConfig {
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="m-mapper">
+<script type="text/plain" class="src" data-lang="java" data-title="mapper/ServiceMapper.java">
+@Mapper(config = MapstructConfig.class)
+public abstract class ServiceMapper {
+
+    public abstract List<SurveyDto> toSurveyDtos(List<SurveyEntity> surveyEntities);
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="m-gen">
+<script type="text/plain" class="src" data-lang="java" data-title="target/generated-sources/.../ServiceMapperImpl.java (temsili)">
+@Component
+public class ServiceMapperImpl extends ServiceMapper {
+
+    @Override
+    public List<SurveyDto> toSurveyDtos(List<SurveyEntity> surveyEntities) {
+        if (surveyEntities == null) {
+            return null;                        // RETURN_NULL stratejisi
+        }
+        List<SurveyDto> list = new ArrayList<>(surveyEntities.size());
+        for (SurveyEntity s : surveyEntities) {
+            list.add(surveyEntityToSurveyDto(s));
+        }
+        return list;
+    }
+
+    protected SurveyDto surveyEntityToSurveyDto(SurveyEntity s) {
+        if (s == null) return null;
+        SurveyDto dto = new SurveyDto();
+        if (s.getId() != null) dto.setId(s.getId());           // ALWAYS null check
+        if (s.getTitle() != null) dto.setTitle(s.getTitle());
+        if (s.getExpiresAt() != null) dto.setExpiresAt(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(s.getExpiresAt()));
+        // …
+        return dto;
+    }
+}
+</script>
+        </div>
+      </div>
+
+      <div class="table-wrap"><table>
+        <thead><tr><th>Ayar</th><th>Anlamı</th></tr></thead>
+        <tbody>
+          <tr><td><code>componentModel = "spring"</code></td><td>Üretilen sınıfa <code>@Component</code> eklenir</td></tr>
+          <tr><td><code>ADDER_PREFERRED</code></td><td>Koleksiyonlarda <code>setList()</code> yerine varsa <code>addItem()</code> kullanılır</td></tr>
+          <tr><td><code>nullValueCheckStrategy = ALWAYS</code></td><td>Her alan kopyalanmadan önce null kontrolü yapılır</td></tr>
+          <tr><td><code>nullValueMappingStrategy = RETURN_NULL</code></td><td>Kaynak null ise hedef de null döner</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="grid g2">
+        <div class="card"><h4 style="margin-top:0">✅ Type safety</h4><p style="margin:0;color:var(--muted);font-size:14px">Eşlenemeyen alanlar derleme zamanında uyarı/hata olarak görünür.</p></div>
+        <div class="card"><h4 style="margin-top:0">⚡ Performans</h4><p style="margin:0;color:var(--muted);font-size:14px">Reflection yok; düz getter/setter çağrıları üretilir.</p></div>
+        <div class="card"><h4 style="margin-top:0">🧩 Basit kullanım</h4><p style="margin:0;color:var(--muted);font-size:14px">Farklı isimli alanlar için <code>@Mapping(source, target)</code> yeterli.</p></div>
+        <div class="card"><h4 style="margin-top:0">🌱 Spring entegrasyonu</h4><p style="margin:0;color:var(--muted);font-size:14px">Diğer bean'ler gibi constructor injection ile kullanılır.</p></div>
+      </div>
+    </section>
+
+    <!-- =============== 12 VALIDATOR =============== -->
+    <section class="doc reveal" id="validator">
+      <span class="eyebrow">12 · Doğrulama</span>
+      <h2>Validator Pattern</h2>
+      <p class="lead">Generic bir <code>Validator&lt;T&gt;</code> arayüzü ve her kural seti için ayrı bir <code>@Component</code>. Kural ihlali <code>ValidationException</code> (unchecked) ile bildirilir.</p>
+
+<script type="text/plain" class="src" data-lang="java" data-title="validators/Validator.java + exceptions/ValidationException.java">
+public interface Validator<T> {
+    void validate(T target);
+}
+
+public class ValidationException extends RuntimeException {
+    public ValidationException(String message) {
+        super(message);
+    }
+}
+</script>
+      <div class="tabs">
+        <div class="tab-list"><button data-tab="v-survey">SurveyValidator</button><button data-tab="v-vote">VoteRequestValidator</button></div>
+        <div class="tab-panel" data-panel="v-survey">
+<script type="text/plain" class="src" data-lang="java" data-title="validators/impl/SurveyValidator.java">
+@Component
+public class SurveyValidator implements Validator<SurveyEntity> {
+
+    @Override
+    public void validate(SurveyEntity target) {
+        if (target == null) {
+            throw new ValidationException("Aktif anket bulunamamıştır.");
+        }
+        if (LocalDateTime.now().isAfter(target.getExpiresAt())) {
+            throw new ValidationException("Anket tarihi dolmuştur. Oy veremezsiniz.");
+        }
+    }
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="v-vote">
+<script type="text/plain" class="src" data-lang="java" data-title="validators/impl/VoteRequestValidator.java">
+@Component
+@RequiredArgsConstructor
+public class VoteRequestValidator implements Validator<VoteRequestDto> {
+
+    private final ResponseRepository responseRepository;
+
+    @Override
+    public void validate(VoteRequestDto target) {
+        Optional<CompletedSurveyEntity> completed =
+                responseRepository.findBySurveyIdAndUsername(target.getSurveyId(),
+                                                             target.getUserName());
+        if (completed.isPresent()) {
+            throw new ValidationException("Ankete cevap verdiğiniz için tekrar yanıt gönderemezsiniz.");
+        }
+    }
+}
+</script>
+          <div class="callout info"><span class="ci">ℹ️</span><div><p>Validator bir repository'ye bağımlı olabilir: "bu kullanıcı daha önce oy verdi mi?" gibi kurallar veritabanı sorgusu gerektirir. Bu kontrolü veritabanında da garanti altına almak için <code>responses(survey_id, user_id)</code> üzerine <b>unique constraint</b> eklemek, eşzamanlı isteklerde bile çift oyu engeller.</p></div></div>
+        </div>
+      </div>
+
+      <div class="callout tip"><span class="ci">💡</span><div><b class="t">Bean Validation ile karşılaştırma</b><p>Alan seviyesindeki basit kurallar (<code>@NotBlank title</code>, <code>@Future expiresAt</code>, <code>@Email</code>) için <code>spring-boot-starter-validation</code> + <code>@Valid @RequestBody</code> kullanılabilir. Veritabanı veya iş kuralı gerektiren kontroller ise projedeki gibi özel validator sınıflarında kalır.</p></div></div>
+    </section>
+
+    <!-- =============== 13 SECURITY =============== -->
+    <section class="doc reveal" id="security">
+      <span class="eyebrow">13 · Spring Security</span>
+      <h2>Güvenlik ve JWT</h2>
+      <p class="lead">Stateless kimlik doğrulama ve rol tabanlı yetkilendirme: login başarılıysa sunucu, içinde kullanıcının <b>rolü</b> bulunan imzalı bir JWT üretir. İstemci sonraki her istekte bunu <code>Authorization: Bearer …</code> header'ında gönderir; hangi endpoint'e erişebileceğine rol karar verir.</p>
+
+      <div class="table-wrap"><table>
+        <thead><tr><th>Token</th><th><code>/admin/**</code></th><th><code>/user/**</code></th></tr></thead>
+        <tbody>
+          <tr><td><b>Admin</b> (<code>role=ADMIN</code>)</td><td>✅ 200</td><td>⛔ 403 Bu işlem için yetkiniz yok.</td></tr>
+          <tr><td><b>Katılımcı</b> (<code>role=USER</code>)</td><td>⛔ 403 Bu işlem için yetkiniz yok.</td><td>✅ 200</td></tr>
+          <tr><td>Token yok</td><td>⛔ 401</td><td>⛔ 401</td></tr>
+          <tr><td>Geçersiz / süresi dolmuş / rolsüz token</td><td>⛔ 401</td><td>⛔ 401</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout info"><span class="ci">ℹ️</span><div><b class="t">Kimlik doğrulama ≠ yetkilendirme</b><p><b>Authentication</b> "sen kimsin?" sorusudur: token'ın imzası ve süresi geçerli mi? Başarısızsa <b>401 Unauthorized</b>. <b>Authorization</b> "buna iznin var mı?" sorusudur: kullanıcının rolü bu path için uygun mu? Başarısızsa <b>403 Forbidden</b>.</p></div></div>
+
+      <div class="flow-wrap">
+        <div class="flow-bar">
+          <h4>JWT akışı</h4>
+          <button class="btn" data-play="jwt">▶ Oynat</button>
+        </div>
+        <div class="flow" data-flow="jwt">
+          <button class="flow-step" data-detail="<code>POST /admin/login?username=admin&amp;password=…</code> — kimlik bilgileri <code>@RequestParam</code> olarak gelir."><span class="n">01</span><b>Login isteği</b><small>username + password</small></button>
+          <button class="flow-step" data-detail="<code>LoginServiceImpl.doLogin()</code>: kullanıcı <code>users</code> tablosundan bulunur, şifre <code>BCryptPasswordEncoder.matches()</code> ile doğrulanır. Başarılıysa <code>Optional&lt;UserEntity&gt;</code> döner, değilse 401."><span class="n">02</span><b>BCrypt doğrulama</b><small>LoginServiceImpl</small></button>
+          <button class="flow-step" data-detail="Controller kullanıcının rolünü kontrol eder: <code>/admin/login</code> yalnızca <code>ADMIN</code>, <code>/user/login</code> yalnızca <code>USER</code> rolüne token verir. Aksi halde 403."><span class="n">03</span><b>Login'de rol kontrolü</b><small>LoginController</small></button>
+          <button class="flow-step" data-detail="<code>JwtUtil.generateToken(username, role)</code>: subject = kullanıcı adı, <code>role</code> claim'i = ADMIN/USER, 24 saat geçerli, HMAC-SHA ile imzalı. Token yanıt header'ında döner."><span class="n">04</span><b>Token üretimi</b><small>sub + role · HS256</small></button>
+          <button class="flow-step" data-detail="İstemci token'ı saklar ve her korumalı istekte <code>Authorization: Bearer eyJhbGciOi…</code> gönderir."><span class="n">05</span><b>Bearer header</b><small>Authorization</small></button>
+          <button class="flow-step" data-detail="Tek <code>JwtAuthFilter</code> imzayı, süreyi ve <code>role</code> claim'ini doğrular. Geçersizse açıklayıcı JSON ile 401 döner ve zincir durur."><span class="n">06</span><b>Filtre doğrular</b><small>JwtAuthFilter</small></button>
+          <button class="flow-step" data-detail="Kullanıcı <code>SecurityContextHolder</code>'a token'daki role göre <code>ROLE_ADMIN</code> veya <code>ROLE_USER</code> authority'siyle yazılır."><span class="n">07</span><b>SecurityContext</b><small>ROLE_ADMIN / ROLE_USER</small></button>
+          <button class="flow-step" data-detail="<code>hasRole(&quot;ADMIN&quot;)</code> / <code>hasRole(&quot;USER&quot;)</code> kuralı kontrol edilir. Rol uymuyorsa <code>AccessDeniedHandler</code> 403 döner; uyuyorsa istek controller'a ulaşır."><span class="n">08</span><b>Rol kuralı</b><small>200 / 403</small></button>
+        </div>
+        <div class="flow-detail" data-detail-for="jwt">Bir adıma tıklayın ya da <b>Oynat</b> ile akışı izleyin.</div>
+      </div>
+
+      <h3>SecurityFilterChain</h3>
+<script type="text/plain" class="src" data-lang="java" data-title="configurations/SecurityConfigurations.java">
+@Configuration
+@EnableMethodSecurity
+public class SecurityConfigurations {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
+
+        http.csrf(csrf -> csrf.disable());              // stateless REST → CSRF gereksiz
+
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/admin/login", "/user/login").permitAll()  // login JWT istemez
+                .requestMatchers("/admin/**").hasRole("ADMIN")               // sadece admin token'ı
+                .requestMatchers("/user/**").hasRole("USER")                 // sadece katılımcı token'ı
+                .anyRequest().permitAll()                                    // swagger vs herkes
+        );
+
+        http.exceptionHandling(ex -> ex
+                // Token hiç gönderilmemiş → 401
+                .authenticationEntryPoint((request, response, e) ->
+                        JwtErrorResponseWriter.writeUnauthorized(request, response, JwtErrorResponseWriter.MISSING_HEADER))
+                // Token geçerli ama rol bu path için uygun değil → 403
+                .accessDeniedHandler((request, response, e) ->
+                        JwtErrorResponseWriter.writeForbidden(request, response, JwtErrorResponseWriter.ACCESS_DENIED))
+        );
+
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+
+    // JwtAuthFilter @Component olduğu için Spring Boot onu ayrıca servlet filtresi olarak da kaydeder.
+    // Filtre yalnızca Security zincirinde çalışsın diye otomatik kaydı kapatıyoruz.
+    @Bean
+    public FilterRegistrationBean<JwtAuthFilter> jwtAuthFilterRegistration(JwtAuthFilter jwtAuthFilter) {
+        FilterRegistrationBean<JwtAuthFilter> registration = new FilterRegistrationBean<>(jwtAuthFilter);
+        registration.setEnabled(false);
+        return registration;
+    }
+}
+</script>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Yapılandırma</th><th>Ne işe yarar?</th></tr></thead>
+        <tbody>
+          <tr><td><code>hasRole("ADMIN")</code></td><td>Kullanıcıda <code>ROLE_ADMIN</code> authority'si arar. <code>ROLE_</code> ön ekini Spring kendisi ekler</td></tr>
+          <tr><td><code>SessionCreationPolicy.STATELESS</code></td><td>Sunucu oturum (HttpSession) tutmaz; her istek kendi token'ıyla doğrulanır</td></tr>
+          <tr><td><code>authenticationEntryPoint</code></td><td>Anonim bir kullanıcı korumalı bir path'e geldiğinde çalışır → 401</td></tr>
+          <tr><td><code>accessDeniedHandler</code></td><td>Kimliği doğrulanmış ama yetkisi yetmeyen kullanıcıda çalışır → 403</td></tr>
+          <tr><td><code>FilterRegistrationBean.setEnabled(false)</code></td><td><code>@Component</code> filtrelerin servlet container'a otomatik eklenmesini engeller; filtre yalnızca Security zincirinde çalışır</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Path değil rol: neden iki filtre yetmedi?</h3>
+      <div class="diff">
+        <div class="card"><h4>Eski yapı <span class="pill danger">kaldırıldı</span></h4><ul><li><code>JwtAuthFilter</code> sadece <code>/admin/**</code>, <code>CustomerJwtAuthFilter</code> sadece <code>/user/**</code> path'ine bakıyordu</li><li>İki login de aynı <code>users</code> tablosunu ve aynı secret'ı kullanıyordu; token'da rol yoktu</li><li>Sonuç: her iki token da her iki filtreden geçiyordu ve herhangi bir kullanıcı <code>/admin/login</code>'den admin token'ı alabiliyordu</li></ul></div>
+        <div class="card"><h4>Yeni yapı <span class="pill brand">projede</span></h4><ul><li><code>users.role</code> kolonu (<code>ADMIN</code> / <code>USER</code>)</li><li>Login, rolü uygun olmayan kullanıcıya token vermez (403)</li><li>Token <code>role</code> claim'i taşır; tek filtre bunu authority'ye çevirir</li><li>Kimin nereye gireceğine filtre değil, <code>hasRole</code> kuralları karar verir</li></ul></div>
+      </div>
+      <div class="callout tip"><span class="ci">💡</span><div><p>Path kontrolü "bu istek korumalı mı?" sorusunu cevaplar; "bu kullanıcı buraya girebilir mi?" sorusunu ancak token'daki bir <b>kimlik/rol bilgisi</b> cevaplayabilir. Yetki kararlarını filtrelere dağıtmak yerine <code>SecurityFilterChain</code>'de tek yerde toplamak hem okunabilirliği hem güvenliği artırır.</p></div></div>
+
+      <h3>JwtAuthFilter</h3>
+<script type="text/plain" class="src" data-lang="java" data-title="filters/JwtAuthFilter.java">
+@Component
+public class JwtAuthFilter extends OncePerRequestFilter {
+
+    // Login istekleri, elde süresi dolmuş bir token kalmış olsa bile engellenmesin
+    private static final Set<String> LOGIN_PATHS = Set.of("/admin/login", "/user/login");
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return LOGIN_PATHS.contains(request.getRequestURI());
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+
+        String authHeader = request.getHeader("Authorization");
+
+        // Token yoksa anonim devam et; korumalı path ise Security 401 döner (entry point)
+        if (authHeader == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (!authHeader.startsWith("Bearer ")) {
+            JwtErrorResponseWriter.writeUnauthorized(request, response, JwtErrorResponseWriter.INVALID_HEADER_FORMAT);
+            return;
+        }
+
+        String token = authHeader.substring(7);                // "Bearer " ön ekini at
+
+        try {
+            JwtUser jwtUser = jwtUtil.validateToken(token);
+            // Kullanıcı adı principal olarak yazılır; controller'lar Authentication.getName() ile okur.
+            // Rol token'dan gelir: ADMIN → ROLE_ADMIN, USER → ROLE_USER
+            var authToken = new UsernamePasswordAuthenticationToken(jwtUser.username(), null,
+                    List.of(new SimpleGrantedAuthority("ROLE_" + jwtUser.role().name())));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+        } catch (Exception e) {
+            JwtErrorResponseWriter.writeUnauthorized(request, response, JwtErrorResponseWriter.messageFor(e));
+            return;
+        }
+
+        filterChain.doFilter(request, response);
+    }
+}
+</script>
+
+      <h3>Açıklayıcı hata yanıtları</h3>
+      <p><code>JwtErrorResponseWriter</code>, filtrede ve Security handler'larında aynı JSON formatını üretir. jjwt'nin fırlattığı exception türü kullanıcıya anlaşılır bir mesaja çevrilir.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Durum</th><th>Kod</th><th>Mesaj</th></tr></thead>
+        <tbody>
+          <tr><td>Header yok</td><td>401</td><td>Authorization header bulunamadı. Lütfen 'Bearer &lt;token&gt;' formatında token gönderin.</td></tr>
+          <tr><td><code>Bearer </code> ile başlamıyor</td><td>401</td><td>Authorization header 'Bearer &lt;token&gt;' formatında olmalıdır.</td></tr>
+          <tr><td><code>ExpiredJwtException</code></td><td>401</td><td>Token süresi dolmuş. Lütfen tekrar giriş yapın.</td></tr>
+          <tr><td><code>SignatureException</code></td><td>401</td><td>Token imzası geçersiz.</td></tr>
+          <tr><td><code>MalformedJwtException</code></td><td>401</td><td>Token formatı geçersiz.</td></tr>
+          <tr><td><code>UnsupportedJwtException</code> (rolsüz token dahil)</td><td>401</td><td>Desteklenmeyen token türü. Lütfen tekrar giriş yapın.</td></tr>
+          <tr><td>Rol bu path için uygun değil</td><td>403</td><td>Bu işlem için yetkiniz yok.</td></tr>
+        </tbody>
+      </table></div>
+<script type="text/plain" class="src" data-lang="json" data-title="Örnek 403 yanıtı">
+{
+  "timestamp": "2026-10-31T16:10:00",
+  "status": 403,
+  "error": "Forbidden",
+  "message": "Bu işlem için yetkiniz yok.",
+  "path": "/admin/api/v1/surveys/active"
+}
+</script>
+
+      <h3>Testle doğrulama</h3>
+      <p><code>SecurityRoleRulesTest</code> veritabanı olmadan yalnızca güvenlik katmanını (<code>SecurityConfigurations</code> + <code>JwtAuthFilter</code> + <code>JwtUtil</code>) ayağa kaldırır ve sahte endpoint'ler üzerinden rol kurallarını doğrular.</p>
+<script type="text/plain" class="src" data-lang="java" data-title="src/test/.../configurations/SecurityRoleRulesTest.java (özet)">
+@SpringJUnitWebConfig(classes = {
+        SecurityConfigurations.class, JwtAuthFilter.class, JwtUtil.class,
+        SecurityRoleRulesTest.TestConfig.class, SecurityRoleRulesTest.PingController.class})
+class SecurityRoleRulesTest {
+
+    @Test
+    void user_token_cannot_access_admin_endpoints() throws Exception {
+        mockMvc.perform(get("/admin/api/v1/ping").header("Authorization", bearer(Role.USER)))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string(containsString("Bu işlem için yetkiniz yok.")));
+    }
+    // + admin→admin 200, admin→user 403, user→user 200, token yok 401,
+    //   "Basic" header 401, rolsüz token 401, login'in eski token'la engellenmemesi
+}
+</script>
+<script type="text/plain" class="src" data-lang="bash" data-title="terminal">
+./mvnw test -Dtest=SecurityRoleRulesTest
+</script>
+
+      <h3>JwtUtil</h3>
+      <div class="tabs">
+        <div class="tab-list"><button data-tab="j-proj">Projedeki hâli</button><button data-tab="j-modern">jjwt 0.12 modern API</button></div>
+        <div class="tab-panel" data-panel="j-proj">
+<script type="text/plain" class="src" data-lang="java" data-title="utils/JwtUtil.java">
+@Component
+public class JwtUtil {
+
+    private static final String ROLE_CLAIM = "role";
+
+    private final String SECRET = "…";   // projede sabit string olarak yazılı
+
+    public String generateToken(String username, Role role) {
+        return Jwts.builder()
+                .setSubject(username)
+                .claim(ROLE_CLAIM, role.name())   // "ADMIN" veya "USER"
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) // 1 gün
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public JwtUser validateToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)       // imza veya süre geçersizse exception
+                .getBody();
+
+        // Rol bilgisi olmayan (eski) veya bilinmeyen rollü token'lar kabul edilmez
+        String role = claims.get(ROLE_CLAIM, String.class);
+        if (role == null) {
+            throw new UnsupportedJwtException("Token rol bilgisi içermiyor.");
+        }
+        try {
+            return new JwtUser(claims.getSubject(), Role.valueOf(role));
+        } catch (IllegalArgumentException e) {
+            throw new UnsupportedJwtException("Bilinmeyen rol: " + role);
+        }
+    }
+
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    }
+}
+</script>
+        </div>
+        <div class="tab-panel" data-panel="j-modern">
+<script type="text/plain" class="src" data-lang="java" data-title="JwtUtil — deprecated olmayan API + dışarıdan secret">
+@Component
+public class JwtUtil {
+
+    private final SecretKey key;
+
+    public JwtUtil(@Value("${app.jwt.secret}") String secret) {   // ortam değişkeninden
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public String generateToken(String username, Role role) {
+        Instant now = Instant.now();
+        return Jwts.builder()
+                .subject(username)
+                .claim("role", role.name())
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plus(Duration.ofDays(1))))
+                .signWith(key)
+                .compact();
+    }
+
+    public JwtUser validateToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return new JwtUser(claims.getSubject(), Role.valueOf(claims.get("role", String.class)));
+    }
+}
+</script>
+        </div>
+      </div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>JWT parçası</th><th>İçerik</th></tr></thead>
+        <tbody>
+          <tr><td><b>Header</b></td><td><code>{"alg":"HS256"}</code> — imza algoritması (anahtar uzunluğuna göre seçilir)</td></tr>
+          <tr><td><b>Payload</b></td><td><code>{"sub":"admin","role":"ADMIN","iat":…,"exp":…}</code> — Base64URL, <b>şifreli değil</b>; hassas veri koymayın. <code>role</code> değiştirilirse imza tutmaz, bu yüzden rol güvenle burada taşınabilir</td></tr>
+          <tr><td><b>Signature</b></td><td><code>HMAC(header.payload, secret)</code> — token'ın değiştirilmediğini kanıtlar</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout danger"><span class="ci">🔐</span><div><p>Secret'ı bilen herkes geçerli bir admin token'ı üretebilir. Secret kaynak kodda değil, ortam değişkeninde/secret manager'da tutulmalı ve HS256 için en az 256 bit (32 bayt) olmalıdır.</p></div></div>
+    </section>
+
+    <!-- =============== 14 MAIL =============== -->
+    <section class="doc reveal" id="mail">
+      <span class="eyebrow">14 · Spring Mail</span>
+      <h2>Mail Servisi</h2>
+      <p class="lead">Anket oluşturulduğunda <code>mailList</code>'teki adreslere Gmail SMTP üzerinden HTML davet maili gönderilir.</p>
+
+<script type="text/plain" class="src" data-lang="properties" data-title="application.properties — SMTP">
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_APP_PASSWORD}     # Gmail "Uygulama şifresi"
+
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+spring.mail.properties.mail.smtp.connectiontimeout=5000
+spring.mail.properties.mail.smtp.timeout=5000
+spring.mail.properties.mail.smtp.writetimeout=5000
+</script>
+      <div class="callout info"><span class="ci">ℹ️</span><div><p>Timeout ayarları (5 sn) önemli: SMTP sunucusu yanıt vermezse varsayılan davranış sonsuz beklemedir ve <code>createSurvey</code> isteği askıda kalır.</p></div></div>
+
+      <div class="grid g2" style="align-items:start">
+        <div>
+<script type="text/plain" class="src" data-lang="java" data-title="services/impl/MailServiceImpl.java">
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class MailServiceImpl implements IMailService {
+
+    private final JavaMailSender mailSender;
+
+    @Override
+    public void sendSimpleMail(String to, String subject, String text,
+                               SurveyEntity surveyEntity) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
+
+            if (StringUtils.isNotEmpty(to) && to.contains(",")) {
+                helper.setTo(to.split(","));
+            } else {
+                helper.setTo(to);
+            }
+            helper.setSubject(subject);
+            helper.setText(buildMailContent(text, surveyEntity), true); // HTML
+
+            mailSender.send(message);
+            log.info("HTML mail sent to: {}", to);
+        } catch (MessagingException e) {
+            log.error("Failed to send HTML mail to: {}", to, e);
+            throw new RuntimeException("Mail gönderilemedi", e);
+        }
+    }
+}
+</script>
+        </div>
+        <div>
+          <h4 style="margin-top:14px">Şablon önizlemesi</h4>
+          <div class="mail" aria-label="Mail şablonu önizlemesi">
+            <div class="mh"><div>📋</div><b style="font-size:18px">Anket Daveti</b></div>
+            <div class="mb">
+              <p style="margin:0 0 8px">Sayın Yetkili,</p>
+              <p style="margin:0;color:#4b5563">Değerli görüşlerinizi almak amacıyla tarafınıza bir anket gönderilmiştir.</p>
+              <div class="box"><b>{{SURVEY_TITLE}}</b><span style="color:#64748b">{{SURVEY_DESCRIPTION}}</span></div>
+              <span class="cta">Ankete Katıl</span>
+              <p style="text-align:center;font-size:11.5px;color:#9ca3af;margin:8px 0 0">{{SURVEY_LINK}}</p>
+            </div>
+            <div class="mf">Katılımınız için teşekkür ederiz. · <b style="color:#1e3a8a">DFX Survey</b></div>
+          </div>
+          <p style="font-size:13.5px;color:var(--muted)"><code>buildMailContent()</code> HTML'i string olarak kurar ve <code>{{…}}</code> yer tutucularını <code>String.replace</code> ile doldurur. Link: <code>http://localhost:8080/user/api/v1/surveys/detail/{id}</code></p>
+        </div>
+      </div>
+      <div class="callout tip"><span class="ci">💡</span><div><b class="t">Geliştirme önerileri</b><ul style="margin:.3em 0 0"><li>Şablonu Java string'i yerine <b>Thymeleaf</b> ile <code>resources/templates/mail/invite.html</code> dosyasında tutmak</li><li>Kullanıcı girdisi (başlık, açıklama) HTML'e konmadan önce escape edilmeli</li><li>Link bir API endpoint'ine gidiyor ve token istiyor; tarayıcıdan tıklandığında 401 alınır. Bir frontend sayfasına yönlendirmek gerekir</li></ul></div></div>
+    </section>
+
+    <!-- =============== 15 API =============== -->
+    <section class="doc reveal" id="api">
+      <span class="eyebrow">15 · REST API</span>
+      <h2>API Endpoints</h2>
+      <p class="lead">Bir endpoint'e tıklayarak örnek isteği ve yanıtı görün. Uygulama çalışırken tümü Swagger UI'da da listelenir: <code>http://localhost:8080/swagger-ui/index.html</code></p>
+      <div class="filters" id="epFilters">
+        <button class="on" data-f="all">Tümü</button>
+        <button data-f="admin">Admin</button>
+        <button data-f="user">User</button>
+        <button data-f="public">Token gerektirmeyen</button>
+      </div>
+      <div id="endpoints"></div>
+    </section>
+
+    <!-- =============== 16 DB =============== -->
+    <section class="doc reveal" id="db">
+      <span class="eyebrow">16 · PostgreSQL</span>
+      <h2>Veritabanı Şeması</h2>
+      <p class="lead"><code>ddl-auto=create</code> ile Hibernate'in entity'lerden ürettiği şemanın eşdeğeri. <code>users</code> tablosu ve <code>user_id</code> kolonları ilk dokümanda yoktu.</p>
+<script type="text/plain" class="src" data-lang="sql" data-title="Şema (Hibernate'in ürettiğine eşdeğer)">
+CREATE TABLE users (
+    id         BIGSERIAL PRIMARY KEY,
+    username   VARCHAR(255),
+    password   VARCHAR(255),        -- BCrypt hash
+    is_active  BOOLEAN NOT NULL,
+    role       VARCHAR(255) CHECK (role IN ('ADMIN', 'USER'))
+);
+
+CREATE TABLE surveys (
+    id          BIGSERIAL PRIMARY KEY,
+    title       VARCHAR(255),
+    description VARCHAR(255),
+    created_at  TIMESTAMP,
+    expires_at  TIMESTAMP,
+    mail_list   VARCHAR(255),
+    token       VARCHAR(255)
+);
+
+CREATE TABLE questions (
+    id            BIGSERIAL PRIMARY KEY,
+    survey_id     BIGINT REFERENCES surveys(id),
+    question_text VARCHAR(255),
+    question_type VARCHAR(255),     -- 'LIKERT' | 'FREETEXT'
+    required      BOOLEAN
+);
+
+CREATE TABLE likert_options (
+    id          SERIAL PRIMARY KEY,
+    question_id BIGINT REFERENCES questions(id),
+    value       INTEGER,
+    label       VARCHAR(255)
+);
+
+CREATE TABLE tokens (
+    id         SERIAL PRIMARY KEY,
+    survey_id  BIGINT REFERENCES surveys(id),
+    user_id    BIGINT REFERENCES users(id),
+    token      VARCHAR(255) UNIQUE,
+    created_at TIMESTAMP,
+    expires_at TIMESTAMP
+);
+
+CREATE TABLE responses (            -- CompletedSurveyEntity
+    id           SERIAL PRIMARY KEY,
+    survey_id    BIGINT REFERENCES surveys(id),
+    token_id     INTEGER REFERENCES tokens(id),
+    user_id      BIGINT REFERENCES users(id),
+    submitted_at TIMESTAMP
+);
+
+CREATE TABLE answers (
+    id              SERIAL PRIMARY KEY,
+    response_id     INTEGER REFERENCES responses(id),
+    question_id     BIGINT REFERENCES questions(id),
+    freetext_answer VARCHAR(255),
+    likert_value    INTEGER
+);
+</script>
+      <div class="callout warn"><span class="ci">⚠️</span><div><b class="t">VARCHAR(255) sınırı</b><p>Java <code>String</code> alanları varsayılan olarak <code>VARCHAR(255)</code> olur. Uzun açıklamalar, serbest metin cevaplar ve onlarca adres içeren <code>mail_list</code> bu sınırı aşabilir. <code>@Column(columnDefinition = "TEXT")</code> veya <code>@Column(length = 2000)</code> ile genişletilebilir.</p></div></div>
+    </section>
+
+    <!-- =============== 17 REVIEW =============== -->
+    <section class="doc reveal" id="review">
+      <span class="eyebrow">17 · Atölye</span>
+      <h2>Kod İnceleme: Bilinen Sorunlar</h2>
+      <p class="lead">Kodu okurken tespit edilen hatalar ve iyileştirme noktaları. Her biri eğitimde bir <b>alıştırma</b> olarak kullanılabilir: önce sorunu bulmaya çalışın, sonra çözümü açın.</p>
+      <div class="filters" id="issueFilters">
+        <button class="on" data-f="all">Tümü</button>
+        <button data-f="crit">Kritik</button>
+        <button data-f="high">Yüksek</button>
+        <button data-f="mid">Orta</button>
+        <button data-f="low">Düşük</button>
+        <button data-f="done">Çözüldü</button>
+      </div>
+      <div id="issues"></div>
+    </section>
+
+    <!-- =============== 18 ÖZET =============== -->
+    <section class="doc reveal" id="ozet">
+      <span class="eyebrow">18 · Tekrar</span>
+      <h2>Önemli Kavramlar ve Quiz</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Kavram</th><th>Açıklama</th><th>Projede</th></tr></thead>
+        <tbody>
+          <tr><td><code>@Entity</code></td><td>JPA entity sınıfı</td><td><code>SurveyEntity</code> …</td></tr>
+          <tr><td><code>@Repository</code></td><td>Veri erişim bileşeni</td><td><code>SurveyRepository</code></td></tr>
+          <tr><td><code>@Service</code></td><td>İş mantığı bileşeni</td><td><code>SurveyServiceImpl</code></td></tr>
+          <tr><td><code>@RestController</code></td><td>REST API controller</td><td><code>SurveyController</code></td></tr>
+          <tr><td><code>@Transactional</code></td><td>Transaction yönetimi</td><td><code>createSurvey</code>, <code>submitVote</code></td></tr>
+          <tr><td><b>DTO</b></td><td>Data Transfer Object</td><td><code>CreateSurveyRequest</code></td></tr>
+          <tr><td><b>JWT</b></td><td>İmzalı, stateless kimlik token'ı</td><td><code>JwtUtil</code></td></tr>
+          <tr><td><b>BCrypt</b></td><td>Salt'lı, yavaş şifre hash algoritması</td><td><code>LoginServiceImpl</code></td></tr>
+          <tr><td><b>Cascade</b></td><td>Child entity'lerin otomatik yönetimi</td><td><code>Survey → Question → LikertOption</code></td></tr>
+          <tr><td><code>OncePerRequestFilter</code></td><td>İstek başına bir kez çalışan filtre</td><td><code>JwtAuthFilter</code></td></tr>
+          <tr><td><code>hasRole</code></td><td>Path'i belirli bir role açan yetkilendirme kuralı</td><td><code>/admin/**</code> → ADMIN, <code>/user/**</code> → USER</td></tr>
+          <tr><td><b>401 vs 403</b></td><td>Kimlik doğrulanamadı vs yetki yetersiz</td><td><code>authenticationEntryPoint</code> / <code>accessDeniedHandler</code></td></tr>
+          <tr><td><code>@PrePersist</code></td><td>INSERT öncesi callback</td><td><code>TokenEntity</code></td></tr>
+          <tr><td><code>@JsonIgnore</code></td><td>JSON serileştirmeden hariç tutma</td><td><code>QuestionEntity.survey</code></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Kendinizi test edin</h3>
+      <div class="card" id="quiz"></div>
+    </section>
+
+    <!-- =============== 19 KAYNAK =============== -->
+    <section class="doc reveal" id="kaynak">
+      <span class="eyebrow">19 · İleri Okuma</span>
+      <h2>Faydalı Kaynaklar</h2>
+      <div class="grid g2">
+        <a class="card" href="https://spring.io/projects/spring-boot" target="_blank" rel="noopener"><b>Spring Boot</b><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Resmi dokümantasyon ve referans</p></a>
+        <a class="card" href="https://spring.io/projects/spring-data-jpa" target="_blank" rel="noopener"><b>Spring Data JPA</b><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Repository, query methods, specification</p></a>
+        <a class="card" href="https://spring.io/projects/spring-security" target="_blank" rel="noopener"><b>Spring Security</b><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Filter chain mimarisi</p></a>
+        <a class="card" href="https://mapstruct.org/" target="_blank" rel="noopener"><b>MapStruct</b><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Mapper tanımlama rehberi</p></a>
+        <a class="card" href="https://github.com/jwtk/jjwt" target="_blank" rel="noopener"><b>jjwt</b><p style="margin:4px 0 0;color:var(--muted);font-size:14px">0.12 API ve migration notları</p></a>
+        <a class="card" href="https://jwt.io/" target="_blank" rel="noopener"><b>JWT.io</b><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Token çözümleyici ve debugger</p></a>
+        <a class="card" href="TAKIM_ROLLERI.html"><b>👥 Agile ve Takım Rolleri</b><p style="margin:4px 0 0;color:var(--muted);font-size:14px">Scrum rolleri, Junior/Senior, Architect, Analist, QA ve diğerleri</p></a>
+      </div>
+      <footer>
+        <b>Hazırlayan:</b> DFX Developer School · Kaynak kod: <code>com.dfxsurvey.dfxsurvey</code> · Son güncelleme: Ekim 2026
+      </footer>
+    </section>
+  </main>
+</div>
+
+<button class="icon-btn backtop" id="backtop" aria-label="Başa dön">↑</button>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function store(k, v){ try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch(e) { return null; } }
+
+  /* ---------- theme ---------- */
+  var root = document.documentElement;
+  var saved = store("dfx-theme");
+  if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+  function isDark(){
+    var t = root.getAttribute("data-theme");
+    if (t) return t === "dark";
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  function syncThemeIcon(){ $("#themeIcon").textContent = isDark() ? "☀" : "☾"; }
+  $("#themeBtn").addEventListener("click", function(){
+    var next = isDark() ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    store("dfx-theme", next);
+    syncThemeIcon();
+  });
+  syncThemeIcon();
+
+  /* ---------- code blocks ---------- */
+  function dedent(s){
+    var lines = s.replace(/\t/g, "    ").split("\n");
+    while (lines.length && !lines[0].trim()) lines.shift();
+    while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+    var min = Infinity;
+    lines.forEach(function(l){ if (l.trim()) min = Math.min(min, l.match(/^ */)[0].length); });
+    if (!isFinite(min)) min = 0;
+    return lines.map(function(l){ return l.slice(min); }).join("\n");
+  }
+  var langNames = {java:"Java", xml:"XML", sql:"SQL", json:"JSON", properties:"Properties", bash:"Shell", http:"HTTP"};
+  $$("script.src").forEach(function(s){
+    var lang = s.getAttribute("data-lang") || "none";
+    var text = dedent(s.textContent);
+    var fig = document.createElement("figure");
+    fig.className = "code";
+    fig.style.margin = "14px 0";
+    var head = document.createElement("div");
+    head.className = "code-head";
+    head.innerHTML = '<span class="dots"><i></i><i></i><i></i></span><span class="code-title"></span><span class="code-lang"></span><button class="copy" type="button">Kopyala</button>';
+    head.querySelector(".code-title").textContent = s.getAttribute("data-title") || "";
+    head.querySelector(".code-lang").textContent = langNames[lang] || lang;
+    var pre = document.createElement("pre");
+    var code = document.createElement("code");
+    code.className = "language-" + (lang === "xml" ? "markup" : lang);
+    code.textContent = text;
+    pre.appendChild(code);
+    fig.appendChild(head); fig.appendChild(pre);
+    s.parentNode.replaceChild(fig, s);
+    var btn = head.querySelector(".copy");
+    btn.addEventListener("click", function(){
+      function done(){ btn.textContent = "Kopyalandı ✓"; btn.classList.add("ok"); setTimeout(function(){ btn.textContent = "Kopyala"; btn.classList.remove("ok"); }, 1600); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text); done(); });
+      } else { fallbackCopy(text); done(); }
+    });
+  });
+  function fallbackCopy(t){
+    var ta = document.createElement("textarea");
+    ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+  function highlight(scope){
+    if (window.Prism && Prism.highlightAllUnder) {
+      try { Prism.highlightAllUnder(scope || document); } catch(e) {}
+    }
+  }
+
+  /* ---------- tabs ---------- */
+  function initTabs(scope){
+    $$(".tabs", scope).forEach(function(t){
+      if (t.dataset.ready) return;
+      t.dataset.ready = "1";
+      var btns = $$(":scope > .tab-list > button", t);
+      var panels = $$(":scope > .tab-panel", t);
+      t.querySelector(".tab-list").setAttribute("role", "tablist");
+      function activate(key){
+        btns.forEach(function(b){ b.setAttribute("aria-selected", String(b.dataset.tab === key)); });
+        panels.forEach(function(p){ p.classList.toggle("active", p.dataset.panel === key); });
+      }
+      btns.forEach(function(b){ b.setAttribute("role", "tab"); b.addEventListener("click", function(){ activate(b.dataset.tab); }); });
+      if (btns[0]) activate(btns[0].dataset.tab);
+      t._activate = activate;
+    });
+  }
+  initTabs(document);
+
+  /* ---------- layers ---------- */
+  var layerData = {
+    filter: { title: "🛡️ Filter / Security", items: ["Her istek controller'a ulaşmadan önce filtre zincirinden geçer", "JWT doğrulanır, geçersizse 401 ile zincir kesilir", "Token'daki rol ROLE_ADMIN / ROLE_USER olarak SecurityContextHolder'a yazılır", "hasRole kuralları uymazsa 403"], chips: ["SecurityConfigurations", "JwtAuthFilter", "JwtErrorResponseWriter", "JwtUtil"] },
+    controller: { title: "🌐 Controller", items: ["HTTP isteklerini karşılar, JSON ↔ DTO dönüşümünü yapar", "Validator ve servisleri orkestre eder", "ResponseEntity ile status kodu belirler", "İş kuralı içermemelidir"], chips: ["LoginController", "SurveyController", "CustomerLoginController", "SurveyActionController", "ServiceMapper"] },
+    service: { title: "⚙️ Service", items: ["İş kuralları (business logic)", "@Transactional ile transaction sınırları", "Birden fazla repository'yi koordine eder", "Interface + Impl ayrımı"], chips: ["SurveyServiceImpl", "VoteServiceImpl", "MailServiceImpl", "LoginServiceImpl", "SurveyValidator", "VoteRequestValidator"] },
+    repository: { title: "🗂️ Repository", items: ["JpaRepository'den hazır CRUD metotları", "Method naming ile türetilmiş sorgular", "@Query ile JPQL / native SQL", "Implementasyonu Spring çalışma zamanında üretir"], chips: ["SurveyRepository", "QuestionRepository", "LikertOptionRepository", "SurveyAnswerRepository", "ResponseRepository", "UserRepository"] },
+    db: { title: "🐘 PostgreSQL", items: ["dfx_survey_db veritabanı, Docker ile postgres:16", "Şema Hibernate tarafından üretilir (ddl-auto=create)", "data.sql ile admin kullanıcısı eklenir"], chips: ["users", "surveys", "questions", "likert_options", "tokens", "responses", "answers"] }
+  };
+  function showLayer(k){
+    var d = layerData[k];
+    $$("#layerStack .layer").forEach(function(b){ b.classList.toggle("active", b.dataset.layer === k); });
+    var el = $("#layerDetail");
+    el.innerHTML = "<h4></h4><ul></ul><div class='chips'></div>";
+    el.querySelector("h4").textContent = d.title;
+    d.items.forEach(function(i){ var li = document.createElement("li"); li.textContent = i; el.querySelector("ul").appendChild(li); });
+    d.chips.forEach(function(c){ var s = document.createElement("span"); s.className = "chip"; s.textContent = c; el.querySelector(".chips").appendChild(s); });
+  }
+  $$("#layerStack .layer").forEach(function(b){ b.addEventListener("click", function(){ showLayer(b.dataset.layer); }); });
+  showLayer("filter");
+
+  /* ---------- flows ---------- */
+  $$("[data-flow]").forEach(function(flow){
+    var key = flow.dataset.flow;
+    var steps = $$(".flow-step", flow);
+    var detail = $('[data-detail-for="' + key + '"]');
+    var btn = $('[data-play="' + key + '"]');
+    var timer = null, idx = -1;
+    function setActive(i){
+      idx = i;
+      steps.forEach(function(s, j){ s.classList.toggle("active", j === i); s.classList.toggle("done", j < i); });
+      if (steps[i]) detail.innerHTML = steps[i].dataset.detail;
+    }
+    function stop(){ clearInterval(timer); timer = null; btn.textContent = "▶ Oynat"; }
+    steps.forEach(function(s, i){ s.addEventListener("click", function(){ stop(); setActive(i); }); });
+    btn.addEventListener("click", function(){
+      if (timer) { stop(); return; }
+      btn.textContent = "❚❚ Durdur";
+      setActive(idx >= steps.length - 1 || idx < 0 ? 0 : idx + 1);
+      timer = setInterval(function(){
+        if (idx >= steps.length - 1) { stop(); return; }
+        setActive(idx + 1);
+      }, reduceMotion ? 2400 : 1700);
+    });
+  });
+
+  /* ---------- ER diagram ---------- */
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var tables = [
+    { id:"surveys", tab:"e-survey", x:30, y:30, cols:[["id","pk"],["title"],["description"],["created_at"],["expires_at"],["mail_list"],["token"]] },
+    { id:"questions", tab:"e-question", x:400, y:30, cols:[["id","pk"],["survey_id","fk"],["question_text"],["question_type"],["required"]] },
+    { id:"likert_options", tab:"e-likert", x:770, y:30, cols:[["id","pk"],["question_id","fk"],["value"],["label"]] },
+    { id:"tokens", tab:"e-token", x:30, y:300, cols:[["id","pk"],["survey_id","fk"],["token  (unique)"],["user_id","fk"],["created_at"],["expires_at"]] },
+    { id:"responses", tab:"e-completed", x:400, y:300, cols:[["id","pk"],["survey_id","fk"],["token_id","fk"],["user_id","fk"],["submitted_at"]] },
+    { id:"answers", tab:"e-answer", x:770, y:300, cols:[["id","pk"],["response_id","fk"],["question_id","fk"],["freetext_answer"],["likert_value"]] },
+    { id:"users", tab:"e-user", x:400, y:490, cols:[["id","pk"],["username"],["password"],["is_active"],["role"]] }
+  ];
+  var rels = [
+    { a:"surveys", b:"questions", d:"M270,71 H335 V93 H400", lx:340, ly:66 },
+    { a:"questions", b:"likert_options", d:"M640,71 H705 V93 H770", lx:710, ly:66 },
+    { a:"surveys", b:"tokens", d:"M150,224 V300", lx:158, ly:266 },
+    { a:"surveys", b:"responses", d:"M270,160 H335 V363 H400", lx:342, ly:250 },
+    { a:"tokens", b:"responses", d:"M270,341 H318 V385 H400", lx:276, ly:334 },
+    { a:"users", b:"tokens", d:"M400,531 H300 V407 H270", lx:306, ly:470 },
+    { a:"users", b:"responses", d:"M520,490 V450", lx:528, ly:474 },
+    { a:"responses", b:"answers", d:"M640,341 H705 V363 H770", lx:710, ly:336 },
+    { a:"questions", b:"answers", d:"M640,137 H690 V270 H880 V300", lx:696, ly:262 }
+  ];
+  var W = 240, HD = 30, RH = 22;
+  var gT = $("#er-tables"), gR = $("#er-rels"), er = $("#er");
+  function el(n, attrs, txt){ var e = document.createElementNS(SVGNS, n); for (var k in attrs) e.setAttribute(k, attrs[k]); if (txt != null) e.textContent = txt; return e; }
+  rels.forEach(function(r){
+    var p = el("path", { d:r.d, "class":"rel", "marker-end":"url(#arrow)" });
+    p.dataset.a = r.a; p.dataset.b = r.b;
+    gR.appendChild(p);
+    // "1" ilişkinin a (referans verilen) ucuna, "N" FK'yı tutan b ucuna
+    var len = p.getTotalLength();
+    var s = p.getPointAtLength(Math.min(12, len / 3)), e = p.getPointAtLength(Math.max(len - 16, len * 2 / 3));
+    var leftward = p.getPointAtLength(Math.min(13, len / 3)).x < s.x;
+    gR.appendChild(el("text", { x:leftward ? s.x - 6 : s.x + 5, y:s.y - 5, "class":"card" }, "1"));
+    gR.appendChild(el("text", { x:e.x + 5, y:e.y - 5, "class":"card" }, "N"));
+  });
+  tables.forEach(function(t){
+    var h = HD + t.cols.length * RH + 10;
+    var g = el("g", { "class":"tbl", transform:"translate(" + t.x + "," + t.y + ")", tabindex:"0", role:"button", "aria-label":t.id + " tablosu" });
+    g.dataset.id = t.id;
+    g.appendChild(el("rect", { "class":"box", width:W, height:h, rx:10 }));
+    g.appendChild(el("rect", { "class":"hd", x:1, y:1, width:W - 2, height:HD - 1, rx:9 }));
+    g.appendChild(el("rect", { "class":"hd", x:1, y:HD - 10, width:W - 2, height:10 }));
+    g.appendChild(el("text", { "class":"tn", x:14, y:20 }, t.id));
+    t.cols.forEach(function(c, i){
+      var cls = c[1] || "";
+      var prefix = cls === "pk" ? "🔑 " : cls === "fk" ? "↗ " : "   ";
+      g.appendChild(el("text", { x:14, y:HD + 16 + i * RH, "class":cls }, prefix + c[0]));
+    });
+    g.addEventListener("mouseenter", function(){ hl(t.id); });
+    g.addEventListener("mouseleave", function(){ hl(null); });
+    g.addEventListener("focus", function(){ hl(t.id); });
+    g.addEventListener("blur", function(){ hl(null); });
+    function open(){
+      var tabs = $("#entityTabs");
+      if (tabs._activate) tabs._activate(t.tab);
+      tabs.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block:"start" });
+    }
+    g.addEventListener("click", open);
+    g.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+    gT.appendChild(g);
+  });
+  function hl(id){
+    er.classList.toggle("dim", !!id);
+    var linked = {}; if (id) linked[id] = true;
+    $$("path.rel", er).forEach(function(p){
+      var on = id && (p.dataset.a === id || p.dataset.b === id);
+      p.classList.toggle("hl", !!on);
+      if (on) { linked[p.dataset.a] = true; linked[p.dataset.b] = true; }
+    });
+    $$(".tbl", er).forEach(function(g){ g.classList.toggle("hl", !!linked[g.dataset.id]); });
+  }
+
+  /* ---------- statistics bars ---------- */
+  var sample = [["1 · Çok Kötü", 1], ["2 · Kötü", 2], ["3 · Orta", 5], ["4 · İyi", 9], ["5 · Mükemmel", 13]];
+  var maxV = Math.max.apply(null, sample.map(function(s){ return s[1]; }));
+  var barsEl = $("#bars");
+  sample.forEach(function(s){
+    var row = document.createElement("div");
+    row.className = "bar";
+    row.innerHTML = "<span></span><div class='track'><div class='fill'></div></div><span></span>";
+    row.children[0].textContent = s[0];
+    row.children[2].textContent = s[1];
+    row.querySelector(".fill").dataset.w = (s[1] / maxV * 100).toFixed(1) + "%";
+    barsEl.appendChild(row);
+  });
+  function growBars(){ $$("#bars .fill").forEach(function(f){ f.style.width = f.dataset.w; }); }
+
+  /* ---------- endpoints ---------- */
+  var endpoints = [
+    { m:"POST", p:"/admin/login", g:"admin", auth:false, d:"Admin girişi; JWT'yi Authorization header'ında döner",
+      req:{ lang:"http", t:"POST /admin/login?username=admin&password=<şifre>" },
+      res:{ lang:"http", t:"HTTP/1.1 200 OK\nAuthorization: Bearer eyJhbGciOiJIUzI1NiJ9...   # payload: {\"sub\":\"admin\",\"role\":\"ADMIN\",…}\n\nLogin successful\n\n# Hatalı bilgi        → 401 \"Invalid credentials\"\n# Rolü ADMIN değil    → 403 \"Bu giriş yalnızca yöneticiler içindir.\"" } },
+    { m:"POST", p:"/admin/api/v1/surveys", g:"admin", auth:true, d:"Yeni anket oluşturur, davet maillerini gönderir",
+      req:{ lang:"json", t:'{\n  "title": "Müşteri Memnuniyet Anketi",\n  "description": "Hizmetimizi değerlendiriniz",\n  "expiresAt": "2026-12-31T00:00:00",\n  "mailList": "user1@mail.com,user2@mail.com",\n  "questions": [\n    {\n      "questionText": "Hizmet kalitesi nasıldı?",\n      "questionType": "LIKERT",\n      "required": true,\n      "likertOptions": [\n        { "value": 1, "label": "Çok Kötü" },\n        { "value": 5, "label": "Mükemmel" }\n      ]\n    },\n    {\n      "questionText": "Eklemek istediğiniz bir şey var mı?",\n      "questionType": "FREETEXT",\n      "required": false\n    }\n  ]\n}' },
+      res:{ lang:"json", t:"1   // oluşturulan anketin id'si" } },
+    { m:"GET", p:"/admin/api/v1/surveys/active", g:"admin", auth:true, d:"Süresi dolmamış anketleri SurveyDto listesi olarak döner",
+      req:{ lang:"http", t:"GET /admin/api/v1/surveys/active\nAuthorization: Bearer <admin-token>" },
+      res:{ lang:"json", t:'[\n  {\n    "id": 1,\n    "title": "Müşteri Memnuniyet Anketi",\n    "description": "Hizmetimizi değerlendiriniz",\n    "expiresAt": "2026-12-31T00:00:00",\n    "mailList": "user1@mail.com,user2@mail.com"\n  }\n]' } },
+    { m:"GET", p:"/admin/api/v1/surveys/response/{id}", g:"admin", auth:true, d:"Likert istatistikleri ve serbest metin cevaplar",
+      req:{ lang:"http", t:"GET /admin/api/v1/surveys/response/1\nAuthorization: Bearer <admin-token>" },
+      res:{ lang:"json", t:'{\n  "statistics": [\n    {\n      "questionId": 1,\n      "questionText": "Hizmet kalitesi nasıldı?",\n      "likertCounts": [\n        { "value": 1, "label": "Çok Kötü", "count": 0 },\n        { "value": 5, "label": "Mükemmel", "count": 3 }\n      ]\n    }\n  ],\n  "freeTextAnswers": [\n    { "freeTextAnswer": "Harika bir deneyimdi!", "freeTextQuestion": "Eklemek istediğiniz bir şey var mı?" }\n  ]\n}' } },
+    { m:"POST", p:"/user/login", g:"user", auth:false, d:"Katılımcı girişi; kullanıcı JWT'si döner",
+      req:{ lang:"http", t:"POST /user/login?username=<kullanici>&password=<şifre>" },
+      res:{ lang:"http", t:"HTTP/1.1 200 OK\nAuthorization: Bearer eyJhbGciOiJIUzI1NiJ9...   # payload: {\"sub\":\"katilimci\",\"role\":\"USER\",…}\n\nLogin successful\n\n# Hatalı bilgi        → 401 \"Invalid credentials\"\n# Rolü USER değil     → 403 \"Bu giriş yalnızca katılımcılar içindir.\"" } },
+    { m:"GET", p:"/user/api/v1/surveys/detail/{id}", g:"user", auth:true, d:"Anket ve sorularını döner (SurveyValidator ile)",
+      req:{ lang:"http", t:"GET /user/api/v1/surveys/detail/1\nAuthorization: Bearer <user-token>" },
+      res:{ lang:"json", t:'{\n  "id": 1,\n  "title": "Müşteri Memnuniyet Anketi",\n  "expiresAt": "2026-12-31T00:00:00",\n  "mailList": "user1@mail.com,user2@mail.com",   // ⚠ entity döndüğü için sızıyor\n  "questions": [\n    {\n      "id": 1,\n      "questionText": "Hizmet kalitesi nasıldı?",\n      "questionType": "LIKERT",\n      "required": true,\n      "likertOptions": [ { "id": 1, "value": 1, "label": "Çok Kötü" } ]\n    }\n  ]\n}' } },
+    { m:"POST", p:"/user/api/v1/surveys/complete-survey", g:"user", auth:true, d:"Anketi tamamlar / oy verir",
+      req:{ lang:"json", t:'{\n  "surveyId": 1,\n  "token": "c0ffee-123",\n  "answers": [\n    { "questionId": 1, "likertValue": 5 },\n    { "questionId": 2, "textAnswer": "Harika bir deneyimdi!" }\n  ]\n}' },
+      res:{ lang:"http", t:"HTTP/1.1 200 OK   → SurveyEntity JSON\n\nHTTP/1.1 400 Bad Request\nAnket tarihi dolmuştur. Oy veremezsiniz." } }
+  ];
+  var epWrap = $("#endpoints");
+  endpoints.forEach(function(e){
+    var card = document.createElement("div");
+    card.className = "ep";
+    card.dataset.g = e.g; card.dataset.auth = e.auth ? "1" : "0";
+    card.innerHTML =
+      "<div class='ep-head' tabindex='0' role='button' aria-expanded='false'>" +
+        "<span class='method " + e.m + "'>" + e.m + "</span>" +
+        "<span class='ep-path'></span>" +
+        (e.auth ? "<span class='pill warn'>🔒 " + (e.g === "admin" ? "ADMIN" : "USER") + " token</span>" : "<span class='pill brand'>açık</span>") +
+        "<span class='chev'>▸</span>" +
+        "<div class='ep-desc' style='flex-basis:100%'></div>" +
+      "</div>" +
+      "<div class='ep-body'>" +
+        "<div class='tabs'><div class='tab-list'><button data-tab='req'>İstek</button><button data-tab='res'>Yanıt</button></div>" +
+        "<div class='tab-panel' data-panel='req'></div><div class='tab-panel' data-panel='res'></div></div>" +
+      "</div>";
+    card.querySelector(".ep-path").textContent = e.p;
+    card.querySelector(".ep-desc").textContent = e.d;
+    [["req", e.req, "Request"], ["res", e.res, "Response"]].forEach(function(x){
+      var s = document.createElement("script");
+      s.type = "text/plain"; s.className = "src";
+      s.setAttribute("data-lang", x[1].lang); s.setAttribute("data-title", x[2]);
+      s.textContent = x[1].t;
+      card.querySelector("[data-panel='" + x[0] + "']").appendChild(s);
+    });
+    epWrap.appendChild(card);
+    var head = card.querySelector(".ep-head");
+    function toggle(){
+      var open = card.classList.toggle("open");
+      head.setAttribute("aria-expanded", String(open));
+      if (open && !card.dataset.hl) { card.dataset.hl = "1"; highlight(card); }
+    }
+    head.addEventListener("click", toggle);
+    head.addEventListener("keydown", function(ev){ if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); toggle(); } });
+  });
+  // dynamic code blocks (endpoint cards) need the same treatment
+  $$("#endpoints script.src").forEach(function(s){
+    var lang = s.getAttribute("data-lang");
+    var text = s.textContent;
+    var fig = document.createElement("figure");
+    fig.className = "code"; fig.style.margin = "10px 0 0";
+    fig.innerHTML = '<div class="code-head"><span class="code-title"></span><span class="code-lang"></span><button class="copy" type="button">Kopyala</button></div><pre><code></code></pre>';
+    fig.querySelector(".code-title").textContent = s.getAttribute("data-title");
+    fig.querySelector(".code-lang").textContent = langNames[lang] || lang;
+    var code = fig.querySelector("code");
+    code.className = "language-" + (lang === "http" ? "none" : lang);
+    code.textContent = text;
+    var btn = fig.querySelector(".copy");
+    btn.addEventListener("click", function(){
+      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).catch(function(){ fallbackCopy(text); });
+      btn.textContent = "Kopyalandı ✓"; btn.classList.add("ok");
+      setTimeout(function(){ btn.textContent = "Kopyala"; btn.classList.remove("ok"); }, 1600);
+    });
+    s.parentNode.replaceChild(fig, s);
+  });
+  initTabs(epWrap);
+  function bindFilter(barSel, itemSel, match){
+    var bar = $(barSel);
+    $$("button", bar).forEach(function(b){
+      b.addEventListener("click", function(){
+        $$("button", bar).forEach(function(x){ x.classList.toggle("on", x === b); });
+        $$(itemSel).forEach(function(it){ it.style.display = match(it, b.dataset.f) ? "" : "none"; });
+      });
+    });
+  }
+  bindFilter("#epFilters", "#endpoints .ep", function(it, f){
+    return f === "all" || (f === "public" ? it.dataset.auth === "0" : it.dataset.g === f);
+  });
+
+  /* ---------- issues ---------- */
+  var SEV = { crit:["Kritik","danger"], high:["Yüksek","warn"], mid:["Orta","info"], low:["Düşük",""], done:["Çözüldü","brand"] };
+  var issues = [
+    { s:"done", t:"@Param adı sorgudaki parametreyle eşleşmiyordu", f:"dao/repository/ResponseRepository.java",
+      p:"<b>Eski durum:</b> Sorgu <code>:username</code> bekliyordu, parametre ise <code>@Param(\"userId\")</code> ile işaretliydi. Uygulama açılıyordu, ama <code>complete-survey</code> isteğinde sorgu çalışınca <code>No argument for named parameter ':username'</code> hatası alınıyordu. Bu tür bir uyumsuzluk açılışta değil, ancak sorgu çalıştığında ortaya çıkar.",
+      fix:"<b>Uygulanan çözüm:</b> <code>findBySurveyIdAndUsername(@Param(\"surveyId\") Long surveyId, @Param(\"username\") String username)</code>. Parametre adı sorguyla eşleşiyor, metot adı ne yaptığını anlatıyor ve <code>surveyId</code> tipi <code>SurveyEntity.id</code> ile aynı (<code>Long</code>)." },
+    { s:"done", t:"Kullanıcı adı üç farklı yerden okunuyordu", f:"controllers/user/SurveyActionController.java · services/impl/VoteServiceImpl.java",
+      p:"<b>Eski durum:</b> Filtre kullanıcı adını <code>request.setAttribute(\"username\", …)</code> ile yazıyordu. Controller <code>getParameter(\"username\")</code> ile okuyordu (query string'de böyle bir parametre olmadığı için <code>\"null\"</code> metni geliyordu), servis ise <code>getAttribute(\"user\")</code> ile okuyordu (null).",
+      fix:"<b>Uygulanan çözüm:</b> Kullanıcı adının tek kaynağı artık token. Controller <code>Authentication authentication</code> parametresiyle <code>authentication.getName()</code> okuyor, <code>VoteRequestDto.userName</code> <code>@JsonIgnore</code> ile istemciye kapatıldı, servis <code>HttpServletRequest</code> almıyor ve filtredeki attribute kaldırıldı. <code>SurveyActionControllerTest</code> ile doğrulandı." },
+    { s:"done", t:"Cevaplar oya, oy da kullanıcıya bağlanmıyordu", f:"services/impl/VoteServiceImpl.java · dao/entity/CompletedSurveyEntity.java",
+      p:"<b>Eski durum:</b> <code>answer.setResponse(…)</code> ve <code>completed.setUser(…)</code> hiç çağrılmıyordu. <code>answers.response_id</code> ve <code>responses.user_id</code> NULL kaldığı için <code>VoteRequestValidator</code>'ın çift oy sorgusu hiçbir zaman kayıt bulamıyordu. Ayrıca <code>TokenEntity</code> kaydedilmeden ilişkilendirildiği için sorgu hatası giderilince <i>transient instance</i> hatası alınacaktı.",
+      fix:"<b>Uygulanan çözüm:</b> Önce kullanıcıya bağlı bir <code>CompletedSurveyEntity</code> kuruluyor, her cevap <code>answer.setResponse(completed)</code> ile ona ekleniyor ve tek <code>responseRepository.save(completed)</code> çağrısı cascade ile her şeyi kaydediyor. Token ilişkisine <code>cascade = PERSIST</code> eklendi. <code>VoteServiceImplTest</code> ve <code>VoteRequestValidatorTest</code> ile doğrulandı." },
+    { s:"high", t:"Davet listesi oy verenlere sızıyor", f:"controllers/user/SurveyActionController.java",
+      p:"<code>surveyDetail</code> ve <code>completeSurvey</code> doğrudan <code>SurveyEntity</code> döndürüyor; JSON'da <code>mailList</code> alanı var. Her katılımcı tüm davetlilerin e-posta adreslerini görür.",
+      fix:"Kullanıcıya özel bir DTO (ör. <code>SurveyDetailDto</code>: id, title, description, questions) tanımlayıp MapStruct ile dönüştürün. <code>completeSurvey</code> için basit bir onay mesajı yeterli." },
+    { s:"high", t:"Gizli bilgiler kaynak kodda", f:"resources/application.properties · utils/JwtUtil.java:14",
+      p:"Veritabanı şifresi, Gmail uygulama şifresi ve JWT secret dosyalarda açık metin. Repoya erişen herkes mail hesabını kullanabilir ve geçerli admin token'ı üretebilir.",
+      fix:"Değerleri <code>${DB_PASSWORD}</code>, <code>${MAIL_APP_PASSWORD}</code>, <code>${JWT_SECRET}</code> placeholder'larıyla ortam değişkenlerinden okuyun. Daha önce paylaşılmış şifreleri iptal edip yenileyin." },
+    { s:"mid", t:"Mail, transaction commit edilmeden gönderiliyor", f:"services/impl/SurveyServiceImpl.java",
+      p:"<code>flush()</code> commit değildir. Mail gönderimi transaction içinde ve senkron; SMTP 5 sn bekletirse DB bağlantısı da o kadar tutulur, commit başarısız olursa davet yine de gitmiş olur.",
+      fix:"<code>ApplicationEventPublisher</code> ile <code>SurveyCreatedEvent</code> yayınlayın; <code>@TransactionalEventListener(phase = AFTER_COMMIT)</code> + <code>@Async</code> bir listener'da mail gönderin." },
+    { s:"mid", t:"surveyResponse'ta olası NullPointerException", f:"services/impl/SurveyServiceImpl.java:103",
+      p:"Anket bulunamazsa sadece log yazılıyor, ardından <code>survey.getQuestions()</code> çağrılıyor → NPE → 500.",
+      fix:"<code>surveyRepository.findById(id).orElseThrow(() -> new ValidationException(\"Anket bulunamadı\"))</code> ve <code>@RestControllerAdvice</code> ile 404/400'e çevirin." },
+    { s:"mid", t:"FreeTextAnswerDto argümanları ters sırada", f:"services/impl/SurveyServiceImpl.java:149",
+      p:"Constructor sırası <code>(freeTextAnswer, freeTextQuestion)</code>; çağrı <code>(questionText, answer)</code>. Raporda soru ve cevap yer değiştiriyor.",
+      fix:"<code>new FreeTextAnswerDto(answ.getFreetextAnswer(), questionEntity.getQuestionText())</code>. Kalıcı çözüm: <code>record</code> veya builder kullanmak." },
+    { s:"done", t:"Admin ve katılımcı token'ları birbirinin yerine kullanılabiliyordu", f:"filters/JwtAuthFilter.java · configurations/SecurityConfigurations.java · controllers/*/LoginController",
+      p:"<b>Eski durum:</b> İki filtre yalnızca path'e bakıyordu (<code>/admin</code> ve <code>/user</code>), iki login aynı <code>users</code> tablosunu ve aynı secret'ı kullanıyordu, token'da rol yoktu ve iki filtre de herkese <code>ROLE_ADMIN</code> veriyordu. Katılımcı token'ı ile <code>/admin/**</code> çağrılabiliyor, herhangi bir kullanıcı <code>/admin/login</code>'den admin token'ı alabiliyordu.",
+      fix:"<b>Uygulanan çözüm:</b> <code>users.role</code> kolonu (<code>Role</code> enum), login'de rol kontrolü (uygun değilse 403), token'da <code>role</code> claim'i, <code>CustomerJwtAuthFilter</code> silinerek tek <code>JwtAuthFilter</code>, <code>hasRole(\"ADMIN\")</code> / <code>hasRole(\"USER\")</code> kuralları ve JSON 401/403 handler'ları. <code>SecurityRoleRulesTest</code> ile doğrulandı." },
+    { s:"mid", t:"Validasyon hatası detay endpoint'inde 500 dönüyor", f:"controllers/user/SurveyActionController.java",
+      p:"<code>surveyDetail</code>'de try/catch yok; <code>ValidationException</code> Spring'in varsayılan hata işleyicisine düşer ve 500 olur.",
+      fix:"<code>@RestControllerAdvice</code> içinde <code>@ExceptionHandler(ValidationException.class)</code> → <code>ResponseEntity.badRequest()</code>. Controller'lardaki try/catch'ler de kaldırılabilir." },
+    { s:"low", t:"SurveyEntity.createdAt hiç set edilmiyor", f:"dao/entity/SurveyEntity.java",
+      p:"Diğer entity'lerdeki gibi bir <code>@PrePersist</code> yok; kolon her zaman NULL.",
+      fix:"<code>@PrePersist</code> callback'i veya Hibernate'in <code>@CreationTimestamp</code> annotation'ını ekleyin." },
+    { s:"low", t:"jjwt 0.12'de deprecated metotlar", f:"utils/JwtUtil.java",
+      p:"<code>setSubject</code>, <code>setSigningKey</code>, <code>parseClaimsJws</code>, <code>getBody</code> 0.12'de deprecated; ileriki sürümlerde kaldırılacak.",
+      fix:"<code>subject()</code>, <code>verifyWith(key)</code>, <code>parseSignedClaims()</code>, <code>getPayload()</code> kullanın (Güvenlik bölümündeki modern API sekmesi)." },
+    { s:"low", t:"BCryptPasswordEncoder her login'de yeniden oluşturuluyor", f:"services/impl/LoginServiceImpl.java:21",
+      p:"Çalışır ama idiomatik değil; kayıt akışı eklendiğinde encode/match için aynı yapılandırmanın kullanılacağı garanti olmaz.",
+      fix:"<code>@Bean PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }</code> tanımlayıp constructor injection ile alın." },
+    { s:"low", t:"Kimlik bilgileri query string'de", f:"controllers/admin/LoginController.java",
+      p:"<code>@RequestParam</code> ile gelen şifre, URL'de gönderilirse sunucu/proxy loglarına yazılabilir.",
+      fix:"<code>@RequestBody LoginRequest(username, password)</code> ile JSON gövdesinde alın." }
+  ];
+  var isWrap = $("#issues");
+  issues.forEach(function(i){
+    var d = document.createElement("div");
+    d.className = "issue " + i.s; d.dataset.s = i.s;
+    d.innerHTML = "<div class='issue-top'><span class='pill " + SEV[i.s][1] + "'>" + SEV[i.s][0] + "</span><h4></h4></div>" +
+      "<div class='file'></div><p>" + i.p + "</p>" +
+      "<details><summary>Çözümü göster</summary><p>" + i.fix + "</p></details>";
+    d.querySelector("h4").textContent = i.t;
+    d.querySelector(".file").textContent = "📄 " + i.f;
+    isWrap.appendChild(d);
+  });
+  bindFilter("#issueFilters", "#issues .issue", function(it, f){ return f === "all" || it.dataset.s === f; });
+
+  /* ---------- quiz ---------- */
+  var quiz = [
+    { q:"surveyRepository.flush() ne yapar?", o:["Transaction'ı commit eder", "Bekleyen SQL'leri veritabanına gönderir, transaction açık kalır", "Persistence context'i temizler", "Entity'yi siler"], a:1, w:"flush SQL'i gönderir; commit @Transactional metot başarıyla bittiğinde olur. Sonradan exception gelirse yine rollback yapılır." },
+    { q:"Survey–Question ilişkisinde owning side hangisidir?", o:["SurveyEntity (@OneToMany)", "QuestionEntity (@ManyToOne + @JoinColumn)", "İkisi de", "LikertOptionEntity"], a:1, w:"FK kolonu (survey_id) questions tablosunda; @JoinColumn olan taraf owning side'dır. mappedBy olan taraf inverse'tir." },
+    { q:"Geçerli bir katılımcı (USER) token'ı ile /admin/api/v1/surveys/active çağrılırsa ne döner?", o:["200 OK", "401 Unauthorized", "403 Forbidden", "500 Internal Server Error"], a:2, w:"Token geçerli olduğu için kimlik doğrulanır (401 değil); ama rol ROLE_USER olduğu için hasRole(\"ADMIN\") kuralı geçilemez ve AccessDeniedHandler 403 döner." },
+    { q:"JwtAuthFilter neden SecurityConfigurations'ta FilterRegistrationBean ile setEnabled(false) yapılıyor?", o:["Filtreyi tamamen kapatmak için", "@Component filtrenin servlet container'a da otomatik eklenmesini engelleyip yalnızca Security zincirinde çalışmasını sağlamak için", "Performans için önbelleğe almak için", "Test ortamında devre dışı bırakmak için"], a:1, w:"Spring Boot, Filter tipindeki tüm bean'leri servlet filtresi olarak kaydeder. Kayıt kapatılmazsa filtre hem Security zincirinde hem de dışında çalışmaya çalışır." },
+    { q:"data.sql'in Hibernate tabloları oluşturduktan sonra çalışmasını hangi ayar sağlar?", o:["spring.sql.init.mode=always", "spring.jpa.show-sql=true", "spring.jpa.defer-datasource-initialization=true", "ddl-auto=update"], a:2, w:"defer-datasource-initialization, SQL script'lerini EntityManagerFactory başlatıldıktan sonraya erteler. init.mode=always ise gömülü olmayan DB'lerde script'lerin çalışmasını açar." },
+    { q:"JWT payload'ı hakkında hangisi doğrudur?", o:["AES ile şifrelenmiştir", "Base64URL ile kodlanmıştır, herkes okuyabilir; imza sadece bütünlüğü korur", "Sunucuda veritabanında saklanır", "Sadece admin okuyabilir"], a:1, w:"İmzalı JWT (JWS) gizlilik sağlamaz. Payload'a şifre veya hassas veri konmaz." },
+    { q:"MapStruct'ın Spring bean olarak inject edilebilmesini hangi ayar sağlar?", o:["nullValueCheckStrategy = ALWAYS", "componentModel = \"spring\"", "ADDER_PREFERRED", "@Mapper tek başına"], a:1, w:"componentModel = \"spring\" üretilen ServiceMapperImpl sınıfına @Component ekler." },
+    { q:"BCrypt hash'i $2a$12$… ile başlıyor. 12 neyi ifade eder?", o:["Şifre uzunluğunu", "Salt uzunluğunu", "Maliyet faktörünü (2^12 tur)", "Algoritma sürümünü"], a:2, w:"Cost factor arttıkça hash hesaplaması üstel olarak yavaşlar; bu da brute-force saldırılarını pahalı hale getirir." }
+  ];
+  var qEl = $("#quiz"), correct = 0, answered = 0;
+  var scoreEl = document.createElement("div");
+  scoreEl.className = "score";
+  quiz.forEach(function(item, qi){
+    var box = document.createElement("div");
+    box.className = "quiz-q";
+    box.innerHTML = "<h4></h4><div class='opts'></div><div class='why'></div>";
+    box.querySelector("h4").textContent = (qi + 1) + ". " + item.q;
+    box.querySelector(".why").textContent = "💡 " + item.w;
+    var opts = box.querySelector(".opts");
+    item.o.forEach(function(o, oi){
+      var b = document.createElement("button");
+      b.className = "opt"; b.type = "button"; b.textContent = o;
+      b.addEventListener("click", function(){
+        if (box.classList.contains("answered")) return;
+        box.classList.add("answered");
+        answered++;
+        if (oi === item.a) correct++;
+        $$(".opt", opts).forEach(function(x, xi){
+          x.disabled = true;
+          if (xi === item.a) x.classList.add("right");
+          else if (xi === oi) x.classList.add("wrong");
+        });
+        renderScore();
+      });
+      opts.appendChild(b);
+    });
+    qEl.appendChild(box);
+  });
+  var reset = document.createElement("button");
+  reset.className = "btn ghost"; reset.type = "button"; reset.textContent = "↺ Sıfırla";
+  reset.addEventListener("click", function(){
+    correct = 0; answered = 0;
+    $$(".quiz-q", qEl).forEach(function(b){ b.classList.remove("answered"); });
+    $$(".opt", qEl).forEach(function(o){ o.disabled = false; o.classList.remove("right", "wrong"); });
+    renderScore();
+  });
+  var foot = document.createElement("div");
+  foot.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px;flex-wrap:wrap";
+  foot.appendChild(scoreEl); foot.appendChild(reset);
+  qEl.appendChild(foot);
+  function renderScore(){
+    scoreEl.textContent = answered === quiz.length
+      ? "Sonuç: " + correct + " / " + quiz.length + (correct === quiz.length ? " 🎉 Mükemmel!" : correct >= 5 ? " 👏 Çok iyi" : " — ilgili bölümleri tekrar gözden geçirin")
+      : "Cevaplanan: " + answered + " / " + quiz.length;
+  }
+  renderScore();
+
+  /* ---------- highlight everything ---------- */
+  highlight(document);
+
+  /* ---------- nav: scrollspy, progress, search, mobile ---------- */
+  var links = $$("#nav a");
+  var sections = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var progress = $("#progress"), backtop = $("#backtop");
+  function onScroll(){
+    var y = window.scrollY, h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (y / h * 100) : 0) + "%";
+    backtop.classList.toggle("show", y > 800);
+    var cur = 0;
+    sections.forEach(function(s, i){ if (s && s.getBoundingClientRect().top < 140) cur = i; });
+    links.forEach(function(a, i){ a.classList.toggle("active", i === cur); });
+  }
+  window.addEventListener("scroll", onScroll, { passive:true });
+  onScroll();
+  backtop.addEventListener("click", function(){ window.scrollTo({ top:0, behavior: reduceMotion ? "auto" : "smooth" }); });
+
+  var search = $("#navSearch");
+  var sectionText = sections.map(function(s){ return s ? s.textContent.toLocaleLowerCase("tr") : ""; });
+  search.addEventListener("input", function(){
+    var q = search.value.trim().toLocaleLowerCase("tr"), any = false;
+    links.forEach(function(a, i){
+      var hit = !q || a.textContent.toLocaleLowerCase("tr").indexOf(q) > -1 || sectionText[i].indexOf(q) > -1;
+      a.classList.toggle("hidden", !hit);
+      if (hit) any = true;
+    });
+    $$(".nav-group").forEach(function(g){
+      var n = g.nextElementSibling, vis = false;
+      while (n && n.tagName === "A") { if (!n.classList.contains("hidden")) vis = true; n = n.nextElementSibling; }
+      g.style.display = vis ? "" : "none";
+    });
+    $("#navEmpty").style.display = any ? "none" : "block";
+  });
+  search.addEventListener("keydown", function(e){
+    if (e.key === "Enter") { var first = links.filter(function(a){ return !a.classList.contains("hidden"); })[0]; if (first) { first.click(); search.blur(); } }
+    if (e.key === "Escape") { search.value = ""; search.dispatchEvent(new Event("input")); search.blur(); }
+  });
+  document.addEventListener("keydown", function(e){
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      document.body.classList.add("nav-open");
+      search.focus();
+    }
+  });
+
+  function closeNav(){ document.body.classList.remove("nav-open"); }
+  $("#menuBtn").addEventListener("click", function(){ document.body.classList.toggle("nav-open"); });
+  $("#scrim").addEventListener("click", closeNav);
+  links.forEach(function(a){ a.addEventListener("click", closeNav); });
+
+  /* ---------- reveal ---------- */
+  var barsDone = false;
+  if ("IntersectionObserver" in window && !reduceMotion) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, { rootMargin:"0px 0px -8% 0px" });
+    $$(".reveal").forEach(function(r){ io.observe(r); });
+    var bo = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if (en.isIntersecting && !barsDone) { barsDone = true; growBars(); } });
+    });
+    bo.observe(barsEl);
+  } else {
+    $$(".reveal").forEach(function(r){ r.classList.add("in"); });
+    growBars();
+  }
+})();
+</script>
+</body>
+</html>
