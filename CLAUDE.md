@@ -29,6 +29,9 @@ docker run -d --name dfx-postgres -e POSTGRES_DB=dfx_survey_db -e POSTGRES_USER=
 # Uygulamayı çalıştır
 ./mvnw spring-boot:run
 
+# Uygulamayı H2 (bellek içi veritabanı) ile çalıştır; Docker gerekmez
+./mvnw spring-boot:run -Dspring-boot.run.profiles=h2
+
 # Testleri çalıştır
 ./mvnw test
 
